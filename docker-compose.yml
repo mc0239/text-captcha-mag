@@ -13,7 +13,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+# <!!! Specify path to the Caddyfile (based on where you cloned the repository)
       - "/d/text-captcha-mag/api/Caddyfile:/etc/caddy/Caddyfile"
+# !!!>
       - "caddy_data:/data"
       - "caddy_config:/config"
 
@@ -26,7 +28,9 @@ services:
       NER_MODEL_PATH: "/app/data/models/bert_based/"
     volumes:
       - type: "bind"
+# <!!! Specify path to the NER model
         source: "/d/text-captcha-mag/process/models/bert-base-multilingual-cased-bsnlp-2021-finetuned-5-epochs/"
+# !!!>
         target: "/app/data/models/bert_based/"
         read_only: true
 

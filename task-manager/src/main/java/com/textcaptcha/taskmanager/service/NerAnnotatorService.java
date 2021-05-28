@@ -1,5 +1,6 @@
 package com.textcaptcha.taskmanager.service;
 
+import com.textcaptcha.taskmanager.config.TaskManagerConfigProvider;
 import com.textcaptcha.taskmanager.model.AnnotatedToken;
 import com.textcaptcha.taskmanager.model.ner.NerResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,14 @@ import java.util.stream.Collectors;
 @Service
 public class NerAnnotatorService implements AnnotatorService {
 
-    ExecutorService service;
-    RestTemplate rest;
+    private final TaskManagerConfigProvider config;
+    private final ExecutorService service;
+    private final RestTemplate rest;
 
     @Autowired
-    public NerAnnotatorService() {
+    public NerAnnotatorService(TaskManagerConfigProvider config) {
+        this.config = config;
+
         service = Executors.newFixedThreadPool(10);
         rest = new RestTemplate();
         rest.getMessageConverters()
@@ -81,7 +85,7 @@ public class NerAnnotatorService implements AnnotatorService {
     }
 
     private List<AnnotatedToken> annotateText(String text) {
-        ResponseEntity<NerResponse> restResponse = rest.postForEntity("http://192.168.99.101:5000/predict/ner", text, NerResponse.class);
+        ResponseEntity<NerResponse> restResponse = rest.postForEntity(config.getNerUrl() + "/predict/ner", text, NerResponse.class);
         NerResponse response = restResponse.getBody();
         if (response != null) {
             return response.getTokens().stream().map(AnnotatedToken::fromNerToken).collect(Collectors.toList());

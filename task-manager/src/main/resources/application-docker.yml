@@ -9,4 +9,4 @@ spring:
     password: root12
 
 task-manager:
-  ner-api: http://192.168.99.101:5000
+  ner-api: http://tc-ner-process-text:5000

@@ -1,0 +1,46 @@
+{
+    "name": "NLP-CATCHA",
+    "description": "NLP-based CAPTCHA extension.",
+    "version": "1.0",
+    "manifest_version": 2,
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": false
+    },
+    "permissions": [
+        "declarativeContent",
+        "storage",
+        "activeTab"
+    ],
+    "page_action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "images/icon_16.png",
+            "32": "images/icon_32.png",
+            "48": "images/icon_48.png",
+            "128": "images/icon_128.png"
+        }
+    },
+    "icons": {
+        "16": "images/icon_16.png",
+        "32": "images/icon_32.png",
+        "48": "images/icon_48.png",
+        "128": "images/icon_128.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "http://*.rtvslo.si/*",
+                "https://*.rtvslo.si/*"
+            ],
+            "css": [
+                "content.css"
+            ],
+            "js": [
+                "external/jquery-3.6.0.min.js", "content-script.js"
+            ]
+        }
+    ]
+}

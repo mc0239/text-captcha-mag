@@ -1,0 +1,26 @@
+body {
+    background-color: maroon;
+}
+
+#captcha-button {
+    border-radius: 4px;
+    background-color: violet;
+}
+
+#captcha-space > .meta {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.75em;
+}
+
+#captcha-space > .piece {
+
+}
+
+#captcha-space > .piece:hover {
+    background-color: wheat;
+}
+
+#captcha-space > .piece.selected {
+    background-color: yellowgreen;
+}

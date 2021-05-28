@@ -1,6 +1,7 @@
 {
 	admin off
 	local_certs
+	auto_https disable_redirects
 	default_sni 192.168.99.101
 }
 
@@ -8,8 +9,9 @@ localhost {
 	respond "Serving localhost."
 }
 
-192.168.99.101 {
-	# header Access-Control-Allow-Origin *
+192.168.99.101, http://192.168.99.101 {
+	# Set a default CORS if upstream doesn't define it.
+	header ?Access-Control-Allow-Origin *
 
 
 	@task_manager {
@@ -18,20 +20,20 @@ localhost {
 	}
 
 	route @task_manager {
-		uri strip_prefix /captcha
+		# uri strip_prefix /captcha
 		reverse_proxy tc-task-manager:8080
 	}
 
 
-	@process_text_ner {
-		path /ner
-		path /ner/*
-	}
+	#@process_text_ner {
+	#	path /ner
+	#	path /ner/*
+	#}
 
-	route @process_text_ner {
-		uri strip_prefix /ner
-		reverse_proxy tc-ner-process-text:5000
-	}
+	#route @process_text_ner {
+	#	uri strip_prefix /ner
+	#	reverse_proxy tc-ner-process-text:5000
+	#}
 
 
 	respond "Serving default docker IP of Windows Toolbox."

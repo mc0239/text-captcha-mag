@@ -1,0 +1,37 @@
+version: "3.9"
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+services:
+  proxy_server:
+    image: caddy:2.3.0-alpine
+    container_name: tc-caddy-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/d/text-captcha-mag/api/Caddyfile:/etc/caddy/Caddyfile"
+      - "caddy_data:/data"
+      - "caddy_config:/config"
+
+  process_text:
+    image: rsdo-ds3-ner-api:v1
+    container_name: tc-ner-process-text
+    # ports:
+    #   - "5000:5000"
+    environment:
+      NER_MODEL_PATH: "/app/data/models/bert_based/"
+    volumes:
+      - type: "bind"
+        source: "/d/text-captcha-mag/process/models/bert-base-multilingual-cased-bsnlp-2021-finetuned-5-epochs/"
+        target: "/app/data/models/bert_based/"
+        read_only: true
+
+  task_manager:
+    image: text-captcha-task-manager
+    container_name: tc-task-manager
+    # ports:
+    #   - "8080:8080"

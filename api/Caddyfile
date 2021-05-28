@@ -1,0 +1,38 @@
+{
+	admin off
+	local_certs
+	default_sni 192.168.99.101
+}
+
+localhost {
+	respond "Serving localhost."
+}
+
+192.168.99.101 {
+	# header Access-Control-Allow-Origin *
+
+
+	@task_manager {
+		path /captcha
+		path /captcha/*
+	}
+
+	route @task_manager {
+		uri strip_prefix /captcha
+		reverse_proxy tc-task-manager:8080
+	}
+
+
+	@process_text_ner {
+		path /ner
+		path /ner/*
+	}
+
+	route @process_text_ner {
+		uri strip_prefix /ner
+		reverse_proxy tc-ner-process-text:5000
+	}
+
+
+	respond "Serving default docker IP of Windows Toolbox."
+}

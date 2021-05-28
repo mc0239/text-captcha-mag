@@ -1,0 +1,4 @@
+# Ignore everything except the gitignore file (we do not wish to store models
+# in the repository).
+*
+!.gitignore

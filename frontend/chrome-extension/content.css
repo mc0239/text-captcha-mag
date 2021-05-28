@@ -14,7 +14,7 @@ body {
 }
 
 #captcha-space > .piece {
-
+    cursor: pointer;
 }
 
 #captcha-space > .piece:hover {

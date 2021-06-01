@@ -11,4 +11,6 @@ public interface CaptchaTaskRepository extends JpaRepository<CaptchaTask, Long> 
 
     List<CaptchaTask> getByArticleUid(String articleUid);
 
+    int countByArticleUid(String articleUid);
+
 }

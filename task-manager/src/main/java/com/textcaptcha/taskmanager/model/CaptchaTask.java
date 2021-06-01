@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "captcha_task")
 public class CaptchaTask {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "captcha_task_seqgen")
+    @SequenceGenerator(name = "captcha_task_seqgen", sequenceName = "captcha_task_seq", allocationSize = 1)
     private Long id;
 
     @Column

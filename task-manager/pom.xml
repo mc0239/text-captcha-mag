@@ -12,7 +12,7 @@
     <groupId>com.textcaptcha</groupId>
     <artifactId>task-manager</artifactId>
 
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 
     <name>task-manager</name>
     <description>Task manager service for NLP CAPTCHA</description>
@@ -45,6 +45,11 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.16</version>
         </dependency>
 
         <dependency>

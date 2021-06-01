@@ -35,13 +35,20 @@ public class IngestController {
     @PostMapping
     public void ingestText(@RequestBody IngestRequestBody body) {
         logger.debug("Received ingest request: " + body.toString());
+        String articleUid = Utils.articleUrlToUid(body.getArticleUrl());
 
         // TODO this is NER-specific.
+
+        if (nerTaskGeneratorService.areTasksGenerated(body.getArticleUrl())) {
+            logger.debug("Tasks for " + articleUid + " already generated.");
+            return;
+        }
+
         String decodedText = URLDecoder.decode(body.getText(), StandardCharsets.UTF_8);
         List<AnnotatedToken> tokens = nerAnnotatorService.annotate(decodedText);
         int generatedTaskCount = nerTaskGeneratorService.generateTasks(body.getArticleUrl(), tokens);
 
-        logger.debug("Generated " + generatedTaskCount + " tasks for articleUid " + Utils.articleUrlToUid(body.getArticleUrl()) + ".");
+        logger.debug("Generated " + generatedTaskCount + " tasks for articleUid " + articleUid + ".");
     }
 
 }

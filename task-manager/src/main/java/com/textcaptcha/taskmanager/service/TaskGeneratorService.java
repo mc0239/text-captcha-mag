@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface TaskGeneratorService {
     int generateTasks(String articleUrl, List<AnnotatedToken> tokens);
+    boolean areTasksGenerated(String articleUrl);
 }

@@ -3,7 +3,9 @@ package com.textcaptcha.taskmanager.controller;
 import com.textcaptcha.taskmanager.dto.CaptchaTaskInstanceDto;
 import com.textcaptcha.taskmanager.dto.CaptchaTaskRequestRequestBody;
 import com.textcaptcha.taskmanager.dto.CaptchaTaskResponseRequestBody;
+import com.textcaptcha.taskmanager.model.CaptchaResponse;
 import com.textcaptcha.taskmanager.model.CaptchaTask;
+import com.textcaptcha.taskmanager.repository.CaptchaResponseRepository;
 import com.textcaptcha.taskmanager.repository.CaptchaTaskRepository;
 import com.textcaptcha.taskmanager.util.Utils;
 import org.slf4j.Logger;
@@ -25,12 +27,17 @@ public class TaskController {
     private final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
     private final CaptchaTaskRepository taskRepository;
+    private final CaptchaResponseRepository responseRepository;
 
     private final Map<String, Long> issuedTasks;
 
     @Autowired
-    public TaskController(CaptchaTaskRepository taskRepository) {
+    public TaskController(
+            CaptchaTaskRepository taskRepository,
+            CaptchaResponseRepository responseRepository
+    ) {
         this.taskRepository = taskRepository;
+        this.responseRepository = responseRepository;
 
         issuedTasks = new HashMap<>();
     }
@@ -77,6 +84,13 @@ public class TaskController {
         issuedTasks.remove(instanceId);
 
         CaptchaTask task = taskRepository.getById(taskId);
+
+        //
+        CaptchaResponse r = new CaptchaResponse();
+        r.setCaptchaTask(task);
+        r.getMarkedTokenIndexList().addAll(body.getIndexes());
+        responseRepository.save(r);
+        //
 
         // positive = entity
         // negative = not entity

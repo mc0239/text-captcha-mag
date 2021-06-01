@@ -2,11 +2,25 @@ server:
   port: 8080
 
 spring:
+#  datasource:
+#    url: jdbc:h2:mem:jpadb
+#    driver-class-name: org.h2.Driver
+#    username: root
+#    password: root12
   datasource:
-    url: jdbc:h2:mem:jpadb
-    driver-class-name: org.h2.Driver
-    username: root
-    password: root12
+    url: jdbc:postgresql://192.168.99.101:5432/postgres
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: tasks12
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: update
+#    properties:
+#      javax.persistence.schema-generation.scripts:
+#        action: create
+#        create-target: create.sql
+#        create-source: metadata
 
 task-manager:
   ner-api: http://192.168.99.101:5000

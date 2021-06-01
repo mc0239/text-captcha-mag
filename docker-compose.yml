@@ -3,6 +3,7 @@ version: "3.9"
 volumes:
   caddy_data:
   caddy_config:
+  tasks_database:
 
 services:
   proxy_server:
@@ -33,6 +34,16 @@ services:
 # !!!>
         target: "/app/data/models/bert_based/"
         read_only: true
+
+  tasks_db:
+    image: postgres
+    container_name: tc-tasks-db
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: tasks12
+    volumes:
+      - tasks_database:/var/lib/postgresql
 
   task_manager:
     image: text-captcha-task-manager

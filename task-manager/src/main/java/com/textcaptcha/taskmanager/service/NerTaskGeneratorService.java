@@ -60,6 +60,12 @@ public class NerTaskGeneratorService implements TaskGeneratorService {
         return generatedTasks.size();
     }
 
+    @Override
+    public boolean areTasksGenerated(String articleUrl) {
+        String articleUid = Utils.articleUrlToUid(articleUrl);
+        int existing = captchaTaskRepository.countByArticleUid(articleUid);
+        return existing > 0;
+    }
 
 
 }

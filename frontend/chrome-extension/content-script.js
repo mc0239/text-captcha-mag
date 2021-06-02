@@ -2,6 +2,11 @@ const apiUrl = "https://192.168.99.101/captcha";
 
 
 $( document ).ready(function() {
+
+    document.body.appendChild(getCaptchaStatus());
+
+    getCaptchaStatus().textContent = "Processing text...";
+
     $.ajax({
         type: "POST",
         url: apiUrl + "/ingest",
@@ -12,11 +17,26 @@ $( document ).ready(function() {
         contentType: "application/json"
     }).done(function (data, textStatus, jqXHR) {
         console.log("Data sent & processed.");
+        getCaptchaStatus().textContent = "CAPTCHA OK";
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.error(errorThrown);
-    }).always(function () { });
+        getCaptchaStatus().textContent = "Something went wrong.";
+    }).always(function () {
+
+    });
 
 });
+
+let captchaStatus = null;
+function getCaptchaStatus() {
+    if(captchaStatus == null) {
+        captchaStatus = document.createElement("div");
+        captchaStatus.id = "captcha-status";
+        captchaStatus.appendChild(document.createTextNode("IDLE"));
+    }
+
+    return captchaStatus;
+}
 
 let captchaButton = null;
 function getCaptchaButton() {

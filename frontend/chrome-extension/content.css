@@ -24,3 +24,15 @@ body {
 #captcha-space > .piece.selected {
     background-color: yellowgreen;
 }
+
+#captcha-status {
+    position: fixed;
+    padding: 4px;
+    right: 8px;
+    bottom: 8px;
+    border-radius: 8px;
+    background-color: rgba(0,0,0,0.66);
+    color: white;
+    width: 150px;
+    z-index: 1200;
+}

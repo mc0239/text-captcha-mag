@@ -1,9 +1,11 @@
 package com.textcaptcha.taskmanager.model;
 
 import com.textcaptcha.taskmanager.util.AnnotatedTokenListConverter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -21,6 +23,9 @@ public class CaptchaTask {
     @Column(columnDefinition = "TEXT")
     @Convert(converter = AnnotatedTokenListConverter.class)
     private List<AnnotatedToken> tokens = new ArrayList<>();
+
+    @CreationTimestamp
+    private Date createdAt;
 
     public Long getId() {
         return id;
@@ -44,6 +49,10 @@ public class CaptchaTask {
 
     public void setTokens(List<AnnotatedToken> tokens) {
         this.tokens = tokens;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
 }

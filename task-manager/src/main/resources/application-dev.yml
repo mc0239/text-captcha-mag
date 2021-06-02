@@ -14,13 +14,16 @@ spring:
     password: tasks12
   jpa:
     database: postgresql
-    hibernate:
-      ddl-auto: update
 #    properties:
 #      javax.persistence.schema-generation.scripts:
 #        action: create
 #        create-target: create.sql
 #        create-source: metadata
+  flyway:
+    baseline-on-migrate: true
+    schemas: public
+    default-schema: public
+    create-schemas: true
 
 task-manager:
   ner-api: http://192.168.99.101:5000

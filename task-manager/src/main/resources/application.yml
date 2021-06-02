@@ -5,3 +5,4 @@ server:
 logging:
   level:
     com.textcaptcha: trace
+    org.hibernate: warn

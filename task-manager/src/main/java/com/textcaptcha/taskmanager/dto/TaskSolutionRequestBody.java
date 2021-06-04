@@ -3,7 +3,7 @@ package com.textcaptcha.taskmanager.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CaptchaTaskResponseRequestBody {
+public class TaskSolutionRequestBody {
 
     private String id;
     private List<Integer> indexes = new ArrayList<>();

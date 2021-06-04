@@ -1,8 +1,9 @@
 package com.textcaptcha.taskmanager.controller;
 
-import com.textcaptcha.taskmanager.dto.CaptchaTaskInstanceDto;
-import com.textcaptcha.taskmanager.dto.CaptchaTaskRequestRequestBody;
-import com.textcaptcha.taskmanager.dto.CaptchaTaskResponseRequestBody;
+import com.textcaptcha.taskmanager.dto.TaskInstanceDto;
+import com.textcaptcha.taskmanager.dto.TaskRequestRequestBody;
+import com.textcaptcha.taskmanager.dto.TaskSolutionRequestBody;
+import com.textcaptcha.taskmanager.dto.TaskSolutionResponseDto;
 import com.textcaptcha.taskmanager.model.CaptchaResponse;
 import com.textcaptcha.taskmanager.model.CaptchaTask;
 import com.textcaptcha.taskmanager.repository.CaptchaResponseRepository;
@@ -18,7 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/task")
@@ -43,7 +47,7 @@ public class TaskController {
     }
 
     @PostMapping("/request")
-    public CaptchaTaskInstanceDto getTask(@RequestBody CaptchaTaskRequestRequestBody body) {
+    public TaskInstanceDto getTask(@RequestBody TaskRequestRequestBody body) {
         logger.debug("Received task request: " + body.toString());
 
         if (body.getArticleUrl() == null) {
@@ -66,12 +70,12 @@ public class TaskController {
 
         issuedTasks.put(taskInstanceId, selectedTask.getId());
 
-        logger.debug("Issued task ID " + selectedTask.getId() +" with instance ID " + taskInstanceId + ".");
-        return new CaptchaTaskInstanceDto(taskInstanceId, selectedTask);
+        logger.debug("Issued task ID " + selectedTask.getId() + " with instance ID " + taskInstanceId + ".");
+        return new TaskInstanceDto(taskInstanceId, selectedTask);
     }
 
     @PostMapping("/response")
-    public String checkTaskSolution(@RequestBody CaptchaTaskResponseRequestBody body) {
+    public TaskSolutionResponseDto checkTaskSolution(@RequestBody TaskSolutionRequestBody body) {
         logger.debug("Received task response: " + body.toString());
 
         String instanceId = body.getId();
@@ -114,7 +118,10 @@ public class TaskController {
             }
         }
 
-        return "You selected " + truePositives + "/" + totalPositives + " entities and made " + trueNegatives + " errors.";
+        TaskSolutionResponseDto response = new TaskSolutionResponseDto();
+        response.setContent("You selected " + truePositives + "/" + totalPositives + " entities and made " + trueNegatives + " errors.");
+
+        return response;
     }
 
 }

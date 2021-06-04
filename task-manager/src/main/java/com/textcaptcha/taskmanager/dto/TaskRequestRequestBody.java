@@ -1,6 +1,6 @@
 package com.textcaptcha.taskmanager.dto;
 
-public class CaptchaTaskRequestRequestBody {
+public class TaskRequestRequestBody {
 
     private String articleUrl;
 
@@ -14,7 +14,7 @@ public class CaptchaTaskRequestRequestBody {
 
     @Override
     public String toString() {
-        return "CaptchaTaskRequestRequestBody{" +
+        return "TaskRequestRequestBody{" +
                 "articleUrl='" + articleUrl + '\'' +
                 '}';
     }

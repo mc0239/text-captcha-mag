@@ -3,16 +3,15 @@ package com.textcaptcha.taskmanager.dto;
 import com.textcaptcha.taskmanager.model.AnnotatedToken;
 import com.textcaptcha.taskmanager.model.CaptchaTask;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CaptchaTaskInstanceDto {
+public class TaskInstanceDto {
 
     private String id;
     private List<String> words;
 
-    public CaptchaTaskInstanceDto(String taskInstanceId, CaptchaTask captchaTask) {
+    public TaskInstanceDto(String taskInstanceId, CaptchaTask captchaTask) {
         this.id = taskInstanceId;
         this.words = captchaTask.getTokens().stream().map(AnnotatedToken::getWord).collect(Collectors.toList());
     }

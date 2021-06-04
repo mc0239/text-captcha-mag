@@ -34,11 +34,8 @@
                 "http://*.rtvslo.si/*",
                 "https://*.rtvslo.si/*"
             ],
-            "css": [
-                "content.css"
-            ],
             "js": [
-                "external/jquery-3.6.0.min.js", "content-script.js"
+                "main.js"
             ]
         }
     ]

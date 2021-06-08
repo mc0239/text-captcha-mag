@@ -5,10 +5,14 @@ volumes:
   caddy_config:
   tasks_database:
 
+networks:
+  default:
+    name: tc-network
+
 services:
-  proxy_server:
+  proxy-server:
     image: caddy:2.3.0-alpine
-    container_name: tc-caddy-proxy
+    container_name: tc-proxy-server
     restart: unless-stopped
     ports:
       - "80:80"
@@ -20,11 +24,11 @@ services:
       - "caddy_data:/data"
       - "caddy_config:/config"
 
-  process_text:
+  ner-process-text:
     image: rsdo-ds3-ner-api:v1
     container_name: tc-ner-process-text
-    # ports:
-    #   - "5000:5000"
+    ports:
+      - "5000:5000"
     environment:
       NER_MODEL_PATH: "/app/data/models/bert_based/"
     volumes:
@@ -35,7 +39,7 @@ services:
         target: "/app/data/models/bert_based/"
         read_only: true
 
-  tasks_db:
+  tasks-db:
     image: postgres
     container_name: tc-tasks-db
     ports:
@@ -45,10 +49,10 @@ services:
     volumes:
       - tasks_database:/var/lib/postgresql
 
-  task_manager:
+  task-manager:
     image: text-captcha-task-manager
     container_name: tc-task-manager
-    # ports:
-    #   - "8080:8080"
+    ports:
+      - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: "docker"

@@ -3,6 +3,7 @@ package com.textcaptcha.taskmanager.dto;
 public class IngestRequestBody {
 
     private String articleUrl;
+    private String articleUid;
     private String text;
 
     public String getArticleUrl() {
@@ -11,6 +12,14 @@ public class IngestRequestBody {
 
     public void setArticleUrl(String articleUrl) {
         this.articleUrl = articleUrl;
+    }
+
+    public String getArticleUid() {
+        return articleUid;
+    }
+
+    public void setArticleUid(String articleUid) {
+        this.articleUid = articleUid;
     }
 
     public String getText() {
@@ -25,8 +34,8 @@ public class IngestRequestBody {
     public String toString() {
         return "IngestRequestBody{" +
                 "articleUrl='" + articleUrl + '\'' +
-                ", textLength='" + text.length() + '\'' +
+                ", articleUid='" + articleUid + '\'' +
+                ", text.length()='" + text.length() + '\'' +
                 '}';
     }
-
 }

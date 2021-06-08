@@ -3,13 +3,9 @@ package com.textcaptcha.taskmanager.service;
 import com.textcaptcha.taskmanager.model.AnnotatedToken;
 import com.textcaptcha.taskmanager.model.CaptchaTask;
 import com.textcaptcha.taskmanager.repository.CaptchaTaskRepository;
-import com.textcaptcha.taskmanager.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +20,7 @@ public class NerTaskGeneratorService implements TaskGeneratorService {
     }
 
     @Override
-    public int generateTasks(String articleUrl, List<AnnotatedToken> tokens) {
+    public int generateTasks(String articleUrl, String articleUid, List<AnnotatedToken> tokens) {
         List<CaptchaTask> generatedTasks = new ArrayList<>();
 
         for (int i = 0; i < tokens.size(); i++) {
@@ -36,7 +32,8 @@ public class NerTaskGeneratorService implements TaskGeneratorService {
 
             // We have an entity - create a task for it.
             CaptchaTask task = new CaptchaTask();
-            task.setArticleUid(Utils.articleUrlToUid(articleUrl));
+            task.setArticleUrl(articleUrl);
+            task.setArticleUid(articleUid);
 
             int selectedIndex = i;
             int startIndex = selectedIndex - 15;
@@ -61,11 +58,9 @@ public class NerTaskGeneratorService implements TaskGeneratorService {
     }
 
     @Override
-    public boolean areTasksGenerated(String articleUrl) {
-        String articleUid = Utils.articleUrlToUid(articleUrl);
-        int existing = captchaTaskRepository.countByArticleUid(articleUid);
+    public boolean areTasksGenerated(String articleUrl, String articleUid) {
+        int existing = captchaTaskRepository.countByArticleUrlAndArticleUid(articleUrl, articleUid);
         return existing > 0;
     }
-
 
 }

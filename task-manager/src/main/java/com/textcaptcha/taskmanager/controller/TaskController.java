@@ -8,7 +8,6 @@ import com.textcaptcha.taskmanager.model.CaptchaResponse;
 import com.textcaptcha.taskmanager.model.CaptchaTask;
 import com.textcaptcha.taskmanager.repository.CaptchaResponseRepository;
 import com.textcaptcha.taskmanager.repository.CaptchaTaskRepository;
-import com.textcaptcha.taskmanager.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +49,12 @@ public class TaskController {
     public TaskInstanceDto getTask(@RequestBody TaskRequestRequestBody body) {
         logger.debug("Received task request: " + body.toString());
 
-        if (body.getArticleUrl() == null) {
+        if (body.getArticleUrl() == null || body.getArticleUid() == null) {
             // TODO what if it's just ingest still in progress? There's a better way to handle this.
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request is missing articleUrl parameter.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request is missing articleUrl and/or articleUid parameter.");
         }
 
-        String articleUid = Utils.articleUrlToUid(body.getArticleUrl());
-        List<CaptchaTask> tasks = taskRepository.getByArticleUid(articleUid);
+        List<CaptchaTask> tasks = taskRepository.getByArticleUrlAndArticleUid(body.getArticleUrl(), body.getArticleUid());
 
         if (tasks.isEmpty()) {
             // TODO what to even do here? Is it possible to have a processed article with NO tasks?

@@ -4,7 +4,6 @@ import com.textcaptcha.taskmanager.dto.IngestRequestBody;
 import com.textcaptcha.taskmanager.model.AnnotatedToken;
 import com.textcaptcha.taskmanager.service.NerAnnotatorService;
 import com.textcaptcha.taskmanager.service.NerTaskGeneratorService;
-import com.textcaptcha.taskmanager.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,20 +34,19 @@ public class IngestController {
     @PostMapping
     public void ingestText(@RequestBody IngestRequestBody body) {
         logger.debug("Received ingest request: " + body.toString());
-        String articleUid = Utils.articleUrlToUid(body.getArticleUrl());
 
         // TODO this is NER-specific.
 
-        if (nerTaskGeneratorService.areTasksGenerated(body.getArticleUrl())) {
-            logger.debug("Tasks for " + articleUid + " already generated.");
+        if (nerTaskGeneratorService.areTasksGenerated(body.getArticleUrl(), body.getArticleUid())) {
+            logger.debug("Tasks for " + body.getArticleUrl() + " (" + body.getArticleUid() + ") already generated.");
             return;
         }
 
         String decodedText = URLDecoder.decode(body.getText(), StandardCharsets.UTF_8);
         List<AnnotatedToken> tokens = nerAnnotatorService.annotate(decodedText);
-        int generatedTaskCount = nerTaskGeneratorService.generateTasks(body.getArticleUrl(), tokens);
+        int generatedTaskCount = nerTaskGeneratorService.generateTasks(body.getArticleUrl(), body.getArticleUid(), tokens);
 
-        logger.debug("Generated " + generatedTaskCount + " tasks for articleUid " + articleUid + ".");
+        logger.debug("Generated " + generatedTaskCount + " tasks for " + body.getArticleUrl() + " (" + body.getArticleUid() + ").");
     }
 
 }

@@ -18,6 +18,9 @@ public class CaptchaTask {
     private Long id;
 
     @Column
+    private String articleUrl;
+
+    @Column
     private String articleUid;
 
     @Column(columnDefinition = "TEXT")
@@ -33,6 +36,14 @@ public class CaptchaTask {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getArticleUrl() {
+        return articleUrl;
+    }
+
+    public void setArticleUrl(String articleUrl) {
+        this.articleUrl = articleUrl;
     }
 
     public String getArticleUid() {

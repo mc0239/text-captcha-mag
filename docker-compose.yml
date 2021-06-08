@@ -56,3 +56,16 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: "docker"
+
+  demo-integration:
+    image: php:8-alpine
+    container_name: tc-demo-integration
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    volumes:
+# <!!! Specify path to the integration demo
+      - "/d/text-captcha-mag/frontend/integration-demo:/app"
+# !!!>
+    working_dir: "/app"
+    command: [ "php", "-S", "0.0.0.0:8001" ]

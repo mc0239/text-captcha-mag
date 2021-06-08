@@ -4,6 +4,7 @@ import {
   getStatusIndicator,
   getTaskSpace,
 } from "./elements";
+import shajs from "sha.js";
 
 // const apiUrl = "https://192.168.99.101/captcha";
 const apiUrl = "http://localhost:8080/";
@@ -11,6 +12,10 @@ const apiUrl = "http://localhost:8080/";
 const ingestUrl = apiUrl + "/ingest";
 const taskRequestUrl = apiUrl + "/task/request";
 const taskResponseUrl = apiUrl + "/task/response";
+
+function sha256(content) {
+  return shajs("sha256").update(content).digest("hex");
+}
 
 export function sendIngestRequest(articleUrl, articleText) {
   getStatusIndicator().textContent = "Preparing TextCaptcha";
@@ -23,6 +28,7 @@ export function sendIngestRequest(articleUrl, articleText) {
       },
       body: JSON.stringify({
         articleUrl: articleUrl,
+        articleUid: sha256(articleText),
         text: articleText,
       }),
     })
@@ -39,7 +45,7 @@ export function sendIngestRequest(articleUrl, articleText) {
     });
 }
 
-export function sendTaskRequest(articleUrl, renderTaskCallback) {
+export function sendTaskRequest(articleUrl, articleText, renderTaskCallback) {
   getRequestTaskButton().textContent = "Loading...";
   getTaskSpace().innerHTML = "";
 
@@ -51,6 +57,7 @@ export function sendTaskRequest(articleUrl, renderTaskCallback) {
       },
       body: JSON.stringify({
         articleUrl: articleUrl,
+        articleUid: sha256(articleText),
       }),
     })
     .then((response) => {

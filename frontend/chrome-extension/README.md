@@ -1,2 +1,1 @@
 # frontend/chrome-extension
-

@@ -25,7 +25,7 @@ Note that Docker build runs with `docker` Spring profile (and uses `application-
 
 ### Build & run in Docker
 
-Requires only Docker installed on host. Useful if host has no Java and/or Maven installed. 
+Requires only Docker installed on host. Useful if host has no Java and/or Maven installed.
 
 Note however that downloading dependencies during build may take a while since there is no local Maven cache.
 
@@ -34,7 +34,6 @@ Note however that downloading dependencies during build may take a while since t
 
 ## Usage
 
-When service successfully starts, it exposes a Swagger UI on `{{SERVICE_URL}}/{{CONTEXT_PATH}}/swagger-ui.html` 
-(if served locally: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)).
+Serves a webpage on designated port. Usage should be self-explanatory.
 
 Check out yaml configuration files (i.e. `application-*.yml`) for a potential `context-path` setting.

@@ -4,7 +4,7 @@ const path = require("path");
 const from = path.resolve("./dist/main.js");
 const tos = [
   path.resolve("../chrome-extension/main.js"),
-  path.resolve("../integration-demo/captcha.js"),
+  path.resolve("../integration-demo/src/main/resources/static/captcha.js"),
 ];
 
 console.log("\n");

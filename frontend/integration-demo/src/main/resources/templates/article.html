@@ -1,0 +1,38 @@
+<html lang="en">
+<head>
+    <title>Text CAPTCHA Integration Demo</title>
+    <link rel="stylesheet" href="{{ base_path }}/style.css" />
+    <style>
+        article {
+            margin-top: 24px;
+            margin-bottom: 24px;
+            text-align: justify;
+        }
+        span.meta {
+            font-size: 0.85em;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+<h1>Text CAPTCHA Integration Demo</h1>
+
+<span class="meta">Article ID: {{ article.id }}</span>
+<article>
+    {{ article.content }}
+</article>
+
+<div id="text-captcha"></div>
+
+<a href="{{ base_path }}/">Go back.</a>
+
+<script>
+
+    function extractArticleText() {
+        return document.querySelector("article").textContent;
+    }
+
+</script>
+<script src="{{ base_path }}/captcha.js"></script>
+</body>
+</html>

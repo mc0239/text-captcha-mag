@@ -1,0 +1,34 @@
+<html lang="en">
+<head>
+    <title>Text CAPTCHA Integration Demo</title>
+    <link rel="stylesheet" href="{{ base_path }}/style.css" />
+    <style>
+        form > * {
+            display: block;
+            margin: 6px;
+        }
+        form > textarea {
+            width: 600px;
+            height: 200px;
+        }
+        form > button[type=submit] {
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+<h1>Text CAPTCHA Integration Demo</h1>
+<form method="post" action="{{ base_path }}/submit">
+    <label for="content">Text to create CAPTCHA for (i.e. copy text from an article):</label>
+    <textarea id="content" name="content"></textarea>
+    <button type="submit">Submit</button>
+
+    Or try one of the following samples:
+    <ul>
+    {{#showcases}}
+    <li><a href="{{ base_path }}/a/{{ id }}">{{ id }}</a></li>
+    {{/showcases}}
+    </ul>
+</form>
+</body>
+</html>

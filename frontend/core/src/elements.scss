@@ -43,7 +43,16 @@ $dark-gray: #343434;
   padding: 8px;
 
   .piece {
+    display: inline-block;
+    font-size: 1.1em;
     cursor: pointer;
+    border: 1px solid wheat;
+    border-radius: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-right: 4px;
 
     &:hover {
       background-color: wheat;
@@ -58,5 +67,12 @@ $dark-gray: #343434;
     display: block;
     margin-bottom: 8px;
     font-size: 0.75em;
+  }
+
+  .instructions {
+    display: block;
+    font-size: 1.2em;
+    text-decoration: underline;
+    margin-bottom: 8px;
   }
 }

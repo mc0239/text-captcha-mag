@@ -43,6 +43,14 @@ function renderTask(task) {
 
   getTaskSpace().appendChild(meta);
 
+  const instructions = document.createElement("div");
+  instructions.textContent = "V besedilu označite vsa lastna imena:";
+  instructions.classList.add("instructions");
+
+  getTaskSpace().appendChild(instructions);
+
+  const pieces = document.createElement("div");
+
   for (let word of task.words) {
     const piece = document.createElement("span");
     piece.classList.add("piece");
@@ -56,8 +64,10 @@ function renderTask(task) {
       }
     });
 
-    getTaskSpace().appendChild(piece);
+    pieces.appendChild(piece);
   }
+
+  getTaskSpace().appendChild(pieces);
 
   const submitButton = getRespondTaskButton();
   submitButton.addEventListener(

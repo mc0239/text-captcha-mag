@@ -24,6 +24,15 @@ localhost {
 		reverse_proxy tc-task-manager:8080
 	}
 
+	@demo {
+		path /demo
+		path /demo/*
+	}
+
+	route @demo {
+		# uri strip_prefix /demo
+		reverse_proxy tc-integration-demo:8081
+	}
 
 	#@process_text_ner {
 	#	path /ner
@@ -35,6 +44,5 @@ localhost {
 	#	reverse_proxy tc-ner-process-text:5000
 	#}
 
-
-	respond "Serving default docker IP of Windows Toolbox."
+	respond 200
 }

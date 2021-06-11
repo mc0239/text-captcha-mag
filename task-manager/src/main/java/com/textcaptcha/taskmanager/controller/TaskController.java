@@ -11,28 +11,33 @@ import com.textcaptcha.taskmanager.repository.CaptchaTaskRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/task")
 public class TaskController {
+
+    private static final long INSTANCE_EXPIRATION = 1000 * 60 * 2;
 
     private final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
     private final CaptchaTaskRepository taskRepository;
     private final CaptchaResponseRepository responseRepository;
 
-    private final Map<String, Long> issuedTasks;
+    // instanceId --> (taskId, createdAt)
+    private final Map<UUID, Pair<Long, Date>> issuedTasks;
 
     @Autowired
     public TaskController(
@@ -42,7 +47,7 @@ public class TaskController {
         this.taskRepository = taskRepository;
         this.responseRepository = responseRepository;
 
-        issuedTasks = new HashMap<>();
+        issuedTasks = new ConcurrentHashMap<>();
     }
 
     @PostMapping("/request")
@@ -64,9 +69,9 @@ public class TaskController {
         Random r = new Random();
 
         CaptchaTask selectedTask = tasks.get(r.nextInt(tasks.size()));
-        String taskInstanceId = String.valueOf(Math.abs(r.nextLong()));
+        UUID taskInstanceId = UUID.randomUUID();
 
-        issuedTasks.put(taskInstanceId, selectedTask.getId());
+        issuedTasks.put(taskInstanceId, Pair.of(selectedTask.getId(), new Date()));
 
         logger.debug("Issued task ID " + selectedTask.getId() + " with instance ID " + taskInstanceId + ".");
         return new TaskInstanceDto(taskInstanceId, selectedTask);
@@ -76,16 +81,20 @@ public class TaskController {
     public TaskSolutionResponseDto checkTaskSolution(@RequestBody TaskSolutionRequestBody body) {
         logger.debug("Received task response: " + body.toString());
 
-        String instanceId = body.getId();
+        UUID instanceId = body.getId();
         if (!issuedTasks.containsKey(instanceId)) {
             logger.trace("Received task response for invalid instance ID: " + instanceId);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid task instance ID.");
         }
 
-        Long taskId = issuedTasks.get(instanceId);
+        Pair<Long, Date> taskInstance = issuedTasks.get(instanceId);
         issuedTasks.remove(instanceId);
 
-        CaptchaTask task = taskRepository.getById(taskId);
+        if (isExpiredInstance(taskInstance)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid task instance ID.");
+        }
+
+        CaptchaTask task = taskRepository.getById(taskInstance.getFirst());
 
         //
         CaptchaResponse r = new CaptchaResponse();
@@ -120,6 +129,26 @@ public class TaskController {
         response.setContent("You selected " + truePositives + "/" + totalPositives + " entities and made " + trueNegatives + " errors.");
 
         return response;
+    }
+
+    @Scheduled(fixedDelay = INSTANCE_EXPIRATION * 4)
+    private void cleanupExpiredInstances() {
+        int countRemoved = 0;
+        for (Iterator<Map.Entry<UUID, Pair<Long, Date>>> i = issuedTasks.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry<UUID, Pair<Long, Date>> entry = i.next();
+            if (isExpiredInstance(entry.getValue())) {
+                i.remove();
+                countRemoved++;
+            }
+        }
+
+        if (countRemoved > 0) {
+            logger.trace("Cleaned up " + countRemoved + " expired task instances.");
+        }
+    }
+
+    private static boolean isExpiredInstance(Pair<Long, Date> instance) {
+        return instance.getSecond().toInstant().plus(INSTANCE_EXPIRATION, ChronoUnit.MILLIS).isBefore(Instant.now());
     }
 
 }

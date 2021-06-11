@@ -6,8 +6,10 @@ import {
 } from "./elements";
 import shajs from "sha.js";
 
+// <!!! Specify URL of the captcha service
 // const apiUrl = "https://192.168.99.101/captcha";
 const apiUrl = "http://localhost:8080/";
+// !!!>
 
 const ingestUrl = apiUrl + "/ingest";
 const taskRequestUrl = apiUrl + "/task/request";
@@ -102,6 +104,16 @@ export function sendTaskSolution(instanceId, selectedIndexes) {
             getTaskSpace().appendChild(getRequestTaskButton());
           })
           .catch((error) => console.error(error));
+      } else if (response.status === 400) {
+        response.json().then((data) => {
+          console.log(data);
+          getTaskSpace().innerHTML = data.message;
+          getTaskSpace().appendChild(getRequestTaskButton());
+        }).catch(e => {
+          getTaskSpace().innerHTML = "Something went wrong.";
+          getTaskSpace().appendChild(getRequestTaskButton());
+          console.error(error);
+        });
       } else {
         throw new Error("Response not OK ", response);
       }

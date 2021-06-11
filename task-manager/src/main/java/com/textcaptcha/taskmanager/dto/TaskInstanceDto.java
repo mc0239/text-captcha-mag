@@ -4,23 +4,24 @@ import com.textcaptcha.taskmanager.model.AnnotatedToken;
 import com.textcaptcha.taskmanager.model.CaptchaTask;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class TaskInstanceDto {
 
-    private String id;
+    private UUID id;
     private List<String> words;
 
-    public TaskInstanceDto(String taskInstanceId, CaptchaTask captchaTask) {
+    public TaskInstanceDto(UUID taskInstanceId, CaptchaTask captchaTask) {
         this.id = taskInstanceId;
         this.words = captchaTask.getTokens().stream().map(AnnotatedToken::getWord).collect(Collectors.toList());
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

@@ -6,7 +6,7 @@
   "scripts": {
     "build:prod": "webpack --mode=production && node copy.js",
     "build": "webpack && node copy.js",
-    "webpack": "webpack",
+    "webpack": "webpack --watch",
     "prettier": "prettier --write ."
   },
   "keywords": [],

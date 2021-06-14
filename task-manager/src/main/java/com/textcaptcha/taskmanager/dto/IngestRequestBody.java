@@ -3,8 +3,7 @@ package com.textcaptcha.taskmanager.dto;
 public class IngestRequestBody {
 
     private String articleUrl;
-    private String articleUid;
-    private String text;
+    private String articleText;
 
     public String getArticleUrl() {
         return articleUrl;
@@ -14,28 +13,19 @@ public class IngestRequestBody {
         this.articleUrl = articleUrl;
     }
 
-    public String getArticleUid() {
-        return articleUid;
+    public String getArticleText() {
+        return articleText;
     }
 
-    public void setArticleUid(String articleUid) {
-        this.articleUid = articleUid;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
+    public void setArticleText(String articleText) {
+        this.articleText = articleText;
     }
 
     @Override
     public String toString() {
         return "IngestRequestBody{" +
                 "articleUrl='" + articleUrl + '\'' +
-                ", articleUid='" + articleUid + '\'' +
-                ", text.length()='" + text.length() + '\'' +
+                ", articleText.length()='" + articleText.length() + '\'' +
                 '}';
     }
 }

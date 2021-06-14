@@ -54,16 +54,16 @@ public class TaskController {
     public TaskInstanceDto getTask(@RequestBody TaskRequestRequestBody body) {
         logger.debug("Received task request: " + body.toString());
 
-        if (body.getArticleUrl() == null || body.getArticleUid() == null) {
+        if (body.getArticleUrlHash() == null || body.getArticleTextHash() == null) {
             // TODO what if it's just ingest still in progress? There's a better way to handle this.
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request is missing articleUrl and/or articleUid parameter.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request is missing articleUrlHash and/or articleTextHash parameter(s).");
         }
 
-        List<CaptchaTask> tasks = taskRepository.getByArticleUrlAndArticleUid(body.getArticleUrl(), body.getArticleUid());
+        List<CaptchaTask> tasks = taskRepository.getByArticleUrlHashAndArticleTextHash(body.getArticleUrlHash(), body.getArticleTextHash());
 
         if (tasks.isEmpty()) {
             // TODO what to even do here? Is it possible to have a processed article with NO tasks?
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No tasks available for article.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No tasks available.");
         }
 
         Random r = new Random();

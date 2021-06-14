@@ -1,9 +1,13 @@
 package com.textcaptcha.taskmanager.controller;
 
 import com.textcaptcha.taskmanager.dto.IngestRequestBody;
+import com.textcaptcha.taskmanager.dto.IngestResultDto;
 import com.textcaptcha.taskmanager.model.AnnotatedToken;
 import com.textcaptcha.taskmanager.service.NerAnnotatorService;
 import com.textcaptcha.taskmanager.service.NerTaskGeneratorService;
+import com.textcaptcha.taskmanager.util.HashUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,22 +35,29 @@ public class IngestController {
         this.nerTaskGeneratorService = nerTaskGeneratorService;
     }
 
+    @Operation(summary = "Ingest article text", description = "Processes received text and generates tasks for it. " +
+            "Returns data, used later on for making CAPTCHA task requests for the received text.")
     @PostMapping
-    public void ingestText(@RequestBody IngestRequestBody body) {
+    public IngestResultDto ingestText(@RequestBody IngestRequestBody body) {
         logger.debug("Received ingest request: " + body.toString());
+
+        String articleUrlHash = HashUtils.SHA256(body.getArticleUrl());
+        String articleTextHash = HashUtils.SHA256(body.getArticleText());
 
         // TODO this is NER-specific.
 
-        if (nerTaskGeneratorService.areTasksGenerated(body.getArticleUrl(), body.getArticleUid())) {
-            logger.debug("Tasks for " + body.getArticleUrl() + " (" + body.getArticleUid() + ") already generated.");
-            return;
+        if (nerTaskGeneratorService.areTasksGenerated(articleUrlHash, articleTextHash)) {
+            logger.debug("Tasks for " + body.getArticleUrl() + " (" + articleUrlHash + ", " + articleTextHash + ") already generated.");
+            return new IngestResultDto(articleUrlHash, articleTextHash);
         }
 
-        String decodedText = URLDecoder.decode(body.getText(), StandardCharsets.UTF_8);
+        String decodedText = URLDecoder.decode(body.getArticleText(), StandardCharsets.UTF_8);
         List<AnnotatedToken> tokens = nerAnnotatorService.annotate(decodedText);
-        int generatedTaskCount = nerTaskGeneratorService.generateTasks(body.getArticleUrl(), body.getArticleUid(), tokens);
+        int generatedTaskCount = nerTaskGeneratorService.generateTasks(body.getArticleUrl(), articleUrlHash, articleTextHash, tokens);
 
-        logger.debug("Generated " + generatedTaskCount + " tasks for " + body.getArticleUrl() + " (" + body.getArticleUid() + ").");
+        logger.debug("Generated " + generatedTaskCount + " tasks for " + body.getArticleUrl() + " (" + articleUrlHash + ", " + articleTextHash + ").");
+
+        return new IngestResultDto(articleUrlHash, articleTextHash);
     }
 
 }

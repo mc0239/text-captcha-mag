@@ -1,11 +1,11 @@
-package com.textcaptcha.taskmanager.model.ner;
+package com.textcaptcha.taskmanager.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NerResponse {
+public class NerApiResponse {
 
     @JsonProperty("named_entities")
     private List<NerToken> tokens = new ArrayList<>();

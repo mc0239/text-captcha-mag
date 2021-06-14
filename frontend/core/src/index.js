@@ -29,7 +29,7 @@ window.addEventListener("load", function (event) {
   sendIngestRequest(getArticleUrl(), extractArticleText());
 
   getRequestTaskButton().addEventListener("click", function () {
-    sendTaskRequest(getArticleUrl(), extractArticleText(), (task) => {
+    sendTaskRequest((task) => {
       instanceId = task.id;
       renderTask(task);
     });

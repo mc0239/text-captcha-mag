@@ -9,8 +9,8 @@ import java.util.List;
 @Repository
 public interface CaptchaTaskRepository extends JpaRepository<CaptchaTask, Long> {
 
-    List<CaptchaTask> getByArticleUrlAndArticleUid(String articleUrl, String articleUid);
+    List<CaptchaTask> getByArticleUrlHashAndArticleTextHash(String articleUrlHash, String articleTextHash);
 
-    int countByArticleUrlAndArticleUid(String articleUrl, String articleUid);
+    long countByArticleUrlHashAndArticleTextHash(String articleUrlHash, String articleTextHash);
 
 }

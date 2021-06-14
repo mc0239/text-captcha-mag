@@ -1,9 +1,14 @@
 package com.textcaptcha.taskmanager.dto;
 
-public class TaskRequestRequestBody {
+public class IngestResultDto {
 
     private String articleUrlHash;
     private String articleTextHash;
+
+    public IngestResultDto(String articleUrlHash, String articleTextHash) {
+        this.articleUrlHash = articleUrlHash;
+        this.articleTextHash = articleTextHash;
+    }
 
     public String getArticleUrlHash() {
         return articleUrlHash;
@@ -19,13 +24,5 @@ public class TaskRequestRequestBody {
 
     public void setArticleTextHash(String articleTextHash) {
         this.articleTextHash = articleTextHash;
-    }
-
-    @Override
-    public String toString() {
-        return "TaskRequestRequestBody{" +
-                "articleUrlHash='" + articleUrlHash + '\'' +
-                ", articleTextHash='" + articleTextHash + '\'' +
-                '}';
     }
 }

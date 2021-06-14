@@ -1,6 +1,6 @@
 package com.textcaptcha.taskmanager.model;
 
-import com.textcaptcha.taskmanager.model.ner.NerResponse;
+import com.textcaptcha.taskmanager.dto.NerApiResponse;
 
 public class AnnotatedToken {
 
@@ -32,7 +32,7 @@ public class AnnotatedToken {
         this.score = score;
     }
 
-    public static AnnotatedToken fromNerToken(NerResponse.NerToken nerToken) {
+    public static AnnotatedToken fromNerToken(NerApiResponse.NerToken nerToken) {
         AnnotatedToken at = new AnnotatedToken();
         at.setWord(nerToken.getWord());
         at.setAnnotation(nerToken.getEntity());

@@ -4,7 +4,6 @@ import {
   getStatusIndicator,
   getTaskSpace,
 } from "./elements";
-import shajs from "sha.js";
 
 // <!!! Specify URL of the captcha service
 // const apiUrl = "https://192.168.99.101/captcha";
@@ -15,9 +14,7 @@ const ingestUrl = apiUrl + "/ingest";
 const taskRequestUrl = apiUrl + "/task/request";
 const taskResponseUrl = apiUrl + "/task/response";
 
-function sha256(content) {
-  return shajs("sha256").update(content).digest("hex");
-}
+let articleIdentifyingObject = null;
 
 export function sendIngestRequest(articleUrl, articleText) {
   getStatusIndicator().textContent = "Preparing TextCaptcha";
@@ -30,16 +27,28 @@ export function sendIngestRequest(articleUrl, articleText) {
       },
       body: JSON.stringify({
         articleUrl: articleUrl,
-        articleUid: sha256(articleText),
-        text: articleText,
+        articleText: articleText,
       }),
     })
     .then((response) => {
-      getStatusIndicator().textContent = "OK!";
-      getTaskSpace().innerHTML = "";
-      getTaskSpace().appendChild(getRequestTaskButton());
+      if (response.ok === true) {
+      response
+        .json()
+        .then((data) => {
+          articleIdentifyingObject = data;
+          getStatusIndicator().textContent = "OK!";
+          getTaskSpace().innerHTML = "";
+          getTaskSpace().appendChild(getRequestTaskButton());
+        }).catch(error => {
+          console.error(error);
+          getStatusIndicator().textContent = "Something went wrong.";
+        });
+      } else {
+        getStatusIndicator().textContent = "Something went wrong.";
+      }
     })
-    .catch((reason) => {
+    .catch((error) => {
+      console.error(error);
       getStatusIndicator().textContent = "Something went wrong.";
     })
     .finally(() => {
@@ -47,7 +56,7 @@ export function sendIngestRequest(articleUrl, articleText) {
     });
 }
 
-export function sendTaskRequest(articleUrl, articleText, renderTaskCallback) {
+export function sendTaskRequest(renderTaskCallback) {
   getRequestTaskButton().textContent = "Loading...";
   getTaskSpace().innerHTML = "";
 
@@ -57,10 +66,7 @@ export function sendTaskRequest(articleUrl, articleText, renderTaskCallback) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        articleUrl: articleUrl,
-        articleUid: sha256(articleText),
-      }),
+      body: JSON.stringify(articleIdentifyingObject),
     })
     .then((response) => {
       if (response.ok === true) {

@@ -1,34 +1,30 @@
 package com.textcaptcha.taskmanager.model;
 
-import com.textcaptcha.taskmanager.util.AnnotatedTokenListConverter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Table(name = "captcha_task")
-public class CaptchaTask {
+@Table(name = "article")
+public class Article {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "captcha_task_seqgen")
-    @SequenceGenerator(name = "captcha_task_seqgen", sequenceName = "captcha_task_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "article_seqgen")
+    @SequenceGenerator(name = "article_seqgen", sequenceName = "article_seq", allocationSize = 1)
     private Long id;
 
     @Column
     private String articleUrl;
+
+    @Column(columnDefinition = "text")
+    private String articleText;
 
     @Column
     private String articleUrlHash;
 
     @Column
     private String articleTextHash;
-
-    @Column(columnDefinition = "TEXT")
-    @Convert(converter = AnnotatedTokenListConverter.class)
-    private List<AnnotatedToken> tokens = new ArrayList<>();
 
     @CreationTimestamp
     private Date createdAt;
@@ -49,6 +45,14 @@ public class CaptchaTask {
         this.articleUrl = articleUrl;
     }
 
+    public String getArticleText() {
+        return articleText;
+    }
+
+    public void setArticleText(String articleText) {
+        this.articleText = articleText;
+    }
+
     public String getArticleUrlHash() {
         return articleUrlHash;
     }
@@ -63,14 +67,6 @@ public class CaptchaTask {
 
     public void setArticleTextHash(String articleTextHash) {
         this.articleTextHash = articleTextHash;
-    }
-
-    public List<AnnotatedToken> getTokens() {
-        return tokens;
-    }
-
-    public void setTokens(List<AnnotatedToken> tokens) {
-        this.tokens = tokens;
     }
 
     public Date getCreatedAt() {

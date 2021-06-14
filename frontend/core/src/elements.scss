@@ -7,18 +7,6 @@ $light-gray: #f3f3f3;
 $gray: #9a9a9a;
 $dark-gray: #343434;
 
-#t-captcha-status-fixed {
-  position: fixed;
-  padding: 4px;
-  right: 8px;
-  bottom: 8px;
-  border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.66);
-  color: white;
-  width: 150px;
-  z-index: 1200;
-}
-
 #t-captcha-status {
   // nothing?
   display: block;
@@ -34,10 +22,10 @@ $dark-gray: #343434;
 }
 
 #t-captcha-space {
-  background-color: $light-gray;
+  background-color: #FFF;
 
-  border: 2px solid $gray;
-  border-radius: 4px;
+  border: 1px solid $blue;
+  border-radius: 0px;
 
   margin: 4px;
   padding: 8px;

@@ -20,7 +20,7 @@ public class NerTaskGeneratorService implements TaskGeneratorService {
     }
 
     @Override
-    public int generateTasks(String articleUrl, String articleUid, List<AnnotatedToken> tokens) {
+    public int generateTasks(String articleUrl, String articleUrlHash, String articleTextHash, List<AnnotatedToken> tokens) {
         List<CaptchaTask> generatedTasks = new ArrayList<>();
 
         for (int i = 0; i < tokens.size(); i++) {
@@ -33,7 +33,8 @@ public class NerTaskGeneratorService implements TaskGeneratorService {
             // We have an entity - create a task for it.
             CaptchaTask task = new CaptchaTask();
             task.setArticleUrl(articleUrl);
-            task.setArticleUid(articleUid);
+            task.setArticleUrlHash(articleUrlHash);
+            task.setArticleTextHash(articleTextHash);
 
             int selectedIndex = i;
             int startIndex = selectedIndex - 15;
@@ -58,8 +59,8 @@ public class NerTaskGeneratorService implements TaskGeneratorService {
     }
 
     @Override
-    public boolean areTasksGenerated(String articleUrl, String articleUid) {
-        int existing = captchaTaskRepository.countByArticleUrlAndArticleUid(articleUrl, articleUid);
+    public boolean areTasksGenerated(String articleUrlHash, String articleTextHash) {
+        long existing = captchaTaskRepository.countByArticleUrlHashAndArticleTextHash(articleUrlHash, articleTextHash);
         return existing > 0;
     }
 

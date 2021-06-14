@@ -3,11 +3,12 @@ package com.textcaptcha.taskmanager.controller;
 import com.textcaptcha.taskmanager.dto.IngestRequestBody;
 import com.textcaptcha.taskmanager.dto.IngestResultDto;
 import com.textcaptcha.taskmanager.model.AnnotatedToken;
+import com.textcaptcha.taskmanager.model.Article;
+import com.textcaptcha.taskmanager.repository.ArticleRepository;
 import com.textcaptcha.taskmanager.service.NerAnnotatorService;
 import com.textcaptcha.taskmanager.service.NerTaskGeneratorService;
 import com.textcaptcha.taskmanager.util.HashUtils;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,18 @@ public class IngestController {
 
     private final Logger logger = LoggerFactory.getLogger(IngestController.class);
 
+    private final ArticleRepository articleRepository;
+
     private final NerAnnotatorService nerAnnotatorService;
     private final NerTaskGeneratorService nerTaskGeneratorService;
 
     @Autowired
-    public IngestController(NerAnnotatorService nerAnnotatorService, NerTaskGeneratorService nerTaskGeneratorService) {
+    public IngestController(
+            ArticleRepository articleRepository,
+            NerAnnotatorService nerAnnotatorService,
+            NerTaskGeneratorService nerTaskGeneratorService
+    ) {
+        this.articleRepository = articleRepository;
         this.nerAnnotatorService = nerAnnotatorService;
         this.nerTaskGeneratorService = nerTaskGeneratorService;
     }
@@ -49,6 +57,17 @@ public class IngestController {
         if (nerTaskGeneratorService.areTasksGenerated(articleUrlHash, articleTextHash)) {
             logger.debug("Tasks for " + body.getArticleUrl() + " (" + articleUrlHash + ", " + articleTextHash + ") already generated.");
             return new IngestResultDto(articleUrlHash, articleTextHash);
+        }
+
+        if (!articleRepository.existsByArticleUrlHashAndArticleTextHash(articleUrlHash, articleTextHash)) {
+            // TODO should cancel the flow if article exists but has no tasks? (is it possible that article was saved,
+            //   but task generation failed?)
+            Article article = new Article();
+            article.setArticleUrl(body.getArticleUrl());
+            article.setArticleText(body.getArticleText());
+            article.setArticleUrlHash(articleUrlHash);
+            article.setArticleTextHash(articleTextHash);
+            articleRepository.save(article);
         }
 
         String decodedText = URLDecoder.decode(body.getArticleText(), StandardCharsets.UTF_8);

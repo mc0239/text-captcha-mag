@@ -1,12 +1,14 @@
 package com.textcaptcha.taskmanager.model;
 
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "article")
+@EntityListeners(AuditingEntityListener.class)
 public class Article {
 
     @Id
@@ -26,7 +28,7 @@ public class Article {
     @Column
     private String articleTextHash;
 
-    @CreationTimestamp
+    @CreatedDate
     private Date createdAt;
 
     public Long getId() {

@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Merriweather+Sans&display=swap");
+
+.tc-main {
+  font-family: "Merriweather Sans", sans-serif;
+  border: 1px solid #5e35b1;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.tc-main > .tc-content {
+  margin: 4px;
+  padding: 8px;
+}
+
+.tc-main > .tc-footer {
+  color: #5e35b1;
+  text-align: right;
+  font-size: 0.66rem;
+  padding: 2px 8px;
+}
+
+.tc-main button {
+  font-family: "Rubik", sans-serif;
+  padding: 4px 12px;
+}

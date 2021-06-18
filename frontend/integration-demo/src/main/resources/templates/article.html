@@ -26,13 +26,11 @@
 
 <a href="{{ base_path }}/">Go back.</a>
 
-<script>
-
-    function extractArticleText() {
-        return document.querySelector("article").textContent;
-    }
-
-</script>
 <script src="{{ base_path }}/captcha.js"></script>
+<script>
+    TextCaptcha(document.querySelector("#text-captcha"), function () {
+        return document.querySelector("article").textContent;
+    });
+</script>
 </body>
 </html>

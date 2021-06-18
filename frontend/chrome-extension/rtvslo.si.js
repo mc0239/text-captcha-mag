@@ -10,11 +10,12 @@ window.addEventListener("load", function (event) {
   injectElement.id = "text-captcha";
 
   captchaInjectPosition.appendChild(injectElement);
+
+  TextCaptcha(captchaInjectPosition, extractText);
+
 });
 
-let _extractedText = null;
-
-function _extractText() {
+function extractText() {
   const articleTitle = document.querySelector("h1").textContent;
   const articleSubtitle = document.querySelector("div.subtitle").textContent;
   const articleLead = document.querySelector("p.lead").textContent;
@@ -34,11 +35,4 @@ function _extractText() {
 
   const allText = `${articleTitle}. ${articleSubtitle}. ${articleLead} ${articleBody}`;
   return allText;
-}
-
-function extractArticleText() {
-  if (_extractedText === null) {
-    _extractedText = _extractText();
-  }
-  return _extractedText;
 }

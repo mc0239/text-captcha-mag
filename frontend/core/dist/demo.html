@@ -1,0 +1,120 @@
+<html>
+  <head>
+    <title>Text Captcha development demo</title>
+    <style>
+      body {
+        width: 800px;
+        margin: auto;
+        margin-bottom: 64px;
+      }
+
+      article {
+        margin-top: 24px;
+        margin-bottom: 24px;
+        text-align: justify;
+      }
+    </style>
+  </head>
+  <body>
+    <article>
+      <h1>
+        Anonimnež je odštel 28 milijonov dolarjev za polet v vesolje z Jeffom
+        Bezosom
+      </h1>
+      <h2>Parabolični polet do Karmanove črte</h2>
+      <p>
+        Na javni dražbi je nekdo plačal 28 milijonov dolarjev za polet do
+        vesolja in nazaj s podjetjem Blue Origin. Na poletu bosta tudi
+        ustanovitelj podjetja Jeff Bezos in njegov brat. Gre za parabolični
+        polet z raketo in kapsulo New Shepard.
+      </p>
+      <p>
+        Celotna pot naj bi trajala okoli deset minut, kar pomeni, da je
+        anonimnež za pot pripravljen odšteti okoli 45.000 dolarjev na sekundo
+        vesoljskega poleta, poroča nemška tiskovna agencija DPA.
+      </p>
+      <p>
+        Blue Origin bo raketo New Shepard v vesolje izstrelil predvidoma 20.
+        julija. Po izstrelitvi naj bi raketa v dveh minutah pospešila na več kot
+        3700 kilometrov na uro. Po treh minutah bodo občutili breztežnost.
+      </p>
+      <p>
+        Ne gre za orbitalni, temveč paraboličen polet. Poenostavljeno: kot bi z
+        močnim topom izstrelili kroglo v nebo, ta bi naredila lok in padla nazaj
+        na Zemljo. V tem primeru bo top nadomestila raketa, ki bo tovor ponesla
+        do okoli 90 kilometrov, sama kapsula s potniki pa bo presegla 100
+        kilometrov. Ker je to najširše sprejeta meja vesolja (Karmanova črta),
+        se bodo potniki lahko pohvalili z astronavtsko dejavnostjo.
+      </p>
+      <p>
+        Za primerjavo: Mednarodna vesoljska postaja (MVP) je od Zemlje oddaljena
+        okoli 400 kilometrov. New Shepard bo med spustom odprl padala in pristal
+        v puščavi Teksasa.
+      </p>
+      <p>
+        Dražbo so začeli že v maju, v soboto pa je potekal zaključni del. Še v
+        četrtek je bila cena poleta 4,8 milijona dolarjev, nato pa so hitro
+        prebili mejnik 20 milijonov. Zadnje kladivo je nato udarilo pri 28
+        milijonih dolarjev.
+      </p>
+      <p>
+        "Ime zmagovalca dražbe bomo objavili v tednih po zaključku dražbe," so
+        tvitnili pri podjetju. Poleg anonimnega kupca in Jeffa Bezosa bo na
+        krovu tudi brat ustanovitelja Amazona Mark Bezos, identitete četrtega
+        potnika še niso razkrili.
+      </p>
+
+      <p>
+        Blue Origin je kapsulo zadnjič testiral sredi aprila. Takrat so dosegli
+        višino okoli 105 kilometrov. Ob začetku in koncu poleta so testirali
+        naloge astronavtov, polet pa je potekal brez posadke. Raketa New Shepard
+        do zdaj še ni letela s posadko.
+      </p>
+      <p>
+        Na dražbi zbrana sredstva bodo namenili fundaciji Blue Origina za mlade,
+        v okviru katere spodbujajo prihodnje generacije, naj se odločijo za
+        kariero na področju znanosti, tehnologije, inženirstva in matematike.
+      </p>
+      <h3>Tekma za vesoljske turiste</h3>
+
+      <p>
+        Medtem poteka minitekma med dvema vesoljskima podjetnikoma. V podjetju
+        Virgin Galactic, za katerim stoji znani Richard Branson, bodo poskušali
+        Bezosa prehiteti. Tako kot Blue Origin se tudi Virgin Galactic že več
+        kot desetletje trudi razviti opremo za vesoljski turizem.
+      </p>
+      <p>
+        Kmalu po tem, ko je Bezos naznanil svoj osebni polet v vesolje, so iz
+        Virgin Galactica sporočili, da bo še pred tem Branson opravil svojo
+        vesoljsko ekskurzijo z raketoplanom VSS Unity. Ta sicer zmore le dobrih
+        80 kilometrov, kar pa kot mejo vesolja priznava ameriška vojska, zato se
+        tudi Virgin Galactic hvali z vesoljskim turizmom.
+      </p>
+      <p>
+        Vse skupaj pa po desni prehiteva SpaceX. Ta je v primerljivem času
+        razvil revolucionarne rakete za večkratno uporabo, povrhu trenutno
+        najzmogljivejšo raketo sveta, pa še vesoljske ladje za prevoz posadke. V
+        zadnjem času je uspešno iztržil več komercialnih poletov tako na
+        Mednarodno vesoljsko postajo kot "prostoleteče", večdnevne ekskurzije v
+        orbito.
+      </p>
+    </article>
+
+    <p>
+      Vir:
+      <a
+        href="https://www.rtvslo.si/znanost-in-tehnologija/anonimnez-je-odstel-28-milijonov-dolarjev-za-polet-v-vesolje-z-jeffom-bezosom/584012"
+        >rtvslo.si</a
+      >
+    </p>
+
+    <div id="inject-point"></div>
+
+    <script src="captcha.umd.js"></script>
+    <script>
+      TextCaptcha(document.querySelector("#inject-point"), function () {
+        return document.querySelector("article").textContent;
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+.task-container {
+  display: inline-block;
+}
+
+.word {
+  display: inline-block;
+  padding-left: 4px;
+  padding-right: 4px;
+  cursor: pointer;
+  border-bottom: 3px solid rgba(0, 0, 0, 0);
+}
+
+.word:hover {
+  color: #00796b;
+  border-bottom-color: #00796b;
+  border-bottom-style: dotted;
+}
+
+.word.word-selected {
+  border-bottom-color: #00796b;
+  border-bottom-style: solid;
+}

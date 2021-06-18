@@ -8,4 +8,4 @@ Misija Davinci + (oznaka za globoko atmosfersko preiskavo Venerinih plinov, kemi
 
 Druga misija, poimenovali so jo Veritas, bo mapirala Venerino površje, da bi tako skušali razumeti njeno geološko zgodovino, predvsem zakaj se je razvila tako drugače kot Zemlja. Pri tem bodo uporabili neke vrste radar, s katerim bodo skušali zaznati obliko površja in odkriti, ali na planetu še vedno bruhajo vulkani ali nastajajo potresi.
 
-Vir: https://www.rtvslo.si/znanost-in-tehnologija/nasa-bo-do-leta-2030-na-venero-poslala-dve-misiji/582705
+# Vir: https://www.rtvslo.si/znanost-in-tehnologija/nasa-bo-do-leta-2030-na-venero-poslala-dve-misiji/582705

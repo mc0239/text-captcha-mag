@@ -36,7 +36,7 @@ public class ShowcaseArticleGenerator {
     public String getResourceContent(Resource resource) {
         try {
             return new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))
-                    .lines().collect(Collectors.joining("\n"));
+                    .lines().filter(line -> !line.startsWith("# ")).collect(Collectors.joining("\n"));
         } catch (IOException e) {
             e.printStackTrace();
             return "";

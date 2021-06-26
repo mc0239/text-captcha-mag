@@ -27,8 +27,8 @@ services:
   ner-process-text:
     image: rsdo-ds3-ner-api:v1
     container_name: tc-ner-process-text
-    ports:
-      - "5000:5000"
+#    ports:
+#      - "5000:5000"
     environment:
       NER_MODEL_PATH: "/app/data/models/bert_based/"
     volumes:
@@ -42,18 +42,27 @@ services:
   tasks-db:
     image: postgres
     container_name: tc-tasks-db
-    ports:
-      - 5432:5432
+#    ports:
+#      - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: tasks12
+      POSTGRES_USER: "captcha3000"
+      POSTGRES_PASSWORD: "=gxn9*fMi9xR<Sbp,3Zw"
     volumes:
       - tasks_database:/var/lib/postgresql
+
+  text-ingest:
+    image: text-captcha-text-ingest
+    container_name: tc-text-ingest
+#    ports:
+#      - "8010:8010"
+    environment:
+      SPRING_PROFILES_ACTIVE: "docker"
 
   task-manager:
     image: text-captcha-task-manager
     container_name: tc-task-manager
-    ports:
-      - "8080:8080"
+#    ports:
+#      - "8020:8020"
     environment:
       SPRING_PROFILES_ACTIVE: "docker"
 
@@ -61,7 +70,7 @@ services:
     image: text-captcha-integration-demo
     container_name: tc-integration-demo
     restart: unless-stopped
-    ports:
-      - "8081:8081"
+#    ports:
+#      - "8081:8081"
     environment:
       SPRING_PROFILES_ACTIVE: "docker"

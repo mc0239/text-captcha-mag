@@ -12,7 +12,8 @@ only running `docker-compose up` in the root directory of this repository.
 
 Docker compose file expects an existence of the following images:
 - `rsdo-ds3-ner-api:v1`: see [SloNER repository](https://github.com/RSDO-DS3/SloNER),
-- `text-captcha-task-manager`: see `task-manager` directory,
+- `text-captcha-text-ingest`: see `backend` directory,
+- `text-captcha-task-manager`: see `backend` directory,
 - `text-captcha-integration-demo`: see `frontend/integration-demo` directory.
 
 Other images, specified in Docker compose file, should be automatically pulled

@@ -1,7 +1,5 @@
 server:
   port: 8020
-  servlet:
-    context-path: /captcha
   error:
     include-message: always
 

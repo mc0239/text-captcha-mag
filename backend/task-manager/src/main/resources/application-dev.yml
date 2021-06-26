@@ -1,8 +1,11 @@
+server:
+  servlet:
+    context-path: /
 spring:
   datasource:
     url: jdbc:postgresql://192.168.99.101:5432/postgres?currentSchema=captcha
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: tasks12
+    username: "captcha3000"
+    password: "=gxn9*fMi9xR<Sbp,3Zw"
   jpa:
     database: postgresql

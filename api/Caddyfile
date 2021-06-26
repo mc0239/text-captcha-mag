@@ -13,15 +13,22 @@ localhost {
 	# Set a default CORS if upstream doesn't define it.
 	header ?Access-Control-Allow-Origin *
 
+	@text_ingest {
+		path /captcha/i
+		path /captcha/i/*
+	}
+
+	route @text_ingest {
+		reverse_proxy tc-text-ingest:8010
+	}
 
 	@task_manager {
-		path /captcha
-		path /captcha/*
+		path /captcha/t
+		path /captcha/t/*
 	}
 
 	route @task_manager {
-		# uri strip_prefix /captcha
-		reverse_proxy tc-task-manager:8080
+		reverse_proxy tc-task-manager:8020
 	}
 
 	@demo {

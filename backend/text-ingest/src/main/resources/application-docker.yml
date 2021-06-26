@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://tc-tasks-db:5432/postgres?currentSchema=captcha
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: tasks12
+  jpa:
+    database: postgresql
+  flyway:
+    baseline-on-migrate: false
+    schemas: captcha
+    default-schema: captcha
+    create-schemas: true
+
+task-manager:
+  ner-api: http://tc-ner-process-text:5000

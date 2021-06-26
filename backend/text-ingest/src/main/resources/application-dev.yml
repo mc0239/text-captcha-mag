@@ -1,0 +1,26 @@
+spring:
+#  datasource:
+#    url: jdbc:h2:mem:jpadb
+#    driver-class-name: org.h2.Driver
+#    username: root
+#    password: root12
+  datasource:
+    url: jdbc:postgresql://192.168.99.101:5432/postgres?currentSchema=captcha
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: tasks12
+  jpa:
+    database: postgresql
+  #    properties:
+#      javax.persistence.schema-generation.scripts:
+#        action: create
+#        create-target: create.sql
+#        create-source: metadata
+  flyway:
+    baseline-on-migrate: true
+    schemas: captcha
+    default-schema: captcha
+    create-schemas: true
+
+task-manager:
+  ner-api: http://192.168.99.101:5000

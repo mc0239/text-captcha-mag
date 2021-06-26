@@ -2,9 +2,10 @@
 
 Backend services of the CAPTCHA system.
 
-|SERVICE_NAME|SERVICE_DIR|SERVICE_JAR|SERVICE_TAG|PORT|
-|TaskManager|task-manager|TextCaptchaTaskManager|text-captcha-task-manager|8020|
-|TextIngest|text-ingest|TextCaptchaTextIngest|text-captcha-text-ingest|8010|
+| SERVICE_NAME | SERVICE_DIR | SERVICE_JAR | SERVICE_TAG | PORT |
+|---|---|---|---|---|
+| TaskManager | task-manager | TextCaptchaTaskManager | text-captcha-task-manager | 8020 |
+| TextIngest | text-ingest | TextCaptchaTextIngest | text-captcha-text-ingest | 8010 |
 
 Services are bootstrapped with [Spring Boot](https://spring.io/).
 

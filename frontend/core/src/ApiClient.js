@@ -13,6 +13,10 @@ async function myFetch(url, fetchOptions) {
   const response = await fetch(url, fetchOptions);
   const json = await response.json();
 
+  if (!response.ok) {
+    throw json;
+  }
+
   return json;
 }
 

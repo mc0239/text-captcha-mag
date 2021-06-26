@@ -48,9 +48,8 @@ class App extends React.Component {
         ingestData: data,
       });
     } catch (e) {
-      this.setState({
-        currentState: AppState.INGEST_ERROR,
-      });
+      console.error(e);
+      this.setState({ currentState: AppState.INGEST_ERROR });
     }
   };
 
@@ -58,12 +57,12 @@ class App extends React.Component {
     this.setState({ currentState: AppState.TASK_LOADING });
     try {
       const data = await ApiClient.task.request(this.state.ingestData);
-      console.log(data);
       this.setState({
         currentState: AppState.TASK_SHOW,
         captchaTask: data,
       });
     } catch (e) {
+      console.error(e);
       this.setState({ currentState: AppState.TASK_ERROR });
     }
   };
@@ -82,6 +81,7 @@ class App extends React.Component {
         captchaTaskResponse: data,
       });
     } catch (e) {
+      console.error(e);
       this.setState({ currentState: AppState.TASK_ERROR });
     }
   };

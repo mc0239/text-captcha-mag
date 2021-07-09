@@ -39,6 +39,12 @@ services:
         target: "/app/data/models/bert_based/"
         read_only: true
 
+  classla-process-text:
+    image: text-captcha-classla
+    container_name: tc-classla-process-text
+#    ports:
+#      - "5010:5010"
+
   tasks-db:
     image: postgres
     container_name: tc-tasks-db

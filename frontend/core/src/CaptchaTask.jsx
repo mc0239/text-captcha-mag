@@ -29,7 +29,7 @@ class CaptchaTask extends React.Component {
       return "Nalaganje naloge...";
     }
 
-    const tokens = task.words.map((word, index) => {
+    const tokens = task.content.map((word, index) => {
       const isSelected = Boolean(this.state.selectedIndexes[index]);
       return (
         <span

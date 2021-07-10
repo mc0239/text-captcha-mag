@@ -1,11 +1,11 @@
 // <!!! Specify URL of the captcha service
-// const apiUrl = "https://192.168.99.101/captcha";
-const apiUrl = "http://localhost:8080";
+const ingestApiUrl = "http://localhost:8010";
+const managerApiUrl = "http://localhost:8020";
 // !!!>
 
-const ingestUrl = apiUrl + "/ingest";
-const taskRequestUrl = apiUrl + "/task/request";
-const taskResponseUrl = apiUrl + "/task/response";
+const ingestUrl = ingestApiUrl + "/ingest";
+const taskRequestUrl = managerApiUrl + "/task/request";
+const taskResponseUrl = managerApiUrl + "/task/response";
 
 async function myFetch(url, fetchOptions) {
   console.log("Making a request to ", url);

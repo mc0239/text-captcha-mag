@@ -1,11 +1,11 @@
-package com.textcaptcha.textingest.service.ner;
+package com.textcaptcha.textingest.service.ingest;
 
 import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.textingest.exception.AnnotatorException;
 import com.textcaptcha.textingest.exception.IngestException;
 import com.textcaptcha.textingest.pojo.ReceivedArticle;
 import com.textcaptcha.textingest.pojo.annotator.NerAnnotatedToken;
-import com.textcaptcha.textingest.service.IngestService;
+import com.textcaptcha.textingest.service.ingest.IngestService;
 import com.textcaptcha.textingest.service.annotator.NerAnnotatorService;
 import com.textcaptcha.textingest.service.taskgen.NerTaskGeneratorService;
 import org.slf4j.Logger;

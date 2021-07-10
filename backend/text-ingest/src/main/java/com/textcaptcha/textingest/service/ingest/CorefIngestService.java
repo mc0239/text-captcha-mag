@@ -1,12 +1,12 @@
-package com.textcaptcha.textingest.service.coref;
+package com.textcaptcha.textingest.service.ingest;
 
 import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.textingest.dto.ClasslaApiResponse;
 import com.textcaptcha.textingest.exception.AnnotatorException;
 import com.textcaptcha.textingest.exception.IngestException;
 import com.textcaptcha.textingest.pojo.ReceivedArticle;
-import com.textcaptcha.textingest.service.IngestService;
-import com.textcaptcha.textingest.service.impl.ClasslaAnnotatorService;
+import com.textcaptcha.textingest.service.annotator.CorefAnnotatorService;
+import com.textcaptcha.textingest.service.annotator.ClasslaAnnotatorService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.textcaptcha.textingest.service.coref;
+package com.textcaptcha.textingest.service.annotator;
 
 import com.textcaptcha.textingest.config.TextIngestConfigProvider;
 import com.textcaptcha.textingest.dto.ClasslaApiResponse;

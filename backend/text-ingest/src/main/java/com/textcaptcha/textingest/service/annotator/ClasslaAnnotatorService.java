@@ -1,4 +1,4 @@
-package com.textcaptcha.textingest.service.impl;
+package com.textcaptcha.textingest.service.annotator;
 
 import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.textingest.config.TextIngestConfigProvider;

@@ -1,4 +1,4 @@
-package com.textcaptcha.textingest.service;
+package com.textcaptcha.textingest.service.ingest;
 
 import com.textcaptcha.textingest.exception.IngestException;
 import com.textcaptcha.textingest.pojo.ReceivedArticle;

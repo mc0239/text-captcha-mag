@@ -17,3 +17,4 @@ spring:
 
 task-manager:
   ner-api: http://tc-ner-process-text:5000
+  classla-api: http://tc-classla-process-text:5010

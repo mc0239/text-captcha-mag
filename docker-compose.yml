@@ -77,6 +77,6 @@ services:
     container_name: tc-integration-demo
     restart: unless-stopped
 #    ports:
-#      - "8081:8081"
+#      - "8000:8000"
     environment:
       SPRING_PROFILES_ACTIVE: "docker"

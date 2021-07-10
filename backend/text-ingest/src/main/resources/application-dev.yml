@@ -8,22 +8,26 @@ spring:
 #    username: root
 #    password: root12
   datasource:
-    url: jdbc:postgresql://192.168.99.101:5432/postgres?currentSchema=captcha
+    url: jdbc:postgresql://192.168.99.101:5432/postgres?currentSchema=captcha_proto
     driver-class-name: org.postgresql.Driver
-    username: "captcha3000"
-    password: "=gxn9*fMi9xR<Sbp,3Zw"
+    username: "postgres"
+    password: "demo"
   jpa:
     database: postgresql
-  #    properties:
+    hibernate:
+      ddl-auto: create
+#    properties:
 #      javax.persistence.schema-generation.scripts:
 #        action: create
 #        create-target: create.sql
 #        create-source: metadata
   flyway:
+    enabled: false
     baseline-on-migrate: true
-    schemas: captcha
-    default-schema: captcha
+    schemas: captcha_proto
+    default-schema: captcha_proto
     create-schemas: true
 
 task-manager:
-  ner-api: http://192.168.99.101:5000
+  ner-api: https://nlp.cebular.net/ner # http://192.168.99.101:5000
+  classla-api: http://localhost:5010

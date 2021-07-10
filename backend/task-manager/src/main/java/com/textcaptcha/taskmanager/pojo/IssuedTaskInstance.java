@@ -1,13 +1,14 @@
 package com.textcaptcha.taskmanager.pojo;
 
 import com.textcaptcha.data.model.task.CaptchaTask;
+import com.textcaptcha.data.model.task.content.CaptchaTaskContent;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.UUID;
 
-public class IssuedTaskInstance<CT extends CaptchaTask> {
+public class IssuedTaskInstance<CT extends CaptchaTask<?>> {
 
     private final UUID id;
     private final CT task;
@@ -23,7 +24,7 @@ public class IssuedTaskInstance<CT extends CaptchaTask> {
         return id;
     }
 
-    public CaptchaTask getTask() {
+    public CaptchaTask<?> getTask() {
         return task;
     }
 

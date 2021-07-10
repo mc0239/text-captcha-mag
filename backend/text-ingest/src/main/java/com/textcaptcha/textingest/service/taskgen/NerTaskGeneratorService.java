@@ -1,18 +1,19 @@
-package com.textcaptcha.textingest.service.ner;
+package com.textcaptcha.textingest.service.taskgen;
 
 import com.textcaptcha.data.model.task.NerCaptchaTask;
-import com.textcaptcha.data.pojo.AnnotatedToken;
+import com.textcaptcha.data.model.task.content.NerCaptchaTaskContent;
 import com.textcaptcha.data.repository.NerCaptchaTaskRepository;
 import com.textcaptcha.textingest.pojo.ReceivedArticle;
-import com.textcaptcha.textingest.service.TaskGeneratorService;
+import com.textcaptcha.textingest.pojo.annotator.NerAnnotatedToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class NerTaskGeneratorService implements TaskGeneratorService {
+public class NerTaskGeneratorService implements TaskGeneratorService<List<NerAnnotatedToken>> {
 
     private final NerCaptchaTaskRepository taskRepository;
 
@@ -22,11 +23,11 @@ public class NerTaskGeneratorService implements TaskGeneratorService {
     }
 
     @Override
-    public int generateTasks(ReceivedArticle article, List<AnnotatedToken> tokens) {
+    public int generateTasks(ReceivedArticle article, List<NerAnnotatedToken> tokens) {
         List<NerCaptchaTask> generatedTasks = new ArrayList<>();
 
         for (int i = 0; i < tokens.size(); i++) {
-            AnnotatedToken token = tokens.get(i);
+            NerAnnotatedToken token = tokens.get(i);
 
             if (!token.getAnnotation().startsWith("B")) {
                 continue;
@@ -54,7 +55,12 @@ public class NerTaskGeneratorService implements TaskGeneratorService {
                 }
             }
 
-            task.setTokens(tokens.subList(startIndex, endIndex));
+            List<NerCaptchaTaskContent.Token> taskTokens = tokens.subList(startIndex, endIndex)
+                    .stream()
+                    .map(NerAnnotatedToken::toContentToken)
+                    .collect(Collectors.toList());
+
+            task.setContent(new NerCaptchaTaskContent(taskTokens));
             generatedTasks.add(task);
         }
 

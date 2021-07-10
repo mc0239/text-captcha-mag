@@ -1,10 +1,9 @@
-package com.textcaptcha.textingest.service.ner;
+package com.textcaptcha.textingest.service.annotator;
 
 import com.textcaptcha.textingest.config.TextIngestConfigProvider;
 import com.textcaptcha.textingest.dto.NerApiResponse;
-import com.textcaptcha.data.pojo.AnnotatedToken;
 import com.textcaptcha.textingest.exception.AnnotatorException;
-import com.textcaptcha.textingest.service.AnnotatorService;
+import com.textcaptcha.textingest.pojo.annotator.NerAnnotatedToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -13,12 +12,15 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 @Service
-public class NerAnnotatorService implements AnnotatorService {
+public class NerAnnotatorService implements AnnotatorService<String, List<NerAnnotatedToken>> {
 
     private final TextIngestConfigProvider config;
     private final ExecutorService executor;
@@ -35,20 +37,20 @@ public class NerAnnotatorService implements AnnotatorService {
     }
 
     @Override
-    public List<AnnotatedToken> annotate(String text) throws AnnotatorException {
+    public List<NerAnnotatedToken> annotate(String text) throws AnnotatorException {
         Map<Integer, String> bodyChunks = splitTextToChunks(text);
 
         // Prepare futures for the executor (this allows concurrent POST requests to NER API to be made).
-        Map<Integer, Future<List<AnnotatedToken>>> futures = new ConcurrentHashMap<>(bodyChunks.size());
+        Map<Integer, Future<List<NerAnnotatedToken>>> futures = new ConcurrentHashMap<>(bodyChunks.size());
         for (Map.Entry<Integer, String> entry : bodyChunks.entrySet()) {
-            Callable<List<AnnotatedToken>> c = () -> annotateText(entry.getValue());
+            Callable<List<NerAnnotatedToken>> c = () -> annotateText(entry.getValue());
             futures.put(entry.getKey(), executor.submit(c));
         }
 
         // Store futures' results. Throws exception if any of the futures failed.
-        Map<Integer, List<AnnotatedToken>> annotatedChunks = new ConcurrentHashMap<>(bodyChunks.size());
-        for (Map.Entry<Integer, Future<List<AnnotatedToken>>> entry : futures.entrySet()) {
-            Future<List<AnnotatedToken>> future = entry.getValue();
+        Map<Integer, List<NerAnnotatedToken>> annotatedChunks = new ConcurrentHashMap<>(bodyChunks.size());
+        for (Map.Entry<Integer, Future<List<NerAnnotatedToken>>> entry : futures.entrySet()) {
+            Future<List<NerAnnotatedToken>> future = entry.getValue();
             try {
                 annotatedChunks.put(entry.getKey(), future.get());
             } catch (InterruptedException | ExecutionException e) {
@@ -57,7 +59,7 @@ public class NerAnnotatorService implements AnnotatorService {
         }
 
         // Flatten Map<index, tokens chunk> to a list of tokens.
-        List<AnnotatedToken> result = new ArrayList<>();
+        List<NerAnnotatedToken> result = new ArrayList<>();
         for (int i = 0; i < annotatedChunks.size(); i++) {
             result.addAll(annotatedChunks.get(i));
         }
@@ -87,7 +89,7 @@ public class NerAnnotatorService implements AnnotatorService {
         return chunks;
     }
 
-    private List<AnnotatedToken> annotateText(String text) throws RestClientException {
+    private List<NerAnnotatedToken> annotateText(String text) throws RestClientException {
         String url = config.getNerUrl() + "/predict/ner";
 
         ResponseEntity<NerApiResponse> restResponse = rest.postForEntity(url, text, NerApiResponse.class);

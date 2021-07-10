@@ -1,39 +1,24 @@
 package com.textcaptcha.data.model.response;
 
-import com.textcaptcha.converter.MarkedTokenIndexListConverter;
+import com.textcaptcha.data.model.response.content.NerCaptchaTaskResponseContent;
 import com.textcaptcha.data.model.task.NerCaptchaTask;
+import com.textcaptcha.data.model.task.TaskType;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
 @Entity
-@Table(name = "ner_captcha_task_response")
-public class NerCaptchaTaskResponse extends CaptchaTaskResponse<NerCaptchaTask> {
+@DiscriminatorValue(TaskType.Name.NER)
+public class NerCaptchaTaskResponse extends CaptchaTaskResponse<NerCaptchaTask, NerCaptchaTaskResponseContent> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "ner_captcha_task_response_seqgen")
-    @SequenceGenerator(name = "ner_captcha_task_response_seqgen", sequenceName = "ner_captcha_task_response_seq", allocationSize = 1)
-    private Long id;
-
-    @Column(name = "marked_tokens")
-    @Convert(converter = MarkedTokenIndexListConverter.class)
-    private List<Integer> markedTokenIndexList = new ArrayList<>();
-
-    public Long getId() {
-        return id;
+    @Override
+    public NerCaptchaTask getCaptchaTask() {
+        return (NerCaptchaTask) this.captchaTask;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public List<Integer> getMarkedTokenIndexList() {
-        return markedTokenIndexList;
-    }
-
-    public void setMarkedTokenIndexList(List<Integer> markedTokenIndexList) {
-        this.markedTokenIndexList = markedTokenIndexList;
+    @Override
+    public NerCaptchaTaskResponseContent getContent() {
+        return (NerCaptchaTaskResponseContent) this.content;
     }
 
 }

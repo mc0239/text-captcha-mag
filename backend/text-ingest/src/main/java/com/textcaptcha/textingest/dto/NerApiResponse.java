@@ -1,7 +1,7 @@
 package com.textcaptcha.textingest.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.textcaptcha.data.pojo.AnnotatedToken;
+import com.textcaptcha.textingest.pojo.annotator.NerAnnotatedToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +54,8 @@ public class NerApiResponse {
             return word + "(" + entity + ")";
         }
 
-        public static AnnotatedToken toAnnotatedToken(NerToken nerToken) {
-            AnnotatedToken at = new AnnotatedToken();
+        public static NerAnnotatedToken toAnnotatedToken(NerToken nerToken) {
+            NerAnnotatedToken at = new NerAnnotatedToken();
             at.setWord(nerToken.getWord());
             at.setAnnotation(nerToken.getEntity());
             at.setScore(nerToken.getScore());

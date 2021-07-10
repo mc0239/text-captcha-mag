@@ -12,7 +12,7 @@
 
     <groupId>com.textcaptcha</groupId>
     <artifactId>common</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${module.common.version}</version>
 
     <name>common</name>
     <description>Demo project for Spring Boot</description>

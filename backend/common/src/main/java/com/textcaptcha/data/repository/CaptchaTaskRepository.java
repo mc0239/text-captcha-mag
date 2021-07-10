@@ -1,14 +1,14 @@
 package com.textcaptcha.data.repository;
 
 import com.textcaptcha.data.model.task.CaptchaTask;
+import com.textcaptcha.data.model.task.content.CaptchaTaskContent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
-import org.springframework.data.repository.RepositoryDefinition;
 
 import java.util.List;
 
 @NoRepositoryBean
-public interface CaptchaTaskRepository<X extends CaptchaTask> extends JpaRepository<X, Long> {
+public interface CaptchaTaskRepository<X extends CaptchaTask<? extends CaptchaTaskContent>> extends JpaRepository<X, Long> {
 
     List<X> getByArticleUrlHashAndArticleTextHash(String articleUrlHash, String articleTextHash);
 

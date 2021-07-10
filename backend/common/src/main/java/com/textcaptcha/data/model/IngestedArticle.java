@@ -16,16 +16,16 @@ public class IngestedArticle {
     @SequenceGenerator(name = "ingested_article_seqgen", sequenceName = "ingested_article_seq", allocationSize = 1)
     private Long id;
 
-    @Column
+    @Column(columnDefinition = "text")
     private String articleUrl;
 
-    @Column
+    @Column(columnDefinition = "text")
     private String articleText;
 
-    @Column
+    @Column(length = 512)
     private String articleUrlHash;
 
-    @Column
+    @Column(length = 512)
     private String articleTextHash;
 
     @CreatedDate

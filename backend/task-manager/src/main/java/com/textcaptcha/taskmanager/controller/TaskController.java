@@ -3,13 +3,11 @@ package com.textcaptcha.taskmanager.controller;
 
 import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.data.model.response.NerCaptchaTaskResponse;
+import com.textcaptcha.data.model.response.content.NerCaptchaTaskResponseContent;
 import com.textcaptcha.data.model.task.NerCaptchaTask;
 import com.textcaptcha.data.repository.NerCaptchaTaskRepository;
 import com.textcaptcha.data.repository.NerCaptchaTaskResponseRepository;
-import com.textcaptcha.taskmanager.dto.TaskInstanceDto;
-import com.textcaptcha.taskmanager.dto.TaskRequestRequestBody;
-import com.textcaptcha.taskmanager.dto.TaskSolutionRequestBody;
-import com.textcaptcha.taskmanager.dto.TaskSolutionResponseDto;
+import com.textcaptcha.taskmanager.dto.*;
 import com.textcaptcha.taskmanager.pojo.IssuedTaskInstance;
 import com.textcaptcha.taskmanager.service.impl.NerTaskInstanceKeeper;
 import org.slf4j.Logger;
@@ -70,11 +68,11 @@ public class TaskController {
         UUID taskInstanceId = taskInstanceKeeper.issue(selectedTask);
 
         logger.debug("Issued task ID " + selectedTask.getId() + " with instance ID " + taskInstanceId + ".");
-        return new TaskInstanceDto(taskInstanceId, selectedTask);
+        return new NerTaskInstanceDto(taskInstanceId, selectedTask);
     }
 
     @PostMapping("/response")
-    public TaskSolutionResponseDto checkTaskSolution(@RequestBody TaskSolutionRequestBody body) {
+    public TaskSolutionResponseDto checkTaskSolution(@RequestBody NerTaskSolutionRequestBody body) {
         logger.debug("Received task response: " + body.toString());
 
         UUID instanceId = body.getId();
@@ -91,7 +89,7 @@ public class TaskController {
 
         NerCaptchaTaskResponse r = new NerCaptchaTaskResponse();
         r.setCaptchaTask(task);
-        r.getMarkedTokenIndexList().addAll(body.getIndexes());
+        r.setContent(new NerCaptchaTaskResponseContent(body.getIndexes()));
         responseRepository.save(r);
         //
 
@@ -103,13 +101,13 @@ public class TaskController {
         int totalPositives = 0;
         int truePositives = 0;
         int trueNegatives = 0;
-        for (int i = 0; i < task.getTokens().size(); i++) {
-            if (!task.getTokens().get(i).getAnnotation().equals("O")) {
+        for (int i = 0; i < task.getContent().getTokens().size(); i++) {
+            if (!task.getContent().getTokens().get(i).getAnnotation().equals("O")) {
                 totalPositives++;
             }
 
             if (body.getIndexes().contains(i)) {
-                if (task.getTokens().get(i).getAnnotation().equals("O")) {
+                if (task.getContent().getTokens().get(i).getAnnotation().equals("O")) {
                     trueNegatives++;
                 } else {
                     truePositives++;

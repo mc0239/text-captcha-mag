@@ -1,11 +1,13 @@
 package com.textcaptcha.textingest.service.ner;
 
 import com.textcaptcha.annotation.Loggable;
-import com.textcaptcha.data.pojo.AnnotatedToken;
 import com.textcaptcha.textingest.exception.AnnotatorException;
 import com.textcaptcha.textingest.exception.IngestException;
 import com.textcaptcha.textingest.pojo.ReceivedArticle;
+import com.textcaptcha.textingest.pojo.annotator.NerAnnotatedToken;
 import com.textcaptcha.textingest.service.IngestService;
+import com.textcaptcha.textingest.service.annotator.NerAnnotatorService;
+import com.textcaptcha.textingest.service.taskgen.NerTaskGeneratorService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ public class NerIngestService implements IngestService {
         }
 
         try {
-            List<AnnotatedToken> tokens = annotatorService.annotate(article.getText());
+            List<NerAnnotatedToken> tokens = annotatorService.annotate(article.getText());
             int generatedTaskCount = taskGeneratorService.generateTasks(article, tokens);
             logger.debug("Generated " + generatedTaskCount + " tasks for " + article + ".");
 

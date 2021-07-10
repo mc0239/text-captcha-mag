@@ -22,6 +22,10 @@ public class TextIngestConfigProvider {
 
     public String getNerUrl() {
         return environment.getProperty("task-manager.ner-api");
-    };
+    }
+
+    public String getClasslaUrl() {
+        return environment.getProperty("task-manager.classla-api");
+    }
 
 }

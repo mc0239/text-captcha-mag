@@ -3,9 +3,10 @@ server:
     context-path: /
 spring:
   datasource:
-    url: jdbc:postgresql://192.168.99.101:5432/postgres?currentSchema=captcha
+    url: jdbc:postgresql://192.168.99.101:5432/postgres?currentSchema=captcha_proto
     driver-class-name: org.postgresql.Driver
-    username: "captcha3000"
-    password: "=gxn9*fMi9xR<Sbp,3Zw"
+    username: "postgres"
+    password: "demo"
   jpa:
     database: postgresql
+    show-sql: true

@@ -1,20 +1,23 @@
 package com.textcaptcha.taskmanager.dto;
 
-import com.textcaptcha.data.model.task.NerCaptchaTask;
-import com.textcaptcha.data.pojo.AnnotatedToken;
+import com.textcaptcha.data.model.task.CaptchaTask;
+import com.textcaptcha.data.model.task.TaskType;
+import com.textcaptcha.data.model.task.content.CaptchaTaskContent;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-public class TaskInstanceDto {
+public abstract class TaskInstanceDto<T extends CaptchaTask<? extends CaptchaTaskContent>, C> {
 
+    private TaskType taskType;
     private UUID id;
-    private List<String> words;
 
-    public TaskInstanceDto(UUID taskInstanceId, NerCaptchaTask captchaTask) {
+    public TaskInstanceDto(TaskType type, UUID taskInstanceId) {
+        this.taskType = type;
         this.id = taskInstanceId;
-        this.words = captchaTask.getTokens().stream().map(AnnotatedToken::getWord).collect(Collectors.toList());
+    }
+
+    public TaskType getTaskType() {
+        return taskType;
     }
 
     public UUID getId() {
@@ -25,12 +28,6 @@ public class TaskInstanceDto {
         this.id = id;
     }
 
-    public List<String> getWords() {
-        return words;
-    }
-
-    public void setWords(List<String> words) {
-        this.words = words;
-    }
+    public abstract C getContent();
 
 }

@@ -3,7 +3,7 @@ server:
     context-path: /captcha/i
 spring:
   datasource:
-    url: jdbc:postgresql://tc-tasks-db:5432/postgres?currentSchema=captcha
+    url: jdbc:postgresql://tc-tasks-db:5432/postgres?currentSchema=captcha2
     driver-class-name: org.postgresql.Driver
     username: "captcha3000"
     password: "=gxn9*fMi9xR<Sbp,3Zw"
@@ -11,8 +11,8 @@ spring:
     database: postgresql
   flyway:
     baseline-on-migrate: false
-    schemas: captcha
-    default-schema: captcha
+    schemas: captcha2
+    default-schema: captcha2
     create-schemas: true
 
 task-manager:

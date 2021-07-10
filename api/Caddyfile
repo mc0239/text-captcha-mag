@@ -38,18 +38,28 @@ localhost {
 
 	route @demo {
 		# uri strip_prefix /demo
-		reverse_proxy tc-integration-demo:8081
+		reverse_proxy tc-integration-demo:8000
 	}
 
-	#@process_text_ner {
-	#	path /ner
-	#	path /ner/*
-	#}
+	@process_text_ner {
+		path /ner
+		path /ner/*
+	}
 
-	#route @process_text_ner {
-	#	uri strip_prefix /ner
-	#	reverse_proxy tc-ner-process-text:5000
-	#}
+	route @process_text_ner {
+		uri strip_prefix /ner
+		reverse_proxy tc-ner-process-text:5000
+	}
+
+	@process_text_classla {
+		path /classla
+		path /classla/*
+	}
+
+	route @process_text_classla {
+		uri strip_prefix /classla
+		reverse_proxy tc-classla-process-text:5010
+	}
 
 	respond 200
 }

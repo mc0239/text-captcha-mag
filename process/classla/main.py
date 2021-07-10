@@ -12,13 +12,12 @@ app = FastAPI(
     description='CLASSLA (https://github.com/clarinsi/classla) text processing through a REST API',
 )
 
-
-@app.post("/process")
-async def process(
+@app.post("/annotate")
+async def annotate(
         body: str = Body(
             example='France Prešeren je rojen v Vrbi.',
             default=None,
             media_type='text/plain'
         )
 ):
-    return nlp(body).to_dict()
+    return {"sentences": [{"tokens": sentence[0]} for sentence in nlp(body).to_dict()]}

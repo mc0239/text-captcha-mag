@@ -12,7 +12,7 @@
 
     <groupId>com.textcaptcha</groupId>
     <artifactId>text-ingest</artifactId>
-    <version>${module.text-ingest.version}</version>
+    <version>0.1.0</version>
 
     <name>text-ingest</name>
     <description>Demo project for Spring Boot</description>
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>com.textcaptcha</groupId>
             <artifactId>common</artifactId>
-            <version>${module.common.version}</version>
+            <version>0.0.1</version>
         </dependency>
 
         <dependency>

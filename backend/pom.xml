@@ -16,9 +16,6 @@
 
     <properties>
         <java.version>11</java.version>
-        <module.common.version>0.1.0</module.common.version>
-        <module.task-manager.version>0.1.0</module.task-manager.version>
-        <module.text-ingest.version>0.1.0</module.text-ingest.version>
     </properties>
 
 </project>

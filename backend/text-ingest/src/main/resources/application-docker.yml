@@ -15,6 +15,7 @@ spring:
     default-schema: captcha2
     create-schemas: true
 
-task-manager:
-  ner-api: http://tc-ner-process-text:5000
-  classla-api: http://tc-classla-process-text:5010
+text-ingest:
+  ner-url: http://tc-ner-process-text:5000
+  classla-url: http://tc-classla-process-text:5010
+  coref-url: http://tc-coref-process-text:5020

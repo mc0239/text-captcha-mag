@@ -1,10 +1,11 @@
 package com.textcaptcha.textingest.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClasslaApiResponse {
 
-    private List<Sentence> sentences;
+    private List<Sentence> sentences = new ArrayList<>();
 
     public List<Sentence> getSentences() {
         return sentences;
@@ -16,7 +17,7 @@ public class ClasslaApiResponse {
 
     public static class Sentence {
 
-        private List<Token> tokens;
+        private List<Token> tokens = new ArrayList<>();
 
         public List<Token> getTokens() {
             return tokens;

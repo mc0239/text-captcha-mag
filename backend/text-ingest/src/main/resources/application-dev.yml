@@ -28,6 +28,7 @@ spring:
     default-schema: captcha_proto
     create-schemas: true
 
-task-manager:
-  ner-api: https://nlp.cebular.net/ner # http://192.168.99.101:5000
-  classla-api: http://localhost:5010
+text-ingest:
+  ner-url: https://nlp.cebular.net/ner # http://192.168.99.101:5000
+  classla-url: https://nlp.cebular.net/classla # http://localhost:5010
+  coref-url: http://localhost:5020

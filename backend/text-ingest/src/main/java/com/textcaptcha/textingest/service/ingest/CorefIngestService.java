@@ -32,7 +32,7 @@ public class CorefIngestService implements IngestService {
     @Override
     public void ingest(ReceivedArticle article) throws IngestException {
         try {
-            List<ClasslaApiResponse.Sentence> sentences = classlaAnnotatorService.annotate(article.getText());
+            ClasslaApiResponse sentences = classlaAnnotatorService.annotate(article.getText());
 
             // TODO these tokens now go to coref service
             corefAnnotatorService.annotate(sentences);

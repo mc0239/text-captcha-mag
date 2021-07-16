@@ -45,6 +45,21 @@ services:
 #    ports:
 #      - "5010:5010"
 
+  coref-process-text:
+    image: slo-coref
+    container_name: tc-coref-process-text
+    ports:
+      - "5020:5020"
+    environment:
+      COREF_MODEL_PATH: /app/data/models/bert_based/"
+    volumes:
+      - type: "bind"
+# <!!! Specify path to the COREF model
+        source: "???"
+# !!!>
+        target: "/app/data/models/bert_based/"
+        read_only: true
+
   tasks-db:
     image: postgres
     container_name: tc-tasks-db

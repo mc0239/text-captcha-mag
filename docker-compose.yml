@@ -51,7 +51,7 @@ services:
     ports:
       - "5020:5020"
     environment:
-      COREF_MODEL_PATH: /app/data/models/bert_based/"
+      COREF_MODEL_PATH: "/app/data/models/bert_based/"
     volumes:
       - type: "bind"
 # <!!! Specify path to the COREF model

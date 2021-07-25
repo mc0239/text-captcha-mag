@@ -19,7 +19,7 @@ public class TextIngestApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(TextIngestApplication.class, args);
 
-        System.out.println("OpenAPI: " + OpenApiUtils.openApiDocUrl(context));
+        OpenApiUtils.printApiDocUrl(context);
     }
 
 }

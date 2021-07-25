@@ -21,7 +21,7 @@ public class TaskManagerApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(TaskManagerApplication.class, args);
 
-        System.out.println("OpenAPI: " + OpenApiUtils.openApiDocUrl(context));
+        OpenApiUtils.printApiDocUrl(context);
     }
 
 }

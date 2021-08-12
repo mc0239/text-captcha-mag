@@ -2,12 +2,16 @@ package com.textcaptcha.taskmanager.controller;
 
 
 import com.textcaptcha.annotation.Loggable;
+import com.textcaptcha.data.model.response.CorefCaptchaTaskResponse;
 import com.textcaptcha.data.model.response.NerCaptchaTaskResponse;
+import com.textcaptcha.data.model.response.content.CorefCaptchaTaskResponseContent;
 import com.textcaptcha.data.model.response.content.NerCaptchaTaskResponseContent;
 import com.textcaptcha.data.model.task.CorefCaptchaTask;
 import com.textcaptcha.data.model.task.NerCaptchaTask;
 import com.textcaptcha.data.model.task.TaskType;
+import com.textcaptcha.data.model.task.content.CorefCaptchaTaskContent;
 import com.textcaptcha.data.repository.CorefCaptchaTaskRepository;
+import com.textcaptcha.data.repository.CorefCaptchaTaskResponseRepository;
 import com.textcaptcha.data.repository.NerCaptchaTaskRepository;
 import com.textcaptcha.data.repository.NerCaptchaTaskResponseRepository;
 import com.textcaptcha.taskmanager.dto.*;
@@ -25,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
@@ -41,7 +46,8 @@ public class TaskController {
     private final NerCaptchaTaskRepository nerTaskRepository;
     private final CorefCaptchaTaskRepository corefTaskRepository;
 
-    private final NerCaptchaTaskResponseRepository responseRepository;
+    private final NerCaptchaTaskResponseRepository nerResponseRepository;
+    private final CorefCaptchaTaskResponseRepository corefResponseRepository;
 
 
     @Autowired
@@ -50,13 +56,16 @@ public class TaskController {
             CorefTaskInstanceKeeper corefTaskInstanceKeeper,
             NerCaptchaTaskRepository nerTaskRepository,
             CorefCaptchaTaskRepository corefTaskRepository,
-            NerCaptchaTaskResponseRepository responseRepository
+            NerCaptchaTaskResponseRepository nerResponseRepository,
+            CorefCaptchaTaskResponseRepository corefResponseRepository
     ) {
         this.nerTaskInstanceKeeper = nerTaskInstanceKeeper;
         this.corefTaskInstanceKeeper = corefTaskInstanceKeeper;
         this.nerTaskRepository = nerTaskRepository;
         this.corefTaskRepository = corefTaskRepository;
-        this.responseRepository = responseRepository;
+
+        this.nerResponseRepository = nerResponseRepository;
+        this.corefResponseRepository = corefResponseRepository;
     }
 
     @PostMapping("/request")
@@ -139,7 +148,6 @@ public class TaskController {
     private TaskSolutionResponseDto postNerSolution(NerTaskSolutionRequestBody body) {
         UUID instanceId = body.getId();
 
-        // TODO this is NER-specific
         IssuedTaskInstance<NerCaptchaTask> taskInstance = nerTaskInstanceKeeper.invalidate(instanceId);
 
         if (taskInstance == null) {
@@ -152,7 +160,7 @@ public class TaskController {
         NerCaptchaTaskResponse r = new NerCaptchaTaskResponse();
         r.setCaptchaTask(task);
         r.setContent(new NerCaptchaTaskResponseContent(body.getIndexes()));
-        responseRepository.save(r);
+        nerResponseRepository.save(r);
         //
 
         // positive = entity
@@ -164,27 +172,97 @@ public class TaskController {
         int truePositives = 0;
         int trueNegatives = 0;
         for (int i = 0; i < task.getContent().getTokens().size(); i++) {
-            if (!task.getContent().getTokens().get(i).getAnnotation().equals("O")) {
+            boolean isNamedEntity = !task.getContent().getTokens().get(i).getAnnotation().equals("O");
+            boolean isSelected = body.getIndexes().contains(i);
+
+            if (isNamedEntity) {
                 totalPositives++;
             }
 
-            if (body.getIndexes().contains(i)) {
-                if (task.getContent().getTokens().get(i).getAnnotation().equals("O")) {
-                    trueNegatives++;
-                } else {
+            if (isSelected) {
+                if (isNamedEntity) {
                     truePositives++;
+                } else {
+                    trueNegatives++;
                 }
             }
         }
 
         TaskSolutionResponseDto response = new TaskSolutionResponseDto();
-        response.setContent("You selected " + truePositives + "/" + totalPositives + " entities and made " + trueNegatives + " errors.");
+        response.setContent("You selected " + truePositives + "/" + totalPositives + " entities and made " + ((totalPositives - truePositives) + trueNegatives) + " errors.");
 
         return response;
     }
 
     private TaskSolutionResponseDto postCorefSolution(CorefTaskSolutionRequestBody body) {
-        return null;
+        UUID instanceId = body.getId();
+
+        IssuedTaskInstance<CorefCaptchaTask> taskInstance = corefTaskInstanceKeeper.invalidate(instanceId);
+
+        if (taskInstance == null) {
+            logger.trace("Received task response for invalid instance ID: " + instanceId);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid task instance ID.");
+        }
+
+        CorefCaptchaTask task = (CorefCaptchaTask) taskInstance.getTask();
+
+        CorefCaptchaTaskResponse r = new CorefCaptchaTaskResponse();
+        r.setCaptchaTask(task);
+        r.setContent(new CorefCaptchaTaskResponseContent(body.getIndexes()));
+        corefResponseRepository.save(r);
+        //
+
+        List<CorefCaptchaTaskContent.Token> mentionOfInterest = task.getContent().getMentionOfInterest();
+        Integer correctClusterId = clusterIdFromMention(mentionOfInterest);
+
+        if (correctClusterId == null) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // positive = entity
+        // negative = not entity
+        // true = selected
+        // false = not selected
+
+        int totalPositives = 0;
+        int truePositives = 0;
+        int trueNegatives = 0;
+        for (int i = 0; i < task.getContent().getSuggestedMentions().size(); i++) {
+            List<CorefCaptchaTaskContent.Token> suggestedMention = task.getContent().getSuggestedMentions().get(i);
+            Integer currentClusterId = clusterIdFromMention(suggestedMention);
+            boolean currentClusterIsCorrect = correctClusterId.equals(currentClusterId);
+            boolean isSelected = body.getIndexes().contains(i);
+
+            if (currentClusterIsCorrect) {
+                totalPositives++;
+            }
+
+            if (isSelected) {
+                if(currentClusterIsCorrect) {
+                    truePositives++;
+                } else {
+                    trueNegatives++;
+                }
+            }
+        }
+
+        TaskSolutionResponseDto response = new TaskSolutionResponseDto();
+        response.setContent("You selected " + truePositives + "/" + totalPositives + " mentions and made " + ((totalPositives - truePositives) + trueNegatives) + " errors.");
+
+        return response;
+    }
+
+    private Integer clusterIdFromMention(List<CorefCaptchaTaskContent.Token> mention) {
+        Optional<CorefCaptchaTaskContent.Token> t = mention
+                .stream()
+                .filter(m -> m.getClusterId() != null)
+                .findFirst();
+
+        if (t.isPresent()) {
+            return t.get().getClusterId();
+        } else {
+            return null;
+        }
     }
 
 }

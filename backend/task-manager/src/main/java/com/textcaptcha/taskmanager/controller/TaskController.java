@@ -4,11 +4,16 @@ package com.textcaptcha.taskmanager.controller;
 import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.data.model.response.NerCaptchaTaskResponse;
 import com.textcaptcha.data.model.response.content.NerCaptchaTaskResponseContent;
+import com.textcaptcha.data.model.task.CorefCaptchaTask;
 import com.textcaptcha.data.model.task.NerCaptchaTask;
+import com.textcaptcha.data.model.task.TaskType;
+import com.textcaptcha.data.repository.CorefCaptchaTaskRepository;
 import com.textcaptcha.data.repository.NerCaptchaTaskRepository;
 import com.textcaptcha.data.repository.NerCaptchaTaskResponseRepository;
 import com.textcaptcha.taskmanager.dto.*;
+import com.textcaptcha.taskmanager.exception.InvalidTaskTypeException;
 import com.textcaptcha.taskmanager.pojo.IssuedTaskInstance;
+import com.textcaptcha.taskmanager.service.impl.CorefTaskInstanceKeeper;
 import com.textcaptcha.taskmanager.service.impl.NerTaskInstanceKeeper;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,20 +35,27 @@ public class TaskController {
     @Loggable
     private Logger logger;
 
-    private final NerTaskInstanceKeeper taskInstanceKeeper;
+    private final NerTaskInstanceKeeper nerTaskInstanceKeeper;
+    private final CorefTaskInstanceKeeper corefTaskInstanceKeeper;
 
-    private final NerCaptchaTaskRepository taskRepository;
+    private final NerCaptchaTaskRepository nerTaskRepository;
+    private final CorefCaptchaTaskRepository corefTaskRepository;
+
     private final NerCaptchaTaskResponseRepository responseRepository;
 
 
     @Autowired
     public TaskController(
-            NerTaskInstanceKeeper taskInstanceKeeper,
-            NerCaptchaTaskRepository taskRepository,
+            NerTaskInstanceKeeper nerTaskInstanceKeeper,
+            CorefTaskInstanceKeeper corefTaskInstanceKeeper,
+            NerCaptchaTaskRepository nerTaskRepository,
+            CorefCaptchaTaskRepository corefTaskRepository,
             NerCaptchaTaskResponseRepository responseRepository
     ) {
-        this.taskInstanceKeeper = taskInstanceKeeper;
-        this.taskRepository = taskRepository;
+        this.nerTaskInstanceKeeper = nerTaskInstanceKeeper;
+        this.corefTaskInstanceKeeper = corefTaskInstanceKeeper;
+        this.nerTaskRepository = nerTaskRepository;
+        this.corefTaskRepository = corefTaskRepository;
         this.responseRepository = responseRepository;
     }
 
@@ -51,11 +63,43 @@ public class TaskController {
     public TaskInstanceDto getTask(@RequestBody TaskRequestRequestBody body) {
         logger.debug("Received task request: " + body.toString());
 
+        TaskType taskType = null;
+        try {
+            taskType = TaskType.valueOf(body.getTaskType());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new InvalidTaskTypeException(e);
+        }
+
+        switch (taskType) {
+            case NER:
+                return getNerTask(body);
+            case COREF:
+                return getCorefTask(body);
+            default:
+                // TaskType is null?
+                throw new InvalidTaskTypeException(new RuntimeException("TaskType is " + taskType));
+        }
+    }
+
+    @PostMapping("/response")
+    public TaskSolutionResponseDto postSolution(@RequestBody TaskSolutionRequestBody body) {
+        logger.debug("Received task response: " + body.toString());
+
+        if (body instanceof NerTaskSolutionRequestBody) {
+            return postNerSolution((NerTaskSolutionRequestBody) body);
+        } else if (body instanceof CorefTaskSolutionRequestBody) {
+            return postCorefSolution((CorefTaskSolutionRequestBody) body);
+        } else {
+            throw new InvalidTaskTypeException();
+        }
+    }
+
+    private TaskInstanceDto getNerTask(TaskRequestRequestBody body) {
         if (body.getArticleUrlHash() == null || body.getArticleTextHash() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request is missing articleUrlHash and/or articleTextHash parameter(s).");
         }
 
-        List<NerCaptchaTask> tasks = taskRepository.getByArticleUrlHashAndArticleTextHash(body.getArticleUrlHash(), body.getArticleTextHash());
+        List<NerCaptchaTask> tasks = nerTaskRepository.getByArticleUrlHashAndArticleTextHash(body.getArticleUrlHash(), body.getArticleTextHash());
 
         if (tasks.isEmpty()) {
             // TODO what if it's just ingest still in progress? There's a better way to handle this.
@@ -65,20 +109,38 @@ public class TaskController {
 
         Random r = new Random();
         NerCaptchaTask selectedTask = tasks.get(r.nextInt(tasks.size()));
-        UUID taskInstanceId = taskInstanceKeeper.issue(selectedTask);
+        UUID taskInstanceId = nerTaskInstanceKeeper.issue(selectedTask);
 
         logger.debug("Issued task ID " + selectedTask.getId() + " with instance ID " + taskInstanceId + ".");
         return new NerTaskInstanceDto(taskInstanceId, selectedTask);
     }
 
-    @PostMapping("/response")
-    public TaskSolutionResponseDto checkTaskSolution(@RequestBody NerTaskSolutionRequestBody body) {
-        logger.debug("Received task response: " + body.toString());
+    private TaskInstanceDto getCorefTask(TaskRequestRequestBody body) {
+        if (body.getArticleUrlHash() == null || body.getArticleTextHash() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request is missing articleUrlHash and/or articleTextHash parameter(s).");
+        }
 
+        List<CorefCaptchaTask> tasks = corefTaskRepository.getByArticleUrlHashAndArticleTextHash(body.getArticleUrlHash(), body.getArticleTextHash());
+
+        if (tasks.isEmpty()) {
+            // TODO what if it's just ingest still in progress? There's a better way to handle this.
+            // TODO what to even do here? Is it possible to have a processed article with NO tasks?
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No tasks available.");
+        }
+
+        Random r = new Random();
+        CorefCaptchaTask selectedTask = tasks.get(r.nextInt(tasks.size()));
+        UUID taskInstanceId = corefTaskInstanceKeeper.issue(selectedTask);
+
+        logger.debug("Issued task ID " + selectedTask.getId() + " with instance ID " + taskInstanceId + ".");
+        return new CorefTaskInstanceDto(taskInstanceId, selectedTask);
+    }
+
+    private TaskSolutionResponseDto postNerSolution(NerTaskSolutionRequestBody body) {
         UUID instanceId = body.getId();
 
         // TODO this is NER-specific
-        IssuedTaskInstance<NerCaptchaTask> taskInstance = taskInstanceKeeper.invalidate(instanceId);
+        IssuedTaskInstance<NerCaptchaTask> taskInstance = nerTaskInstanceKeeper.invalidate(instanceId);
 
         if (taskInstance == null) {
             logger.trace("Received task response for invalid instance ID: " + instanceId);
@@ -119,6 +181,10 @@ public class TaskController {
         response.setContent("You selected " + truePositives + "/" + totalPositives + " entities and made " + trueNegatives + " errors.");
 
         return response;
+    }
+
+    private TaskSolutionResponseDto postCorefSolution(CorefTaskSolutionRequestBody body) {
+        return null;
     }
 
 }

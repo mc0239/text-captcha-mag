@@ -5,6 +5,7 @@ import com.textcaptcha.textingest.dto.ClasslaApiResponse;
 import com.textcaptcha.textingest.dto.CorefApiRequestBody;
 import com.textcaptcha.textingest.dto.CorefApiResponse;
 import com.textcaptcha.textingest.exception.AnnotatorException;
+import com.textcaptcha.textingest.pojo.annotator.CorefAnnotatedToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -14,12 +15,11 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
-public class CorefAnnotatorService implements AnnotatorService<ClasslaApiResponse, CorefApiResponse> {
+public class CorefAnnotatorService implements AnnotatorService<ClasslaApiResponse, List<CorefAnnotatedToken>> {
 
     private final TextIngestConfigProvider config;
     private final RestTemplate rest;
@@ -34,7 +34,7 @@ public class CorefAnnotatorService implements AnnotatorService<ClasslaApiRespons
     }
 
     @Override
-    public CorefApiResponse annotate(ClasslaApiResponse input) throws AnnotatorException {
+    public List<CorefAnnotatedToken> annotate(ClasslaApiResponse input) throws AnnotatorException {
         String url = config.getCorefUrl() + "/predict/coref";
 
         CorefApiRequestBody requestBody = classlaResponseToCorefRequest(input);
@@ -42,21 +42,29 @@ public class CorefAnnotatorService implements AnnotatorService<ClasslaApiRespons
         ResponseEntity<CorefApiResponse> restResponse = rest.postForEntity(url, requestBody, CorefApiResponse.class);
         CorefApiResponse response = restResponse.getBody();
 
-        if (response != null) {
-            // cluster1 -> [mention1, mention2 ...]
-            Map<Integer, List<Integer>> clusters = new HashMap<>();
-            for (Map.Entry<Integer, Integer> entry : response.getClusters().entrySet()) {
-                Integer clusterId = entry.getValue();
-                Integer mentionId = entry.getKey();
-                if (!clusters.containsKey(clusterId)) {
-                    clusters.put(clusterId, new ArrayList<>());
-                }
-                clusters.get(clusterId).add(mentionId);
-            }
-            return response;
-        } else {
+        if (response == null) {
             throw new RestClientException("No response from annotator service (" + url + ").");
         }
+
+        List<CorefApiRequestBody.Token> tokensWithMentions = requestBody.getSentences()
+                .stream()
+                // flatten tokens in sentences into a single tokens list.
+                .flatMap(sentence -> sentence.getTokens().stream())
+                .collect(Collectors.toList());
+
+        List<CorefAnnotatedToken> tokensWithClusters = new ArrayList<>();
+        int i = 0;
+        for (CorefApiRequestBody.Token t : tokensWithMentions) {
+            CorefAnnotatedToken ct = new CorefAnnotatedToken();
+            ct.setIndex(i);
+            ct.setWord(t.getText());
+            ct.setMentionId(t.getMentionId());
+            ct.setClusterId(response.getClusters().getOrDefault(t.getMentionId(), null));
+            tokensWithClusters.add(ct);
+            i++;
+        }
+
+        return tokensWithClusters;
     }
 
     private CorefApiRequestBody classlaResponseToCorefRequest(ClasslaApiResponse input) {
@@ -72,7 +80,8 @@ public class CorefAnnotatorService implements AnnotatorService<ClasslaApiRespons
                 outputToken.setText(inputToken.getText());
 
                 // TODO what constitutes as a "mention"?
-                if (inputToken.getXpos().startsWith("N") || inputToken.getXpos().startsWith("A")) {
+                // TODO what about nested mentions?
+                if (inputToken.getXpos().startsWith("N")/* || inputToken.getXpos().startsWith("A")*/) {
                     outputToken.setMentionId(mentionId);
                     if (!consecutiveToken) {
                         consecutiveToken = true;

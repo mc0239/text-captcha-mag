@@ -4,6 +4,7 @@ public class TaskRequestRequestBody {
 
     private String articleUrlHash;
     private String articleTextHash;
+    private String taskType;
 
     public String getArticleUrlHash() {
         return articleUrlHash;
@@ -21,11 +22,20 @@ public class TaskRequestRequestBody {
         this.articleTextHash = articleTextHash;
     }
 
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
+    }
+
     @Override
     public String toString() {
         return "TaskRequestRequestBody{" +
                 "articleUrlHash='" + articleUrlHash + '\'' +
                 ", articleTextHash='" + articleTextHash + '\'' +
+                ", taskType='" + taskType + '\'' +
                 '}';
     }
 }

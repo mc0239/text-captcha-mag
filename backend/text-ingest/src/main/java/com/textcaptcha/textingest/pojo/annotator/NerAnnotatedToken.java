@@ -4,17 +4,8 @@ import com.textcaptcha.data.model.task.content.NerCaptchaTaskContent;
 
 public class NerAnnotatedToken extends AnnotatedToken {
 
-    private String word;
     private String annotation;
     private Double score;
-
-    public String getWord() {
-        return word;
-    }
-
-    public void setWord(String word) {
-        this.word = word;
-    }
 
     public String getAnnotation() {
         return annotation;

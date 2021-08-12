@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public abstract class TaskInstanceDto<T extends CaptchaTask<? extends CaptchaTaskContent>, C> {
 
-    private TaskType taskType;
+    private final TaskType taskType;
     private UUID id;
 
     public TaskInstanceDto(TaskType type, UUID taskInstanceId) {

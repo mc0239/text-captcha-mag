@@ -1,27 +1,39 @@
 package com.textcaptcha.converter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.textcaptcha.data.model.response.content.CaptchaTaskResponseContent;
+import com.textcaptcha.data.model.response.content.CorefCaptchaTaskResponseContent;
 import com.textcaptcha.data.model.response.content.NerCaptchaTaskResponseContent;
+import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.exception.AttributeConverterException;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Converter
 public class CaptchaTaskResponseContentConverter implements AttributeConverter<CaptchaTaskResponseContent, String> {
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Override
     public String convertToDatabaseColumn(CaptchaTaskResponseContent responseContent) {
         if (responseContent instanceof NerCaptchaTaskResponseContent) {
-            NerCaptchaTaskResponseContent r = (NerCaptchaTaskResponseContent) responseContent;
+            NerCaptchaTaskResponseContent c = (NerCaptchaTaskResponseContent) responseContent;
 
-            return "NER\n" + r.getTokenIndexes().stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining("\n"));
+            try {
+                return TaskType.ShortName.NER + mapper.writeValueAsString(c);
+            } catch (JsonProcessingException e) {
+                throw new AttributeConverterException(e);
+            }
+        } else if (responseContent instanceof CorefCaptchaTaskResponseContent) {
+            CorefCaptchaTaskResponseContent c = (CorefCaptchaTaskResponseContent) responseContent;
 
+            try {
+                return TaskType.ShortName.COREF + mapper.writeValueAsString(c);
+            } catch (JsonProcessingException e) {
+                throw new AttributeConverterException(e);
+            }
         } else {
             throw new AttributeConverterException("Cannot convert type " + responseContent.getClass() + " to a string.");
         }
@@ -33,18 +45,20 @@ public class CaptchaTaskResponseContentConverter implements AttributeConverter<C
             return null;
         }
 
-        String[] lines = s.split("\n");
-        // first line is content type
-
-        if (lines[0].startsWith("NER")) {
-
-            List<Integer> tokenIndexes = Arrays.stream(s.split("\n"))
-                    .skip(1)
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toList());
-
-            return new NerCaptchaTaskResponseContent(tokenIndexes);
-
+        String contentIdentifier = s.substring(0, TaskType.ShortName.length);
+        String content = s.substring(TaskType.ShortName.length);
+        if (contentIdentifier.equals(TaskType.ShortName.NER)) {
+            try {
+                return mapper.readValue(content, NerCaptchaTaskResponseContent.class);
+            } catch (JsonProcessingException e) {
+                throw new AttributeConverterException(e);
+            }
+        } else if (contentIdentifier.equals(TaskType.ShortName.COREF)) {
+            try {
+                return mapper.readValue(content, CorefCaptchaTaskResponseContent.class);
+            } catch (JsonProcessingException e) {
+                throw new AttributeConverterException(e);
+            }
         } else {
             throw new AttributeConverterException("Cannot convert string [" + s + "] to any valid type.");
         }

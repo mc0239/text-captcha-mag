@@ -47,13 +47,14 @@ async function taskRequest(articleIdentifyingObject) {
   return await myFetch(taskRequestUrl, fetchOptions);
 }
 
-async function taskResponse(instanceId, selectedIndexes) {
+async function taskResponse(taskType, instanceId, selectedIndexes) {
   const fetchOptions = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
+      taskType: taskType,
       id: instanceId,
       indexes: selectedIndexes,
     }),

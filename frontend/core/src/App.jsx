@@ -56,7 +56,7 @@ class App extends React.Component {
   makeTaskRequest = async () => {
     this.setState({ currentState: AppState.TASK_LOADING });
     try {
-      const data = await ApiClient.task.request(this.state.ingestData);
+      const data = await ApiClient.task.request({...this.state.ingestData, taskType: "NER"});
       this.setState({
         currentState: AppState.TASK_SHOW,
         captchaTask: data,
@@ -71,6 +71,7 @@ class App extends React.Component {
     this.setState({ currentState: AppState.TASK_SUBMITTING });
     try {
       const data = await ApiClient.task.response(
+        "NER",
         this.state.captchaTask.id,
         selectedIndexes
       );

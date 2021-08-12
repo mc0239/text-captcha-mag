@@ -1,7 +1,7 @@
 import React from "react";
 import ApiClient from "./ApiClient";
 import style from "./App.scss";
-import CaptchaTask from "./CaptchaTask";
+import CaptchaTask from "./task/CaptchaTask";
 import Start from "./Start";
 
 function getArticleUrl() {
@@ -53,10 +53,13 @@ class App extends React.Component {
     }
   };
 
-  makeTaskRequest = async () => {
+  makeTaskRequest = async (taskType) => {
     this.setState({ currentState: AppState.TASK_LOADING });
     try {
-      const data = await ApiClient.task.request({...this.state.ingestData, taskType: "NER"});
+      const data = await ApiClient.task.request({
+        ...this.state.ingestData,
+        taskType: taskType,
+      });
       this.setState({
         currentState: AppState.TASK_SHOW,
         captchaTask: data,
@@ -67,14 +70,13 @@ class App extends React.Component {
     }
   };
 
-  makeTaskResponse = async (selectedIndexes) => {
+  makeTaskResponse = async (content) => {
     this.setState({ currentState: AppState.TASK_SUBMITTING });
     try {
-      const data = await ApiClient.task.response(
-        "NER",
-        this.state.captchaTask.id,
-        selectedIndexes
-      );
+      const data = await ApiClient.task.response({
+        id: this.state.captchaTask.id,
+        ...content,
+      });
       console.log(data);
       this.setState({
         currentState: AppState.TASK_DONE,
@@ -96,12 +98,14 @@ class App extends React.Component {
 
       case AppState.INGEST_DONE:
         return (
-          <Start
-            buttonText="Reši nalogo"
-            onStart={() => {
-              this.makeTaskRequest();
-            }}
-          />
+          <>
+            <Start
+              buttonText="Reši nalogo"
+              onStart={(taskType) => {
+                this.makeTaskRequest(taskType);
+              }}
+            />
+          </>
         );
 
       case AppState.INGEST_ERROR:
@@ -117,8 +121,8 @@ class App extends React.Component {
               this.state.currentState === AppState.TASK_LOADING ||
               this.state.currentState === AppState.TASK_SUBMITTING
             }
-            onSubmit={(selectedIndexes) => {
-              this.makeTaskResponse(selectedIndexes);
+            onSubmit={(content) => {
+              this.makeTaskResponse(content);
             }}
           />
         );
@@ -127,8 +131,8 @@ class App extends React.Component {
         return (
           <Start
             buttonText="Reši novo nalogo"
-            onStart={() => {
-              this.makeTaskRequest();
+            onStart={(taskType) => {
+              this.makeTaskRequest(taskType);
             }}
             content={this.state.captchaTaskResponse.content}
           />
@@ -138,8 +142,8 @@ class App extends React.Component {
         return (
           <Start
             buttonText="Reši novo nalogo"
-            onStart={() => {
-              this.makeTaskRequest();
+            onStart={(taskType) => {
+              this.makeTaskRequest(taskType);
             }}
             content={"Prišlo je do napake."}
           />

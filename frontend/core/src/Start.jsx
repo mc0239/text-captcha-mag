@@ -23,7 +23,8 @@ class Start extends React.Component {
     return (
       <>
         {this.renderContent()}
-        <button onClick={onStart}>{buttonText}</button>
+        <button onClick={() => onStart("NER")}>{buttonText} (NER)</button>
+        <button onClick={() => onStart("COREF")}>{buttonText} (CoRef)</button>
       </>
     );
   }

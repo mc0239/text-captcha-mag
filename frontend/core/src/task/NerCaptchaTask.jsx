@@ -1,7 +1,8 @@
 import React from "react";
-import style from "./CaptchaTask.scss";
+import taskStyle from "./CaptchaTask.scss";
+import nerTaskStyle from "./NerCaptchaTask.scss";
 
-class CaptchaTask extends React.Component {
+class NerCaptchaTask extends React.Component {
   constructor(props) {
     super(props);
 
@@ -23,10 +24,11 @@ class CaptchaTask extends React.Component {
   };
 
   render() {
-    const { task, isLoading, onSubmit } = this.props;
+    const { task, onSubmit } = this.props;
 
-    if (isLoading) {
-      return "Nalaganje naloge...";
+    if (!task) {
+      // TODO
+      return "...";
     }
 
     const tokens = task.content.map((word, index) => {
@@ -35,7 +37,9 @@ class CaptchaTask extends React.Component {
         <span
           key={index}
           className={
-            (isSelected ? style["word-selected"] : "") + " " + style["word"]
+            (isSelected ? nerTaskStyle["word-selected"] : "") +
+            " " +
+            nerTaskStyle["word"]
           }
           onClick={() => {
             this.selectWord(index);
@@ -47,7 +51,7 @@ class CaptchaTask extends React.Component {
     });
 
     return (
-      <div className={"" + style["task-container"]}>
+      <div className={"" + taskStyle["task-container"]}>
         <div style={{ textAlign: "left", fontSize: "1rem" }}>{tokens}</div>
         <div style={{ textAlign: "right" }}>
           <button
@@ -55,7 +59,10 @@ class CaptchaTask extends React.Component {
               const result = Object.keys(this.state.selectedIndexes).filter(
                 (i) => this.state.selectedIndexes[i] === true
               );
-              onSubmit(result);
+              onSubmit({
+                taskType: "NER",
+                indexes: result,
+              });
             }}
           >
             Pošlji
@@ -63,9 +70,7 @@ class CaptchaTask extends React.Component {
         </div>
       </div>
     );
-
-    // JSON.stringify(task);
   }
 }
 
-export default CaptchaTask;
+export default NerCaptchaTask;

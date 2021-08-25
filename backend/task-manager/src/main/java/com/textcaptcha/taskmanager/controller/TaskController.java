@@ -10,6 +10,7 @@ import com.textcaptcha.data.model.task.CorefCaptchaTask;
 import com.textcaptcha.data.model.task.NerCaptchaTask;
 import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.data.model.task.content.CorefCaptchaTaskContent;
+import com.textcaptcha.data.model.task.content.NerCaptchaTaskContent;
 import com.textcaptcha.data.repository.CorefCaptchaTaskRepository;
 import com.textcaptcha.data.repository.CorefCaptchaTaskResponseRepository;
 import com.textcaptcha.data.repository.NerCaptchaTaskRepository;
@@ -171,16 +172,20 @@ public class TaskController {
         int totalPositives = 0;
         int truePositives = 0;
         int trueNegatives = 0;
+
+        String primaryAnnotation = task.getContent().getPrimaryAnnotation().split("-")[1];
         for (int i = 0; i < task.getContent().getTokens().size(); i++) {
-            boolean isNamedEntity = !task.getContent().getTokens().get(i).getAnnotation().equals("O");
+            NerCaptchaTaskContent.Token word = task.getContent().getTokens().get(i);
+            boolean isNamedEntity = !word.getAnnotation().equals("O");
+            boolean hasPrimaryAnnotation = word.getAnnotation().contains(primaryAnnotation);
             boolean isSelected = body.getIndexes().contains(i);
 
-            if (isNamedEntity) {
+            if (isNamedEntity && hasPrimaryAnnotation) {
                 totalPositives++;
             }
 
             if (isSelected) {
-                if (isNamedEntity) {
+                if (isNamedEntity && hasPrimaryAnnotation) {
                     truePositives++;
                 } else {
                     trueNegatives++;

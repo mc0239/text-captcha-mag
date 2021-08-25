@@ -94,8 +94,11 @@ public class CorefTaskGeneratorService implements TaskGeneratorService<List<Core
             List<List<CorefCaptchaTaskContent.Token>> suggestedMentions = new ArrayList<>();
             Random r = new Random();
 
+            int correctMentionsCount = r.nextInt(4) + 1;
+            int incorrectMentionsCount = 5 - correctMentionsCount;
+
             // (1) add from 1 to 4 correct answers (mentions from same cluster)
-            for (int i = 0; i < r.nextInt(4) + 1; i++) {
+            for (int i = 0; i < correctMentionsCount; i++) {
                 // randomly picked mention from same cluster must not be current mention of interest or already picked
                 // mention.
                 List<CorefTokenGroup> currentCluster = clusters.get(currentClusterId);
@@ -104,7 +107,7 @@ public class CorefTaskGeneratorService implements TaskGeneratorService<List<Core
             }
 
             // (2) add mentions from other clusters (randomly selected) to have 5 suggested mentions total.
-            for (int i = 0; i <= 5 - suggestedMentions.size(); i++) {
+            for (int i = 0; i < incorrectMentionsCount; i++) {
                 List<CorefTokenGroup> randomCluster = null;
                 while (randomCluster == null || randomCluster.get(0).getClusterId().equals(currentClusterId)) {
                     // TODO possible duplicates

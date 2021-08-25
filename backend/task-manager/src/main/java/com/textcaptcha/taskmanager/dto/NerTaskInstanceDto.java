@@ -9,13 +9,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class NerTaskInstanceDto extends TaskInstanceDto<NerCaptchaTask, List<String>> {
+public class NerTaskInstanceDto extends TaskInstanceDto<NerCaptchaTask, NerTaskInstanceDto.Content> {
 
+    private String primaryAnnotation;
     private List<String> words;
 
     public NerTaskInstanceDto(UUID taskInstanceId, NerCaptchaTask captchaTask) {
         super(TaskType.NER, taskInstanceId);
 
+        this.primaryAnnotation = captchaTask.getContent().getPrimaryAnnotation();
         this.words = captchaTask.getContent().getTokens()
                 .stream()
                 .map(NerCaptchaTaskContent.Token::getWord)
@@ -23,8 +25,13 @@ public class NerTaskInstanceDto extends TaskInstanceDto<NerCaptchaTask, List<Str
     }
 
     @Override
-    public List<String> getContent() {
-        return words;
+    public Content getContent() {
+        return new Content(this.primaryAnnotation, this.words);
+    }
+
+    @JsonIgnore
+    public String getPrimaryAnnotation() {
+        return primaryAnnotation;
     }
 
     @JsonIgnore
@@ -32,8 +39,22 @@ public class NerTaskInstanceDto extends TaskInstanceDto<NerCaptchaTask, List<Str
         return words;
     }
 
-    public void setWords(List<String> words) {
-        this.words = words;
+    public static class Content {
+        private final String primaryAnnotation;
+        private final List<String> words;
+
+        public Content(String primaryAnnotation, List<String> words) {
+            this.primaryAnnotation = primaryAnnotation;
+            this.words = words;
+        }
+
+        public String getPrimaryAnnotation() {
+            return primaryAnnotation;
+        }
+
+        public List<String> getWords() {
+            return words;
+        }
     }
 
 }

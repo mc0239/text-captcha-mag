@@ -60,7 +60,7 @@ public class NerTaskGeneratorService implements TaskGeneratorService<List<NerAnn
                     .map(NerAnnotatedToken::toContentToken)
                     .collect(Collectors.toList());
 
-            task.setContent(new NerCaptchaTaskContent(taskTokens));
+            task.setContent(new NerCaptchaTaskContent(token.getAnnotation(), taskTokens));
             generatedTasks.add(task);
         }
 

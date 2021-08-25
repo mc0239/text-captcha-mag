@@ -5,13 +5,24 @@ import java.util.List;
 
 public class NerCaptchaTaskContent extends CaptchaTaskContent {
 
+    private String primaryAnnotation = "";
+
     private List<Token> tokens = Collections.emptyList();
 
-    public NerCaptchaTaskContent(List<Token> tokens) {
+    public NerCaptchaTaskContent(String primaryAnnotation, List<Token> tokens) {
+        this.primaryAnnotation = primaryAnnotation;
         this.tokens = tokens;
     }
 
     public NerCaptchaTaskContent() { }
+
+    public String getPrimaryAnnotation() {
+        return primaryAnnotation;
+    }
+
+    public void setPrimaryAnnotation(String primaryAnnotation) {
+        this.primaryAnnotation = primaryAnnotation;
+    }
 
     public List<Token> getTokens() {
         return tokens;

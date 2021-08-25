@@ -62,7 +62,7 @@ class CorefCaptchaTask extends React.Component {
               type="checkbox"
               name={mentionIndex}
               checked={isSelectedMention}
-              onChange={(e) => {
+              onChange={() => {
                 this.selectMention(mentionIndex);
               }}
             />

@@ -1,8 +1,9 @@
 package com.textcaptcha.textingest.service.taskgen;
 
 import com.textcaptcha.data.model.task.NerCaptchaTask;
+import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.data.model.task.content.NerCaptchaTaskContent;
-import com.textcaptcha.data.repository.NerCaptchaTaskRepository;
+import com.textcaptcha.data.repository.CaptchaTaskRepository;
 import com.textcaptcha.textingest.pojo.ReceivedArticle;
 import com.textcaptcha.textingest.pojo.annotator.NerAnnotatedToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,10 @@ import java.util.stream.Collectors;
 @Service
 public class NerTaskGeneratorService implements TaskGeneratorService<List<NerAnnotatedToken>> {
 
-    private final NerCaptchaTaskRepository taskRepository;
+    private final CaptchaTaskRepository taskRepository;
 
     @Autowired
-    public NerTaskGeneratorService(NerCaptchaTaskRepository taskRepository) {
+    public NerTaskGeneratorService(CaptchaTaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
 
@@ -70,7 +71,7 @@ public class NerTaskGeneratorService implements TaskGeneratorService<List<NerAnn
 
     @Override
     public boolean areTasksGenerated(ReceivedArticle article) {
-        long existing = taskRepository.countByArticleUrlHashAndArticleTextHash(article.getUrlHash(), article.getTextHash());
+        long existing = taskRepository.countTasks(TaskType.NER, article.getUrlHash(), article.getTextHash());
         return existing > 0;
     }
 

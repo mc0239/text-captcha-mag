@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 
 @Entity
 @DiscriminatorValue(TaskType.Name.NER)
-public class NerCaptchaTaskResponse extends CaptchaTaskResponse<NerCaptchaTask, NerCaptchaTaskResponseContent> {
+public class NerCaptchaTaskResponse extends CaptchaTaskResponse {
 
     @Override
     public NerCaptchaTask getCaptchaTask() {

@@ -5,7 +5,6 @@ import com.textcaptcha.data.IdentifiableEntity;
 import com.textcaptcha.data.model.response.content.CaptchaTaskResponseContent;
 import com.textcaptcha.data.model.task.CaptchaTask;
 import com.textcaptcha.data.model.task.TaskType;
-import com.textcaptcha.data.model.task.content.CaptchaTaskContent;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -17,7 +16,7 @@ import java.util.Date;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "task_type")
 @EntityListeners(AuditingEntityListener.class)
-public abstract class CaptchaTaskResponse<T extends CaptchaTask<? extends CaptchaTaskContent>, R extends CaptchaTaskResponseContent> implements IdentifiableEntity<Long> {
+public abstract class CaptchaTaskResponse implements IdentifiableEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "captcha_task_response_seqgen")
@@ -30,7 +29,7 @@ public abstract class CaptchaTaskResponse<T extends CaptchaTask<? extends Captch
 
     @ManyToOne
     @JoinColumn(name = "captcha_task_id", foreignKey = @ForeignKey(name = "fk_captcha_task_id"))
-    protected CaptchaTask<?> captchaTask;
+    protected CaptchaTask captchaTask;
 
     @Column(name = "response_content", columnDefinition = "text")
     @Convert(converter = CaptchaTaskResponseContentConverter.class)
@@ -51,15 +50,15 @@ public abstract class CaptchaTaskResponse<T extends CaptchaTask<? extends Captch
         return taskType;
     }
 
-    public abstract T getCaptchaTask();
+    public abstract CaptchaTask getCaptchaTask();
 
-    public void setCaptchaTask(T captchaTask) {
+    public void setCaptchaTask(CaptchaTask captchaTask) {
         this.captchaTask = captchaTask;
     }
 
-    public abstract R getContent();
+    public abstract CaptchaTaskResponseContent getContent();
 
-    public void setContent(R content) {
+    public void setContent(CaptchaTaskResponseContent content) {
         this.content = content;
     }
 

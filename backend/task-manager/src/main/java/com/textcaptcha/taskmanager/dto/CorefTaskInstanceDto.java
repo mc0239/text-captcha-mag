@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class CorefTaskInstanceDto extends TaskInstanceDto<CorefCaptchaTask, CorefTaskInstanceDto.Content> {
+public class CorefTaskInstanceDto extends TaskInstanceDto<CorefTaskInstanceDto.Content> {
 
     private final List<Word> mentionOfInterest;
     private final List<List<Word>> suggestedMentions;

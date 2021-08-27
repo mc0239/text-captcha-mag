@@ -1,8 +1,9 @@
 package com.textcaptcha.textingest.service.taskgen;
 
 import com.textcaptcha.data.model.task.CorefCaptchaTask;
+import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.data.model.task.content.CorefCaptchaTaskContent;
-import com.textcaptcha.data.repository.CorefCaptchaTaskRepository;
+import com.textcaptcha.data.repository.CaptchaTaskRepository;
 import com.textcaptcha.textingest.pojo.CorefTokenGroup;
 import com.textcaptcha.textingest.pojo.ReceivedArticle;
 import com.textcaptcha.textingest.pojo.annotator.CorefAnnotatedToken;
@@ -15,10 +16,10 @@ import java.util.stream.Collectors;
 @Service
 public class CorefTaskGeneratorService implements TaskGeneratorService<List<CorefAnnotatedToken>> {
 
-    private final CorefCaptchaTaskRepository taskRepository;
+    private final CaptchaTaskRepository taskRepository;
 
     @Autowired
-    public CorefTaskGeneratorService(CorefCaptchaTaskRepository taskRepository) {
+    public CorefTaskGeneratorService(CaptchaTaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
 
@@ -135,7 +136,7 @@ public class CorefTaskGeneratorService implements TaskGeneratorService<List<Core
 
     @Override
     public boolean areTasksGenerated(ReceivedArticle article) {
-        long existing = taskRepository.countByArticleUrlHashAndArticleTextHash(article.getUrlHash(), article.getTextHash());
+        long existing = taskRepository.countTasks(TaskType.COREF, article.getUrlHash(), article.getTextHash());
         return existing > 0;
     }
 

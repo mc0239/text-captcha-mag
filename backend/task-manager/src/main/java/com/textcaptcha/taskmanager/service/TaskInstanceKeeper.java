@@ -5,7 +5,7 @@ import com.textcaptcha.taskmanager.pojo.IssuedTaskInstance;
 
 import java.util.UUID;
 
-public interface TaskInstanceKeeper<CT extends CaptchaTask<?>> {
-    UUID issue(CT task);
-    IssuedTaskInstance<CT> invalidate(UUID instanceId);
+public interface TaskInstanceKeeper {
+    UUID issue(CaptchaTask task);
+    IssuedTaskInstance invalidate(UUID instanceId);
 }

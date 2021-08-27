@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 
 @Entity
 @DiscriminatorValue(TaskType.Name.COREF)
-public class CorefCaptchaTaskResponse extends CaptchaTaskResponse<CorefCaptchaTask, CorefCaptchaTaskResponseContent> {
+public class CorefCaptchaTaskResponse extends CaptchaTaskResponse {
 
     @Override
     public CorefCaptchaTask getCaptchaTask() {

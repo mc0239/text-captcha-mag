@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class NerTaskInstanceDto extends TaskInstanceDto<NerCaptchaTask, NerTaskInstanceDto.Content> {
+public class NerTaskInstanceDto extends TaskInstanceDto<NerTaskInstanceDto.Content> {
 
-    private String primaryAnnotation;
-    private List<String> words;
+    private final String primaryAnnotation;
+    private final List<String> words;
 
     public NerTaskInstanceDto(UUID taskInstanceId, NerCaptchaTask captchaTask) {
         super(TaskType.NER, taskInstanceId);

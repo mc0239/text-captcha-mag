@@ -14,7 +14,7 @@ import java.util.Date;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "task_type")
 @EntityListeners(AuditingEntityListener.class)
-public abstract class CaptchaTask<C extends CaptchaTaskContent> implements IdentifiableEntity<Long> {
+public abstract class CaptchaTask implements IdentifiableEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "captcha_task_seqgen")
@@ -66,9 +66,9 @@ public abstract class CaptchaTask<C extends CaptchaTaskContent> implements Ident
         this.articleTextHash = articleTextHash;
     }
 
-    public abstract C getContent();
+    public abstract CaptchaTaskContent getContent();
 
-    public void setContent(C content) {
+    public void setContent(CaptchaTaskContent content) {
         this.content = content;
     }
 

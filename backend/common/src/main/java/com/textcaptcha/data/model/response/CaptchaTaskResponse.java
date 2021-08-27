@@ -2,6 +2,7 @@ package com.textcaptcha.data.model.response;
 
 import com.textcaptcha.converter.CaptchaTaskResponseContentConverter;
 import com.textcaptcha.data.IdentifiableEntity;
+import com.textcaptcha.data.model.CaptchaFlow;
 import com.textcaptcha.data.model.response.content.CaptchaTaskResponseContent;
 import com.textcaptcha.data.model.task.CaptchaTask;
 import com.textcaptcha.data.model.task.TaskType;
@@ -31,6 +32,10 @@ public abstract class CaptchaTaskResponse implements IdentifiableEntity<Long> {
     @JoinColumn(name = "captcha_task_id", foreignKey = @ForeignKey(name = "fk_captcha_task_id"))
     protected CaptchaTask captchaTask;
 
+    @ManyToOne
+    @JoinColumn(name = "captcha_flow_id", foreignKey = @ForeignKey(name = "fk_captcha_flow_id"))
+    protected CaptchaFlow captchaFlow;
+
     @Column(name = "response_content", columnDefinition = "text")
     @Convert(converter = CaptchaTaskResponseContentConverter.class)
     protected CaptchaTaskResponseContent content;
@@ -54,6 +59,14 @@ public abstract class CaptchaTaskResponse implements IdentifiableEntity<Long> {
 
     public void setCaptchaTask(CaptchaTask captchaTask) {
         this.captchaTask = captchaTask;
+    }
+
+    public CaptchaFlow getCaptchaFlow() {
+        return captchaFlow;
+    }
+
+    public void setCaptchaFlow(CaptchaFlow captchaFlow) {
+        this.captchaFlow = captchaFlow;
     }
 
     public abstract CaptchaTaskResponseContent getContent();

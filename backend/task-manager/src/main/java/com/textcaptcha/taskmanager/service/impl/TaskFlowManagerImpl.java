@@ -9,6 +9,7 @@ import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.data.repository.CaptchaFlowRepository;
 import com.textcaptcha.data.repository.CaptchaTaskRepository;
 import com.textcaptcha.data.repository.CaptchaTaskResponseRepository;
+import com.textcaptcha.dto.ArticleHashPairDto;
 import com.textcaptcha.taskmanager.dto.TaskRequestRequestBody;
 import com.textcaptcha.taskmanager.dto.TaskSolutionRequestBody;
 import com.textcaptcha.taskmanager.pojo.CaptchaTaskFlow;
@@ -54,7 +55,7 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
         CaptchaFlow flow = new CaptchaFlow();
         flow.setUuid(flowId);
 
-        IssuedTaskInstance issuedTaskInstance = getTaskInstance(body);
+        IssuedTaskInstance issuedTaskInstance = getTaskInstance(TaskType.valueOf(body.getTaskType()), body.getHashes());
         taskFlowMapping.put(issuedTaskInstance.getId(), flowId);
 
         return new CaptchaTaskFlow(flow, issuedTaskInstance);
@@ -106,22 +107,19 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
         if (!shouldGiveNextTask) {
             return new CaptchaTaskFlow(f, null);
         } else {
-            TaskRequestRequestBody b = new TaskRequestRequestBody();
-            b.setTaskType(taskInstance.getTask().getTaskType().name());
-            b.setArticleUrlHash(taskInstance.getTask().getArticleUrlHash());
-            b.setArticleTextHash(taskInstance.getTask().getArticleTextHash());
-            IssuedTaskInstance issuedTaskInstance = getTaskInstance(b);
+            CaptchaTask t = taskInstance.getTask();
+            IssuedTaskInstance issuedTaskInstance = getTaskInstance(t.getTaskType(), t.getArticleHashes());
             taskFlowMapping.put(issuedTaskInstance.getId(), f.getUuid());
             return new CaptchaTaskFlow(f, issuedTaskInstance);
         }
     }
 
-    private IssuedTaskInstance getTaskInstance(TaskRequestRequestBody body) {
-        if (body.getArticleUrlHash() == null || body.getArticleTextHash() == null) {
+    private IssuedTaskInstance getTaskInstance(TaskType taskType, ArticleHashPairDto articleHashes) {
+        if (!articleHashes.hasHashes()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request is missing articleUrlHash and/or articleTextHash parameter(s).");
         }
 
-        List<CaptchaTask> tasks = captchaTaskRepository.getTasks(TaskType.valueOf(body.getTaskType()), body.getArticleUrlHash(), body.getArticleTextHash());
+        List<CaptchaTask> tasks = captchaTaskRepository.getTasks(taskType, articleHashes.getUrlHash(), articleHashes.getTextHash());
 
         if (tasks.isEmpty()) {
             // TODO what if it's just ingest still in progress? There's a better way to handle this.

@@ -1,41 +1,24 @@
 package com.textcaptcha.taskmanager.dto;
 
-public class TaskRequestRequestBody {
+import com.textcaptcha.dto.ArticleHashPairDto;
 
-    private String articleUrlHash;
-    private String articleTextHash;
-    private String taskType;
+public class TaskRequestRequestBody extends ArticleHashPairDto {
 
-    public String getArticleUrlHash() {
-        return articleUrlHash;
-    }
+    private final String taskType;
 
-    public void setArticleUrlHash(String articleUrlHash) {
-        this.articleUrlHash = articleUrlHash;
-    }
-
-    public String getArticleTextHash() {
-        return articleTextHash;
-    }
-
-    public void setArticleTextHash(String articleTextHash) {
-        this.articleTextHash = articleTextHash;
+    public TaskRequestRequestBody(String taskType, String urlHash, String textHash) {
+        super(urlHash, textHash);
+        this.taskType = taskType;
     }
 
     public String getTaskType() {
         return taskType;
     }
 
-    public void setTaskType(String taskType) {
-        this.taskType = taskType;
-    }
-
     @Override
     public String toString() {
         return "TaskRequestRequestBody{" +
-                "articleUrlHash='" + articleUrlHash + '\'' +
-                ", articleTextHash='" + articleTextHash + '\'' +
-                ", taskType='" + taskType + '\'' +
-                '}';
+                "taskType='" + taskType + '\'' +
+                "} " + super.toString();
     }
 }

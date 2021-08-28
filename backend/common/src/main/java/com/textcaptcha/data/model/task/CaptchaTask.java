@@ -3,6 +3,7 @@ package com.textcaptcha.data.model.task;
 import com.textcaptcha.converter.CaptchaTaskContentConverter;
 import com.textcaptcha.data.IdentifiableEntity;
 import com.textcaptcha.data.model.task.content.CaptchaTaskContent;
+import com.textcaptcha.dto.ArticleHashPairDto;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -66,6 +67,15 @@ public abstract class CaptchaTask implements IdentifiableEntity<Long> {
         this.articleTextHash = articleTextHash;
     }
 
+    public ArticleHashPairDto getArticleHashes() {
+        return new ArticleHashPairDto(articleUrlHash, articleTextHash);
+    }
+
+    public void setArticleHashes(String articleUrlHash, String articleTextHash) {
+        this.setArticleUrlHash(articleUrlHash);
+        this.setArticleTextHash(articleTextHash);
+    }
+
     public abstract CaptchaTaskContent getContent();
 
     public void setContent(CaptchaTaskContent content) {
@@ -75,5 +85,4 @@ public abstract class CaptchaTask implements IdentifiableEntity<Long> {
     public Date getCreatedAt() {
         return createdAt;
     }
-
 }

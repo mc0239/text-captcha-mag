@@ -36,8 +36,7 @@ public class NerTaskGeneratorService implements TaskGeneratorService<List<NerAnn
 
             // We have an entity - create a task for it.
             NerCaptchaTask task = new NerCaptchaTask();
-            task.setArticleUrlHash(article.getUrlHash());
-            task.setArticleTextHash(article.getTextHash());
+            task.setArticleHashes(article.getUrlHash(), article.getTextHash());
 
             int selectedIndex = i;
             int startIndex = selectedIndex - 15;

@@ -72,8 +72,7 @@ public class IngestController {
         IngestedArticle ingestedArticle = new IngestedArticle();
         ingestedArticle.setArticleUrl(article.getUrl());
         ingestedArticle.setArticleText(article.getText());
-        ingestedArticle.setArticleUrlHash(article.getUrlHash());
-        ingestedArticle.setArticleTextHash(article.getTextHash());
+        ingestedArticle.setArticleHashes(article.getUrlHash(), article.getTextHash());
         articleRepository.save(ingestedArticle);
 
         return new IngestResultDto(article.getUrlHash(), article.getTextHash());

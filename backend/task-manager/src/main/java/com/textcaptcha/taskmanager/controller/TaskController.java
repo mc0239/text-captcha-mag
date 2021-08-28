@@ -81,11 +81,11 @@ public class TaskController {
     }
 
     private TaskInstanceDto getTaskInstance(TaskRequestRequestBody body) {
-        if (body.getArticleUrlHash() == null || body.getArticleTextHash() == null) {
+        if (!body.hasHashes()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request is missing articleUrlHash and/or articleTextHash parameter(s).");
         }
 
-        List<CaptchaTask> tasks = captchaTaskRepository.getTasks(TaskType.valueOf(body.getTaskType()), body.getArticleUrlHash(), body.getArticleTextHash());
+        List<CaptchaTask> tasks = captchaTaskRepository.getTasks(TaskType.valueOf(body.getTaskType()), body.getUrlHash(), body.getTextHash());
 
         if (tasks.isEmpty()) {
             // TODO what if it's just ingest still in progress? There's a better way to handle this.

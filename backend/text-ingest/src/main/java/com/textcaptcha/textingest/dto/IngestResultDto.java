@@ -1,28 +1,9 @@
 package com.textcaptcha.textingest.dto;
 
-public class IngestResultDto {
+import com.textcaptcha.dto.ArticleHashPairDto;
 
-    private String articleUrlHash;
-    private String articleTextHash;
-
-    public IngestResultDto(String articleUrlHash, String articleTextHash) {
-        this.articleUrlHash = articleUrlHash;
-        this.articleTextHash = articleTextHash;
-    }
-
-    public String getArticleUrlHash() {
-        return articleUrlHash;
-    }
-
-    public void setArticleUrlHash(String articleUrlHash) {
-        this.articleUrlHash = articleUrlHash;
-    }
-
-    public String getArticleTextHash() {
-        return articleTextHash;
-    }
-
-    public void setArticleTextHash(String articleTextHash) {
-        this.articleTextHash = articleTextHash;
+public class IngestResultDto extends ArticleHashPairDto {
+    public IngestResultDto(String urlHash, String textHash) {
+        super(urlHash, textHash);
     }
 }

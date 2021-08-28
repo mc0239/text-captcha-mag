@@ -71,8 +71,12 @@ public class IngestedArticle {
         this.articleTextHash = articleTextHash;
     }
 
+    public void setArticleHashes(String articleUrlHash, String articleTextHash) {
+        this.setArticleUrlHash(articleUrlHash);
+        this.setArticleTextHash(articleTextHash);
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
-
 }

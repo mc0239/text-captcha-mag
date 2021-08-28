@@ -28,10 +28,12 @@ public class TaskInstanceKeeperImpl implements TaskInstanceKeeper {
     }
 
     @Override
-    public UUID issue(CaptchaTask task) {
+    public IssuedTaskInstance issue(CaptchaTask task) {
         UUID taskInstanceId = UUID.randomUUID();
         issuedTasks.put(taskInstanceId, new IssuedTaskInstance(taskInstanceId, task));
-        return taskInstanceId;
+
+        logger.debug("Issued task ID " + task.getId() + " with instance ID " + taskInstanceId + ".");
+        return new IssuedTaskInstance(taskInstanceId, task);
     }
 
     @Override

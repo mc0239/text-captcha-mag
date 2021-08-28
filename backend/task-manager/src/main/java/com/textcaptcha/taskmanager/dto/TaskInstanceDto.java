@@ -5,6 +5,7 @@ import com.textcaptcha.data.model.task.CorefCaptchaTask;
 import com.textcaptcha.data.model.task.NerCaptchaTask;
 import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.taskmanager.exception.InvalidTaskTypeException;
+import com.textcaptcha.taskmanager.pojo.IssuedTaskInstance;
 
 import java.util.UUID;
 
@@ -18,13 +19,14 @@ public abstract class TaskInstanceDto<C> {
         this.id = taskInstanceId;
     }
 
-    public static TaskInstanceDto fromIssuedTaskInstance(UUID taskInstanceId, CaptchaTask captchaTask) {
-        TaskType taskType = captchaTask.getTaskType();
+    public static TaskInstanceDto fromIssuedTaskInstance(IssuedTaskInstance taskInstance) {
+        CaptchaTask task = taskInstance.getTask();
+        TaskType taskType = task.getTaskType();
         switch (taskType) {
             case NER:
-                return new NerTaskInstanceDto(taskInstanceId, (NerCaptchaTask) captchaTask);
+                return new NerTaskInstanceDto(taskInstance.getId(), (NerCaptchaTask) task);
             case COREF:
-                return new CorefTaskInstanceDto(taskInstanceId, (CorefCaptchaTask) captchaTask);
+                return new CorefTaskInstanceDto(taskInstance.getId(), (CorefCaptchaTask) task);
             default:
                 // TaskType is null?
                 throw new InvalidTaskTypeException(new RuntimeException("TaskType is " + taskType));

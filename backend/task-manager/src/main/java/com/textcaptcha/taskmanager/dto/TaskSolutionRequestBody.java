@@ -1,24 +1,20 @@
 package com.textcaptcha.taskmanager.dto;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.textcaptcha.data.model.task.TaskType;
 
+import java.util.List;
 import java.util.UUID;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "taskType")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = NerTaskSolutionRequestBody.class, name = TaskType.Name.NER),
-        @JsonSubTypes.Type(value = CorefTaskSolutionRequestBody.class, name = TaskType.Name.COREF)
-})
-public abstract class TaskSolutionRequestBody<C> {
+public class TaskSolutionRequestBody {
 
     private final TaskType taskType;
     private final UUID id;
+    private final List<Integer> content;
 
-    protected TaskSolutionRequestBody(TaskType taskType, UUID instanceId) {
+    protected TaskSolutionRequestBody(TaskType taskType, UUID instanceId, List<Integer> content) {
         this.taskType = taskType;
         this.id = instanceId;
+        this.content = content;
     }
 
     public UUID getId() {
@@ -29,5 +25,7 @@ public abstract class TaskSolutionRequestBody<C> {
         return taskType;
     }
 
-    public abstract C getContent();
+    public List<Integer> getContent() {
+        return content;
+    }
 }

@@ -2,8 +2,7 @@ package com.textcaptcha.taskmanager.service.impl;
 
 import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.data.model.CaptchaFlow;
-import com.textcaptcha.data.model.response.NerCaptchaTaskResponse;
-import com.textcaptcha.data.model.response.content.NerCaptchaTaskResponseContent;
+import com.textcaptcha.data.model.response.CaptchaTaskResponse;
 import com.textcaptcha.data.model.task.CaptchaTask;
 import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.data.repository.CaptchaFlowRepository;
@@ -12,15 +11,18 @@ import com.textcaptcha.dto.ArticleHashPairDto;
 import com.textcaptcha.taskmanager.exception.TaskSelectionException;
 import com.textcaptcha.taskmanager.pojo.CaptchaTaskFlow;
 import com.textcaptcha.taskmanager.pojo.IssuedTaskInstance;
+import com.textcaptcha.taskmanager.pojo.SolutionProcessorResult;
 import com.textcaptcha.taskmanager.service.TaskFlowManager;
 import com.textcaptcha.taskmanager.service.TaskInstanceKeeper;
 import com.textcaptcha.taskmanager.service.TaskSelectionService;
+import com.textcaptcha.taskmanager.service.TaskSolutionProcessor;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -35,6 +37,7 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
     private final TaskInstanceKeeper taskInstanceKeeper;
 
     private final TaskSelectionService taskSelectionService;
+    private final TaskSolutionProcessor taskSolutionProcessor;
 
     private final Map<UUID, UUID> taskFlowMapping;
 
@@ -42,12 +45,14 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
             CaptchaFlowRepository captchaFlowRepository,
             CaptchaTaskResponseRepository taskResponseRepository,
             TaskInstanceKeeper taskInstanceKeeper,
-            TaskSelectionService taskSelectionService
+            TaskSelectionService taskSelectionService,
+            TaskSolutionProcessor taskSolutionProcessor
     ) {
         this.captchaFlowRepository = captchaFlowRepository;
         this.taskResponseRepository = taskResponseRepository;
         this.taskInstanceKeeper = taskInstanceKeeper;
         this.taskSelectionService = taskSelectionService;
+        this.taskSolutionProcessor = taskSolutionProcessor;
         taskFlowMapping = new HashMap<>();
     }
 
@@ -65,16 +70,8 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
     }
 
     @Override
-    public CaptchaTaskFlow continueFlow(UUID taskInstanceId, Object taskSolution) {
-        IssuedTaskInstance taskInstance = taskInstanceKeeper.invalidate(taskInstanceId);
-
+    public CaptchaTaskFlow continueFlow(UUID taskInstanceId, List<Integer> taskSolution) {
         UUID flowInstanceId = taskFlowMapping.get(taskInstanceId);
-
-        if (taskInstance == null) {
-            logger.trace("Received task response for invalid instance ID: " + taskInstanceId);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid task instance ID.");
-        }
-
         if (flowInstanceId == null) {
             logger.trace("Received task response for invalid flow ID: " + flowInstanceId);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid task instance ID.");
@@ -87,7 +84,13 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
             f = captchaFlowRepository.save(f);
         }
 
-        boolean isOk = verifyTaskInstance(taskInstance, f, taskSolution);
+        SolutionProcessorResult solutionProcessorResult = taskSolutionProcessor.processSolution(taskInstanceId, taskSolution);
+
+        CaptchaTaskResponse r = solutionProcessorResult.getTaskResponse();
+        r.setCaptchaFlow(f);
+        r = taskResponseRepository.save(r);
+
+        boolean isOk = true; // TODO
         boolean shouldGiveNextTask = true;
 
         if (!f.isCompleteSanity()) {
@@ -100,6 +103,7 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
         } else if (!f.isCompleteTrusted()) {
             if (isOk) {
                 f.setCompleteTrusted(true);
+                f = captchaFlowRepository.save(f);
                 shouldGiveNextTask = false;
             } else {
                 // do nothing
@@ -109,7 +113,7 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
         if (!shouldGiveNextTask) {
             return new CaptchaTaskFlow(f, null);
         } else {
-            CaptchaTask t = taskInstance.getTask();
+            CaptchaTask t = solutionProcessorResult.getTaskResponse().getCaptchaTask();
             IssuedTaskInstance issuedTaskInstance = getTaskInstance(t.getTaskType(), t.getArticleHashes());
             taskFlowMapping.put(issuedTaskInstance.getId(), f.getUuid());
             return new CaptchaTaskFlow(f, issuedTaskInstance);
@@ -123,22 +127,7 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
         } catch (TaskSelectionException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
-
-        UUID taskInstanceId = taskInstanceKeeper.issue(task);
-        logger.debug("Issued task ID " + task.getId() + " with instance ID " + taskInstanceId + ".");
-        return new IssuedTaskInstance(taskInstanceId, task);
+        return taskInstanceKeeper.issue(task);
     }
 
-    private boolean verifyTaskInstance(IssuedTaskInstance taskInstance, CaptchaFlow flow, Object taskSolution) {
-        UUID instanceId = taskInstance.getId();
-        CaptchaTask task = taskInstance.getTask();
-
-        NerCaptchaTaskResponse r = new NerCaptchaTaskResponse();
-        r.setCaptchaTask(task);
-        r.setContent(new NerCaptchaTaskResponseContent());
-        r.setCaptchaFlow(flow);
-        r = taskResponseRepository.save(r);
-
-        return true;
-    }
 }

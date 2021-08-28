@@ -35,7 +35,7 @@ public class FlowController {
 
         CaptchaTaskFlow flow = taskFlowManager.beginFlow(body.getHashes());
 
-        return new CaptchaFlowDto(TaskInstanceDto.fromIssuedTaskInstance(flow.getTaskInstance().getId(), flow.getTaskInstance().getTask()));
+        return new CaptchaFlowDto(TaskInstanceDto.fromIssuedTaskInstance(flow.getTaskInstance()));
     }
 
     @PostMapping("/continue")

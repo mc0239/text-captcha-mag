@@ -12,12 +12,13 @@ import com.textcaptcha.data.model.task.NerCaptchaTask;
 import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.data.model.task.content.CorefCaptchaTaskContent;
 import com.textcaptcha.data.model.task.content.NerCaptchaTaskContent;
-import com.textcaptcha.data.repository.CaptchaTaskRepository;
 import com.textcaptcha.data.repository.CaptchaTaskResponseRepository;
 import com.textcaptcha.taskmanager.dto.*;
 import com.textcaptcha.taskmanager.exception.InvalidTaskTypeException;
+import com.textcaptcha.taskmanager.exception.TaskSelectionException;
 import com.textcaptcha.taskmanager.pojo.IssuedTaskInstance;
 import com.textcaptcha.taskmanager.service.TaskInstanceKeeper;
+import com.textcaptcha.taskmanager.service.TaskSelectionService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.UUID;
 
 @RestController
@@ -40,18 +40,18 @@ public class TaskController {
     private Logger logger;
 
     private final TaskInstanceKeeper taskInstanceKeeper;
-    private final CaptchaTaskRepository captchaTaskRepository;
     private final CaptchaTaskResponseRepository taskResponseRepository;
+    private final TaskSelectionService taskSelectionService;
 
     @Autowired
     public TaskController(
             TaskInstanceKeeper taskInstanceKeeper,
-            CaptchaTaskRepository captchaTaskRepository,
-            CaptchaTaskResponseRepository taskResponseRepository
+            CaptchaTaskResponseRepository taskResponseRepository,
+            TaskSelectionService taskSelectionService
     ) {
         this.taskInstanceKeeper = taskInstanceKeeper;
-        this.captchaTaskRepository = captchaTaskRepository;
         this.taskResponseRepository = taskResponseRepository;
+        this.taskSelectionService = taskSelectionService;
     }
 
     @PostMapping("/request")
@@ -81,24 +81,17 @@ public class TaskController {
     }
 
     private TaskInstanceDto getTaskInstance(TaskRequestRequestBody body) {
-        if (!body.hasHashes()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request is missing articleUrlHash and/or articleTextHash parameter(s).");
+        CaptchaTask task;
+        try {
+            task = taskSelectionService.getTask(TaskType.valueOf(body.getTaskType()), body.getHashes());
+        } catch (TaskSelectionException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
 
-        List<CaptchaTask> tasks = captchaTaskRepository.getTasks(TaskType.valueOf(body.getTaskType()), body.getUrlHash(), body.getTextHash());
+        UUID taskInstanceId = taskInstanceKeeper.issue(task);
 
-        if (tasks.isEmpty()) {
-            // TODO what if it's just ingest still in progress? There's a better way to handle this.
-            // TODO what to even do here? Is it possible to have a processed article with NO tasks?
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No tasks available.");
-        }
-
-        Random r = new Random();
-        CaptchaTask selectedTask = tasks.get(r.nextInt(tasks.size()));
-        UUID taskInstanceId = taskInstanceKeeper.issue(selectedTask);
-
-        logger.debug("Issued task ID " + selectedTask.getId() + " with instance ID " + taskInstanceId + ".");
-        return TaskInstanceDto.fromIssuedTaskInstance(taskInstanceId, selectedTask);
+        logger.debug("Issued task ID " + task.getId() + " with instance ID " + taskInstanceId + ".");
+        return TaskInstanceDto.fromIssuedTaskInstance(taskInstanceId, task);
     }
 
     private TaskSolutionResponseDto postNerSolution(NerTaskSolutionRequestBody body) {
@@ -198,7 +191,7 @@ public class TaskController {
             }
 
             if (isSelected) {
-                if(currentClusterIsCorrect) {
+                if (currentClusterIsCorrect) {
                     truePositives++;
                 } else {
                     trueNegatives++;

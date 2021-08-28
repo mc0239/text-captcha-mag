@@ -7,21 +7,24 @@ import com.textcaptcha.data.model.response.content.NerCaptchaTaskResponseContent
 import com.textcaptcha.data.model.task.CaptchaTask;
 import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.data.repository.CaptchaFlowRepository;
-import com.textcaptcha.data.repository.CaptchaTaskRepository;
 import com.textcaptcha.data.repository.CaptchaTaskResponseRepository;
 import com.textcaptcha.dto.ArticleHashPairDto;
 import com.textcaptcha.taskmanager.dto.TaskRequestRequestBody;
 import com.textcaptcha.taskmanager.dto.TaskSolutionRequestBody;
+import com.textcaptcha.taskmanager.exception.TaskSelectionException;
 import com.textcaptcha.taskmanager.pojo.CaptchaTaskFlow;
 import com.textcaptcha.taskmanager.pojo.IssuedTaskInstance;
 import com.textcaptcha.taskmanager.service.TaskFlowManager;
 import com.textcaptcha.taskmanager.service.TaskInstanceKeeper;
+import com.textcaptcha.taskmanager.service.TaskSelectionService;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class TaskFlowManagerImpl implements TaskFlowManager {
@@ -29,23 +32,24 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
     @Loggable
     Logger logger;
 
-    private final CaptchaTaskRepository captchaTaskRepository;
     private final CaptchaFlowRepository captchaFlowRepository;
     private final CaptchaTaskResponseRepository taskResponseRepository;
     private final TaskInstanceKeeper taskInstanceKeeper;
 
+    private final TaskSelectionService taskSelectionService;
+
     private final Map<UUID, UUID> taskFlowMapping;
 
     public TaskFlowManagerImpl(
-            CaptchaTaskRepository captchaTaskRepository,
             CaptchaFlowRepository captchaFlowRepository,
             CaptchaTaskResponseRepository taskResponseRepository,
-            TaskInstanceKeeper taskInstanceKeeper
+            TaskInstanceKeeper taskInstanceKeeper,
+            TaskSelectionService taskSelectionService
     ) {
-        this.captchaTaskRepository = captchaTaskRepository;
         this.captchaFlowRepository = captchaFlowRepository;
         this.taskResponseRepository = taskResponseRepository;
         this.taskInstanceKeeper = taskInstanceKeeper;
+        this.taskSelectionService = taskSelectionService;
         taskFlowMapping = new HashMap<>();
     }
 
@@ -115,24 +119,16 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
     }
 
     private IssuedTaskInstance getTaskInstance(TaskType taskType, ArticleHashPairDto articleHashes) {
-        if (!articleHashes.hasHashes()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request is missing articleUrlHash and/or articleTextHash parameter(s).");
+        CaptchaTask task;
+        try {
+            task = taskSelectionService.getTask(taskType, articleHashes);
+        } catch (TaskSelectionException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
 
-        List<CaptchaTask> tasks = captchaTaskRepository.getTasks(taskType, articleHashes.getUrlHash(), articleHashes.getTextHash());
-
-        if (tasks.isEmpty()) {
-            // TODO what if it's just ingest still in progress? There's a better way to handle this.
-            // TODO what to even do here? Is it possible to have a processed article with NO tasks?
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No tasks available.");
-        }
-
-        Random r = new Random();
-        CaptchaTask selectedTask = tasks.get(r.nextInt(tasks.size()));
-        UUID taskInstanceId = taskInstanceKeeper.issue(selectedTask);
-
-        logger.debug("Issued task ID " + selectedTask.getId() + " with instance ID " + taskInstanceId + ".");
-        return new IssuedTaskInstance(taskInstanceId, selectedTask);
+        UUID taskInstanceId = taskInstanceKeeper.issue(task);
+        logger.debug("Issued task ID " + task.getId() + " with instance ID " + taskInstanceId + ".");
+        return new IssuedTaskInstance(taskInstanceId, task);
     }
 
     private boolean verifyTaskInstance(IssuedTaskInstance taskInstance, CaptchaFlow flow, /*Ner*/TaskSolutionRequestBody body) {

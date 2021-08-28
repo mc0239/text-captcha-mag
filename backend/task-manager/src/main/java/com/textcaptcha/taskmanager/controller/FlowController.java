@@ -33,7 +33,7 @@ public class FlowController {
         // begins a new captcha flow. server keeps a flowInstanceId and related task instanceIds.
         // returns a task instance and its id.
 
-        CaptchaTaskFlow flow = taskFlowManager.beginFlow(body);
+        CaptchaTaskFlow flow = taskFlowManager.beginFlow(body.getHashes());
 
         return new CaptchaFlowDto(TaskInstanceDto.fromIssuedTaskInstance(flow.getTaskInstance().getId(), flow.getTaskInstance().getTask()));
     }
@@ -43,7 +43,7 @@ public class FlowController {
         // continues a started captcha flow. server validates given task solution and either proceeds to next task or
         // considers task flow successful
 
-        CaptchaTaskFlow flow = taskFlowManager.continueFlow(body);
+        CaptchaTaskFlow flow = taskFlowManager.continueFlow(body.getId(), body.getContent());
 
         if (flow.getCaptchaFlow().isCompleteTrusted()) {
             return new CaptchaFlowDto(true);

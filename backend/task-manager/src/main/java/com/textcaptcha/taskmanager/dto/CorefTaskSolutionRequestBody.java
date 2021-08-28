@@ -1,18 +1,25 @@
 package com.textcaptcha.taskmanager.dto;
 
-import java.util.ArrayList;
+import com.textcaptcha.data.model.task.TaskType;
+
 import java.util.List;
+import java.util.UUID;
 
-public class CorefTaskSolutionRequestBody extends TaskSolutionRequestBody {
+public class CorefTaskSolutionRequestBody extends TaskSolutionRequestBody<List<Integer>> {
 
-    private List<Integer> indexes = new ArrayList<>();
+    private final List<Integer> indexes;
+
+    public CorefTaskSolutionRequestBody(TaskType taskType, UUID instanceId, List<Integer> content) {
+        super(taskType, instanceId);
+        this.indexes = content;
+    }
 
     public List<Integer> getIndexes() {
         return indexes;
     }
 
-    public void setIndexes(List<Integer> indexes) {
-        this.indexes = indexes;
+    @Override
+    public List<Integer> getContent() {
+        return indexes;
     }
-
 }

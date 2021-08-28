@@ -9,8 +9,6 @@ import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.data.repository.CaptchaFlowRepository;
 import com.textcaptcha.data.repository.CaptchaTaskResponseRepository;
 import com.textcaptcha.dto.ArticleHashPairDto;
-import com.textcaptcha.taskmanager.dto.TaskRequestRequestBody;
-import com.textcaptcha.taskmanager.dto.TaskSolutionRequestBody;
 import com.textcaptcha.taskmanager.exception.TaskSelectionException;
 import com.textcaptcha.taskmanager.pojo.CaptchaTaskFlow;
 import com.textcaptcha.taskmanager.pojo.IssuedTaskInstance;
@@ -54,20 +52,20 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
     }
 
     @Override
-    public CaptchaTaskFlow beginFlow(TaskRequestRequestBody body) {
+    public CaptchaTaskFlow beginFlow(ArticleHashPairDto articleHashes) {
         UUID flowId = UUID.randomUUID();
         CaptchaFlow flow = new CaptchaFlow();
         flow.setUuid(flowId);
 
-        IssuedTaskInstance issuedTaskInstance = getTaskInstance(TaskType.valueOf(body.getTaskType()), body.getHashes());
+        // TODO flow always starts with NER type task.
+        IssuedTaskInstance issuedTaskInstance = getTaskInstance(TaskType.NER, articleHashes);
         taskFlowMapping.put(issuedTaskInstance.getId(), flowId);
 
         return new CaptchaTaskFlow(flow, issuedTaskInstance);
     }
 
     @Override
-    public CaptchaTaskFlow continueFlow(TaskSolutionRequestBody body) {
-        UUID taskInstanceId = body.getId();
+    public CaptchaTaskFlow continueFlow(UUID taskInstanceId, Object taskSolution) {
         IssuedTaskInstance taskInstance = taskInstanceKeeper.invalidate(taskInstanceId);
 
         UUID flowInstanceId = taskFlowMapping.get(taskInstanceId);
@@ -89,7 +87,7 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
             f = captchaFlowRepository.save(f);
         }
 
-        boolean isOk = verifyTaskInstance(taskInstance, f, body);
+        boolean isOk = verifyTaskInstance(taskInstance, f, taskSolution);
         boolean shouldGiveNextTask = true;
 
         if (!f.isCompleteSanity()) {
@@ -131,7 +129,7 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
         return new IssuedTaskInstance(taskInstanceId, task);
     }
 
-    private boolean verifyTaskInstance(IssuedTaskInstance taskInstance, CaptchaFlow flow, /*Ner*/TaskSolutionRequestBody body) {
+    private boolean verifyTaskInstance(IssuedTaskInstance taskInstance, CaptchaFlow flow, Object taskSolution) {
         UUID instanceId = taskInstance.getId();
         CaptchaTask task = taskInstance.getTask();
 

@@ -1,12 +1,13 @@
 package com.textcaptcha.taskmanager.service;
 
-import com.textcaptcha.taskmanager.dto.TaskRequestRequestBody;
-import com.textcaptcha.taskmanager.dto.TaskSolutionRequestBody;
+import com.textcaptcha.dto.ArticleHashPairDto;
 import com.textcaptcha.taskmanager.pojo.CaptchaTaskFlow;
+
+import java.util.UUID;
 
 public interface TaskFlowManager {
 
-    CaptchaTaskFlow beginFlow(TaskRequestRequestBody body);
-    CaptchaTaskFlow continueFlow(TaskSolutionRequestBody body);
+    CaptchaTaskFlow beginFlow(ArticleHashPairDto articleHashes);
+    CaptchaTaskFlow continueFlow(UUID taskInstanceId, Object taskSolution);
 
 }

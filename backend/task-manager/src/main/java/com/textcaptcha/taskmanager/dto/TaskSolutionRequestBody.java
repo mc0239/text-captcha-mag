@@ -11,25 +11,23 @@ import java.util.UUID;
         @JsonSubTypes.Type(value = NerTaskSolutionRequestBody.class, name = TaskType.Name.NER),
         @JsonSubTypes.Type(value = CorefTaskSolutionRequestBody.class, name = TaskType.Name.COREF)
 })
-public abstract class TaskSolutionRequestBody {
+public abstract class TaskSolutionRequestBody<C> {
 
-    private TaskType taskType;
+    private final TaskType taskType;
+    private final UUID id;
 
-    private UUID id;
+    protected TaskSolutionRequestBody(TaskType taskType, UUID instanceId) {
+        this.taskType = taskType;
+        this.id = instanceId;
+    }
 
     public UUID getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public TaskType getTaskType() {
         return taskType;
     }
 
-    public void setTaskType(TaskType taskType) {
-        this.taskType = taskType;
-    }
+    public abstract C getContent();
 }

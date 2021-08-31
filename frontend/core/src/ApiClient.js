@@ -6,6 +6,8 @@ const managerApiUrl = "http://localhost:8020";
 const ingestUrl = ingestApiUrl + "/ingest";
 const taskRequestUrl = managerApiUrl + "/task/request";
 const taskResponseUrl = managerApiUrl + "/task/response";
+const flowBeginUrl = managerApiUrl + "/flow/begin";
+const flowContinueUrl = managerApiUrl + "/flow/continue";
 
 async function myFetch(url, fetchOptions) {
   console.log("Making a request to ", url);
@@ -59,11 +61,39 @@ async function taskResponse(taskSolutionObject) {
   return await myFetch(taskResponseUrl, fetchOptions);
 }
 
+async function flowBegin(articleIdentifyingObject) {
+  const fetchOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(articleIdentifyingObject),
+  };
+
+  return await myFetch(flowBeginUrl, fetchOptions);
+}
+
+async function flowContinue(taskSolutionObject) {
+  const fetchOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(taskSolutionObject),
+  };
+
+  return await myFetch(flowContinueUrl, fetchOptions);
+}
+
 const ApiClient = {
   ingest: ingest,
   task: {
     request: taskRequest,
     response: taskResponse,
+  },
+  flow: {
+    begin: flowBegin,
+    continue: flowContinue,
   },
 };
 

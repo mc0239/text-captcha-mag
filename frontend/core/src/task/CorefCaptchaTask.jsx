@@ -103,7 +103,7 @@ class CorefCaptchaTask extends React.Component {
               );
               onSubmit({
                 taskType: "COREF",
-                indexes: result,
+                content: result,
               });
             }}
           >

@@ -95,7 +95,7 @@ class NerCaptchaTask extends React.Component {
               );
               onSubmit({
                 taskType: "NER",
-                indexes: result,
+                content: result,
               });
             }}
           >

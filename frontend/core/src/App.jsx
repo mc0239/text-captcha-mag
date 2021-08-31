@@ -28,8 +28,7 @@ class App extends React.Component {
       currentState: AppState.INGEST_LOADING,
 
       ingestData: null,
-      captchaTask: null,
-      captchaTaskResponse: null,
+      flowState: null,
     };
   }
 
@@ -56,13 +55,13 @@ class App extends React.Component {
   makeTaskRequest = async (taskType) => {
     this.setState({ currentState: AppState.TASK_LOADING });
     try {
-      const data = await ApiClient.task.request({
+      const data = await ApiClient.flow.begin({
         ...this.state.ingestData,
         taskType: taskType,
       });
       this.setState({
         currentState: AppState.TASK_SHOW,
-        captchaTask: data,
+        flowState: data,
       });
     } catch (e) {
       console.error(e);
@@ -73,15 +72,16 @@ class App extends React.Component {
   makeTaskResponse = async (content) => {
     this.setState({ currentState: AppState.TASK_SUBMITTING });
     try {
-      const data = await ApiClient.task.response({
-        id: this.state.captchaTask.id,
+      const data = await ApiClient.flow["continue"]({
+        id: this.state.flowState.task.id,
         ...content,
       });
       console.log(data);
       this.setState({
-        currentState: AppState.TASK_DONE,
-        captchaTask: null,
-        captchaTaskResponse: data,
+        currentState: data?.flowComplete
+          ? AppState.TASK_DONE
+          : AppState.TASK_SHOW,
+        flowState: data,
       });
     } catch (e) {
       console.error(e);
@@ -116,7 +116,7 @@ class App extends React.Component {
       case AppState.TASK_SUBMITTING:
         return (
           <CaptchaTask
-            task={this.state.captchaTask}
+            task={this.state.flowState?.task}
             isLoading={
               this.state.currentState === AppState.TASK_LOADING ||
               this.state.currentState === AppState.TASK_SUBMITTING
@@ -134,7 +134,7 @@ class App extends React.Component {
             onStart={(taskType) => {
               this.makeTaskRequest(taskType);
             }}
-            content={this.state.captchaTaskResponse.content}
+            content={"Naloga uspešno zaključena."}
           />
         );
 

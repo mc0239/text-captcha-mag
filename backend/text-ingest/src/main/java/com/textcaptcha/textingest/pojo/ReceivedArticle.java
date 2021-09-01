@@ -26,7 +26,7 @@ public class ReceivedArticle extends ArticleHashPairDto {
     public String toString() {
         return "ReceivedArticle{" +
                 "url='" + url + '\'' +
-                ", text='" + text + '\'' +
+                ", text.length='" + text.length() + '\'' +
                 "} " + super.toString();
     }
 }

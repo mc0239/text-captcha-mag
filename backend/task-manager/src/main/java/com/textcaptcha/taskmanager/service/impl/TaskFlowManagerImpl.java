@@ -8,6 +8,7 @@ import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.data.repository.CaptchaFlowRepository;
 import com.textcaptcha.data.repository.CaptchaTaskResponseRepository;
 import com.textcaptcha.dto.ArticleHashPairDto;
+import com.textcaptcha.taskmanager.exception.NoTasksAvailableException;
 import com.textcaptcha.taskmanager.exception.TaskSelectionException;
 import com.textcaptcha.taskmanager.pojo.CaptchaTaskFlow;
 import com.textcaptcha.taskmanager.pojo.IssuedTaskInstance;
@@ -57,13 +58,16 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
     }
 
     @Override
-    public CaptchaTaskFlow beginFlow(ArticleHashPairDto articleHashes) {
+    public CaptchaTaskFlow beginFlow(TaskType taskType, ArticleHashPairDto articleHashes) {
         UUID flowId = UUID.randomUUID();
         CaptchaFlow flow = new CaptchaFlow();
         flow.setUuid(flowId);
 
-        // TODO flow always starts with NER type task.
-        IssuedTaskInstance issuedTaskInstance = getTaskInstance(TaskType.NER, articleHashes);
+        IssuedTaskInstance issuedTaskInstance = getTaskInstance(taskType, articleHashes, null);
+        if (issuedTaskInstance == null) {
+            logger.error("Empty CAPTCHA flow cannot be considered successful.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         taskFlowMapping.put(issuedTaskInstance.getId(), flowId);
 
         return new CaptchaTaskFlow(flow, issuedTaskInstance);
@@ -96,34 +100,50 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
         if (!f.isCompleteSanity()) {
             if (isOk) {
                 f.setCompleteSanity(true);
-                f = captchaFlowRepository.save(f);
-            } else {
-                // do nothing
             }
         } else if (!f.isCompleteTrusted()) {
             if (isOk) {
                 f.setCompleteTrusted(true);
-                f = captchaFlowRepository.save(f);
                 shouldGiveNextTask = false;
-            } else {
-                // do nothing
             }
         }
+
+        f = captchaFlowRepository.save(f);
 
         if (!shouldGiveNextTask) {
             return new CaptchaTaskFlow(f, null);
         } else {
             CaptchaTask t = solutionProcessorResult.getTaskResponse().getCaptchaTask();
-            IssuedTaskInstance issuedTaskInstance = getTaskInstance(t.getTaskType(), t.getArticleHashes());
+            IssuedTaskInstance issuedTaskInstance = getTaskInstance(t.getTaskType(), t.getArticleHashes(), f);
+            if (issuedTaskInstance == null) {
+                f.setCompleteTrusted(true);
+                f = captchaFlowRepository.save(f);
+                return new CaptchaTaskFlow(f, null);
+            }
             taskFlowMapping.put(issuedTaskInstance.getId(), f.getUuid());
             return new CaptchaTaskFlow(f, issuedTaskInstance);
         }
     }
 
-    private IssuedTaskInstance getTaskInstance(TaskType taskType, ArticleHashPairDto articleHashes) {
+    private IssuedTaskInstance getTaskInstance(TaskType taskType, ArticleHashPairDto articleHashes, CaptchaFlow flow) {
         CaptchaTask task;
         try {
-            task = taskSelectionService.getTask(taskType, articleHashes);
+            if (flow != null) {
+                try {
+                    task = taskSelectionService.getRandomTaskForArticleNotYetInFlow(taskType, articleHashes, flow);
+                } catch (NoTasksAvailableException e) {
+                    if (flow.isCompleteSanity()) {
+                        // if sanity check was complete and there are no more tasks available, we consider flow
+                        // successful.
+                        return null;
+                    } else {
+                        throw e;
+                    }
+                }
+
+            } else {
+                task = taskSelectionService.getRandomTaskForArticle(taskType, articleHashes);
+            }
         } catch (TaskSelectionException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

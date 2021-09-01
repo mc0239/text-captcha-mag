@@ -69,7 +69,7 @@ public class TaskController {
     private IssuedTaskInstance getTaskInstance(TaskRequestRequestBody body) {
         CaptchaTask task;
         try {
-            task = taskSelectionService.getTask(TaskType.valueOf(body.getTaskType()), body.getHashes());
+            task = taskSelectionService.getRandomTaskForArticle(TaskType.valueOf(body.getTaskType()), body.getHashes());
         } catch (TaskSelectionException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

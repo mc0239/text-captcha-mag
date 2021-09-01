@@ -1,10 +1,12 @@
 package com.textcaptcha.taskmanager.controller;
 
 import com.textcaptcha.annotation.Loggable;
+import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.taskmanager.dto.CaptchaFlowDto;
 import com.textcaptcha.taskmanager.dto.TaskInstanceDto;
 import com.textcaptcha.taskmanager.dto.TaskRequestRequestBody;
 import com.textcaptcha.taskmanager.dto.TaskSolutionRequestBody;
+import com.textcaptcha.taskmanager.exception.InvalidTaskTypeException;
 import com.textcaptcha.taskmanager.pojo.CaptchaTaskFlow;
 import com.textcaptcha.taskmanager.service.TaskFlowManager;
 import org.slf4j.Logger;
@@ -30,18 +32,22 @@ public class FlowController {
 
     @PostMapping("/begin")
     public CaptchaFlowDto beginTaskFlow(@RequestBody TaskRequestRequestBody body) {
-        // begins a new captcha flow. server keeps a flowInstanceId and related task instanceIds.
-        // returns a task instance and its id.
+        logger.debug("Received flow begin request: " + body.toString());
 
-        CaptchaTaskFlow flow = taskFlowManager.beginFlow(body.getHashes());
+        try {
+            TaskType.valueOf(body.getTaskType());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new InvalidTaskTypeException(e);
+        }
+
+        CaptchaTaskFlow flow = taskFlowManager.beginFlow(TaskType.valueOf(body.getTaskType()), body.getHashes());
 
         return new CaptchaFlowDto(TaskInstanceDto.fromIssuedTaskInstance(flow.getTaskInstance()));
     }
 
     @PostMapping("/continue")
     public CaptchaFlowDto continueTaskFlow(@RequestBody TaskSolutionRequestBody body) {
-        // continues a started captcha flow. server validates given task solution and either proceeds to next task or
-        // considers task flow successful
+        logger.debug("Received flow continue request: " + body.toString());
 
         CaptchaTaskFlow flow = taskFlowManager.continueFlow(body.getId(), body.getContent());
 

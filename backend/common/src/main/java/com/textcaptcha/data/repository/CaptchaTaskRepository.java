@@ -16,9 +16,9 @@ public interface CaptchaTaskRepository extends JpaRepository<CaptchaTask, Long> 
             "WHERE c.taskType = (:taskType) " +
             "AND c.articleUrlHash = (:articleUrlHash) " +
             "AND c.articleTextHash = (:articleTextHash) " +
-            "AND c.id IN (" +
+            "AND c.id NOT IN (" +
             "SELECT DISTINCT ct.captchaTask.id FROM CaptchaTaskResponse ct " +
-            "WHERE ct.captchaFlow.id != (:captchaTaskFlowId)" +
+            "WHERE ct.captchaFlow.id = (:captchaTaskFlowId)" +
             ")")
     List<CaptchaTask> getTasksNotInFlow(TaskType taskType, String articleUrlHash, String articleTextHash, Long captchaTaskFlowId);
 

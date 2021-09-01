@@ -9,4 +9,4 @@ spring:
     password: "demo"
   jpa:
     database: postgresql
-    show-sql: true
+    show-sql: false

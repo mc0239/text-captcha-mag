@@ -93,19 +93,17 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
         CaptchaTaskResponse r = solutionProcessorResult.getTaskResponse();
         r.setCaptchaFlow(f);
 
-        boolean isOk = true; // TODO
+        boolean isOk = solutionProcessorResult.getCheckResult().isSuccessful();
         boolean shouldGiveNextTask = true;
 
         if (!f.isCompleteSanity()) {
+            r.setSanity(true);
             if (isOk) {
                 f.setCompleteSanity(true);
-                r.setSanity(true);
             }
-        } else if (!f.isCompleteTrusted()) {
-            if (isOk) {
-                f.setCompleteTrusted(true);
-                shouldGiveNextTask = false;
-            }
+        } else /*if (!f.isCompleteTrusted())*/ {
+            f.setCompleteTrusted(true);
+            shouldGiveNextTask = false;
         }
 
         r = taskResponseRepository.save(r);

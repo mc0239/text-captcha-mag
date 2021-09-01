@@ -40,6 +40,9 @@ public abstract class CaptchaTaskResponse implements IdentifiableEntity<Long> {
     @Convert(converter = CaptchaTaskResponseContentConverter.class)
     protected CaptchaTaskResponseContent content;
 
+    @Column(name = "is_sanity")
+    protected Boolean isSanity = false;
+
     @CreatedDate
     private Date createdAt;
 
@@ -73,6 +76,14 @@ public abstract class CaptchaTaskResponse implements IdentifiableEntity<Long> {
 
     public void setContent(CaptchaTaskResponseContent content) {
         this.content = content;
+    }
+
+    public Boolean getSanity() {
+        return isSanity;
+    }
+
+    public void setSanity(Boolean sanity) {
+        isSanity = sanity;
     }
 
     public Date getCreatedAt() {

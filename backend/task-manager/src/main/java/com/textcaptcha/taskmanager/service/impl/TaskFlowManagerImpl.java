@@ -92,7 +92,6 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
 
         CaptchaTaskResponse r = solutionProcessorResult.getTaskResponse();
         r.setCaptchaFlow(f);
-        r = taskResponseRepository.save(r);
 
         boolean isOk = true; // TODO
         boolean shouldGiveNextTask = true;
@@ -100,6 +99,7 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
         if (!f.isCompleteSanity()) {
             if (isOk) {
                 f.setCompleteSanity(true);
+                r.setSanity(true);
             }
         } else if (!f.isCompleteTrusted()) {
             if (isOk) {
@@ -108,6 +108,7 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
             }
         }
 
+        r = taskResponseRepository.save(r);
         f = captchaFlowRepository.save(f);
 
         if (!shouldGiveNextTask) {

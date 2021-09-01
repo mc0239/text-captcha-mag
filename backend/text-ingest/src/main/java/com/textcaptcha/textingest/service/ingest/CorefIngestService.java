@@ -1,6 +1,5 @@
 package com.textcaptcha.textingest.service.ingest;
 
-import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.textingest.dto.ClasslaApiResponse;
 import com.textcaptcha.textingest.exception.AnnotatorException;
 import com.textcaptcha.textingest.exception.IngestException;
@@ -10,6 +9,7 @@ import com.textcaptcha.textingest.service.annotator.ClasslaAnnotatorService;
 import com.textcaptcha.textingest.service.annotator.CorefAnnotatorService;
 import com.textcaptcha.textingest.service.taskgen.CorefTaskGeneratorService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +17,7 @@ import java.util.List;
 @Service
 public class CorefIngestService implements IngestService {
 
-    @Loggable
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ClasslaAnnotatorService classlaAnnotatorService;
     private final CorefAnnotatorService corefAnnotatorService;

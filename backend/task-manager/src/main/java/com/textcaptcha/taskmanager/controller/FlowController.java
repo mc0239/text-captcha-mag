@@ -1,6 +1,5 @@
 package com.textcaptcha.taskmanager.controller;
 
-import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.taskmanager.dto.CaptchaFlowDto;
 import com.textcaptcha.taskmanager.dto.TaskInstanceDto;
@@ -10,6 +9,7 @@ import com.textcaptcha.taskmanager.exception.InvalidTaskTypeException;
 import com.textcaptcha.taskmanager.pojo.CaptchaTaskFlow;
 import com.textcaptcha.taskmanager.service.TaskFlowManager;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/flow")
 public class FlowController {
 
-    @Loggable
-    Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final TaskFlowManager taskFlowManager;
 

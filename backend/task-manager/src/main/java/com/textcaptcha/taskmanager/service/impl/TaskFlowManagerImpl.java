@@ -1,6 +1,5 @@
 package com.textcaptcha.taskmanager.service.impl;
 
-import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.data.model.CaptchaFlow;
 import com.textcaptcha.data.model.response.CaptchaTaskResponse;
 import com.textcaptcha.data.model.task.CaptchaTask;
@@ -18,6 +17,7 @@ import com.textcaptcha.taskmanager.service.TaskInstanceKeeper;
 import com.textcaptcha.taskmanager.service.TaskSelectionService;
 import com.textcaptcha.taskmanager.service.TaskSolutionProcessor;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,8 +30,7 @@ import java.util.UUID;
 @Service
 public class TaskFlowManagerImpl implements TaskFlowManager {
 
-    @Loggable
-    Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final CaptchaFlowRepository captchaFlowRepository;
     private final CaptchaTaskResponseRepository taskResponseRepository;

@@ -1,6 +1,5 @@
 package com.textcaptcha.taskmanager.service.impl;
 
-import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.data.model.CaptchaFlow;
 import com.textcaptcha.data.model.task.CaptchaTask;
 import com.textcaptcha.data.model.task.TaskType;
@@ -10,6 +9,7 @@ import com.textcaptcha.taskmanager.exception.NoTasksAvailableException;
 import com.textcaptcha.taskmanager.exception.TaskSelectionException;
 import com.textcaptcha.taskmanager.service.TaskSelectionService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +18,7 @@ import java.util.Random;
 @Service
 public class TaskSelectionServiceImpl implements TaskSelectionService {
 
-    @Loggable
-    Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final CaptchaTaskRepository captchaTaskRepository;
 

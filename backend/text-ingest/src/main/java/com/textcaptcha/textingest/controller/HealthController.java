@@ -1,8 +1,8 @@
 package com.textcaptcha.textingest.controller;
 
-import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.textingest.config.TextIngestConfigProvider;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +19,7 @@ import java.util.Map;
 @RequestMapping("/health")
 public class HealthController {
 
-    @Loggable
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final TextIngestConfigProvider config;
 

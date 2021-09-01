@@ -1,11 +1,11 @@
 package com.textcaptcha.taskmanager.service.impl;
 
-import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.data.model.task.CorefCaptchaTask;
 import com.textcaptcha.data.model.task.content.CorefCaptchaTaskContent;
 import com.textcaptcha.taskmanager.pojo.SolutionCheckerResult;
 import com.textcaptcha.taskmanager.service.TaskSolutionChecker;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,8 +16,7 @@ import java.util.Optional;
 @Service
 public class CorefTaskSolutionChecker implements TaskSolutionChecker<CorefCaptchaTask> {
 
-    @Loggable
-    Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public SolutionCheckerResult checkSolution(CorefCaptchaTask task, List<Integer> solution) {

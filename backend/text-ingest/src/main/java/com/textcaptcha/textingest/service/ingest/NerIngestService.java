@@ -1,14 +1,13 @@
 package com.textcaptcha.textingest.service.ingest;
 
-import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.textingest.exception.AnnotatorException;
 import com.textcaptcha.textingest.exception.IngestException;
 import com.textcaptcha.textingest.pojo.ReceivedArticle;
 import com.textcaptcha.textingest.pojo.annotator.NerAnnotatedToken;
-import com.textcaptcha.textingest.service.ingest.IngestService;
 import com.textcaptcha.textingest.service.annotator.NerAnnotatorService;
 import com.textcaptcha.textingest.service.taskgen.NerTaskGeneratorService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +16,7 @@ import java.util.List;
 @Service
 public class NerIngestService implements IngestService {
 
-    @Loggable
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final NerAnnotatorService annotatorService;
     private final NerTaskGeneratorService taskGeneratorService;

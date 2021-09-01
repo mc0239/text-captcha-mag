@@ -1,7 +1,6 @@
 package com.textcaptcha.taskmanager.controller;
 
 
-import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.data.model.task.CaptchaTask;
 import com.textcaptcha.data.model.task.TaskType;
 import com.textcaptcha.taskmanager.dto.TaskInstanceDto;
@@ -16,6 +15,7 @@ import com.textcaptcha.taskmanager.service.TaskInstanceKeeper;
 import com.textcaptcha.taskmanager.service.TaskSelectionService;
 import com.textcaptcha.taskmanager.service.TaskSolutionProcessor;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,8 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/task")
 public class TaskController {
 
-    @Loggable
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final TaskInstanceKeeper taskInstanceKeeper;
     private final TaskSelectionService taskSelectionService;

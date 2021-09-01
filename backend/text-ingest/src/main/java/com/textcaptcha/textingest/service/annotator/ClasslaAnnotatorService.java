@@ -1,10 +1,10 @@
 package com.textcaptcha.textingest.service.annotator;
 
-import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.textingest.config.TextIngestConfigProvider;
 import com.textcaptcha.textingest.dto.ClasslaApiResponse;
 import com.textcaptcha.textingest.exception.AnnotatorException;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
@@ -16,8 +16,7 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class ClasslaAnnotatorService implements AnnotatorService<String, ClasslaApiResponse> {
 
-    @Loggable
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final TextIngestConfigProvider config;
     private final RestTemplate rest;

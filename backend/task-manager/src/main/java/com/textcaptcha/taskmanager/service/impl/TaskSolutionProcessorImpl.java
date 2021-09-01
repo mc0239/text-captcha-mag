@@ -1,6 +1,5 @@
 package com.textcaptcha.taskmanager.service.impl;
 
-import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.data.model.response.CaptchaTaskResponse;
 import com.textcaptcha.data.model.response.CorefCaptchaTaskResponse;
 import com.textcaptcha.data.model.response.NerCaptchaTaskResponse;
@@ -17,6 +16,7 @@ import com.textcaptcha.taskmanager.pojo.SolutionProcessorResult;
 import com.textcaptcha.taskmanager.service.TaskInstanceKeeper;
 import com.textcaptcha.taskmanager.service.TaskSolutionProcessor;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,8 +27,7 @@ import java.util.UUID;
 @Service
 public class TaskSolutionProcessorImpl implements TaskSolutionProcessor {
 
-    @Loggable
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final CaptchaTaskResponseRepository taskResponseRepository;
 

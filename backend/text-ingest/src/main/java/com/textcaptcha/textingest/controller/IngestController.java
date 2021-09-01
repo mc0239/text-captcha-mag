@@ -1,6 +1,5 @@
 package com.textcaptcha.textingest.controller;
 
-import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.data.model.IngestedArticle;
 import com.textcaptcha.data.repository.IngestedArticleRepository;
 import com.textcaptcha.textingest.dto.IngestRequestBody;
@@ -11,6 +10,7 @@ import com.textcaptcha.textingest.service.ingest.CorefIngestService;
 import com.textcaptcha.textingest.service.ingest.NerIngestService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,8 +26,7 @@ import java.nio.charset.StandardCharsets;
 @RequestMapping("/ingest")
 public class IngestController {
 
-    @Loggable
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final IngestedArticleRepository articleRepository;
 

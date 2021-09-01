@@ -1,10 +1,10 @@
 package com.textcaptcha.taskmanager.service.impl;
 
-import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.data.model.task.CaptchaTask;
 import com.textcaptcha.taskmanager.pojo.IssuedTaskInstance;
 import com.textcaptcha.taskmanager.service.TaskInstanceKeeper;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class TaskInstanceKeeperImpl implements TaskInstanceKeeper {
 
-    @Loggable
-    Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final long INSTANCE_EXPIRATION = 1000 * 60 * 2;
 

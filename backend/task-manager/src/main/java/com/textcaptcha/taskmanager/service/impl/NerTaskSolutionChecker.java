@@ -1,11 +1,11 @@
 package com.textcaptcha.taskmanager.service.impl;
 
-import com.textcaptcha.annotation.Loggable;
 import com.textcaptcha.data.model.task.NerCaptchaTask;
 import com.textcaptcha.data.model.task.content.NerCaptchaTaskContent;
 import com.textcaptcha.taskmanager.pojo.SolutionCheckerResult;
 import com.textcaptcha.taskmanager.service.TaskSolutionChecker;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +13,7 @@ import java.util.List;
 @Service
 public class NerTaskSolutionChecker implements TaskSolutionChecker<NerCaptchaTask> {
 
-    @Loggable
-    Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public SolutionCheckerResult checkSolution(NerCaptchaTask task, List<Integer> solution) {

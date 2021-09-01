@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="{{ base_path }}/style.css" />
     <style>
         article {
+            white-space: pre-line;
             margin-top: 24px;
             margin-bottom: 24px;
             text-align: justify;
@@ -11,6 +12,10 @@
         span.meta {
             font-size: 0.85em;
             margin-bottom: 16px;
+        }
+        div#text-captcha {
+            margin-top: 4px;
+            margin-bottom: 8px;
         }
     </style>
 </head>
@@ -25,6 +30,8 @@
 <div id="text-captcha"></div>
 
 <a href="{{ base_path }}/">Go back.</a>
+
+<div style="margin-bottom: 300px"></div>
 
 <script src="{{ base_path }}/captcha.js"></script>
 <script>

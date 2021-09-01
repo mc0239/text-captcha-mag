@@ -2,35 +2,30 @@ package com.textcaptcha.integrationdemo;
 
 import com.textcaptcha.integrationdemo.model.Article;
 import com.textcaptcha.integrationdemo.repository.ArticleRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class ShowcaseArticleGenerator {
 
-    public final ArticleRepository repository;
+    private final ArticleRepository repository;
+    private final ResourceLoader resourceLoader;
 
-    @Value("classpath:samples/article1.txt")
-    private Resource articleResource1;
-
-    @Value("classpath:samples/article2.txt")
-    private Resource articleResource2;
-
-    @Value("classpath:samples/article3.txt")
-    private Resource articleResource3;
-
-    public ShowcaseArticleGenerator(ArticleRepository repository) {
+    public ShowcaseArticleGenerator(ArticleRepository repository, ResourceLoader resourceLoader) {
         this.repository = repository;
+        this.resourceLoader = resourceLoader;
     }
 
     public String getResourceContent(Resource resource) {
@@ -43,21 +38,27 @@ public class ShowcaseArticleGenerator {
         }
     }
 
+    public Resource[] getSamples() {
+        try {
+            return ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResources("classpath*:samples/*.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Resource[0];
+        }
+    }
+
     @EventListener
     public void onApplicationStartup(ContextRefreshedEvent event) {
-        Article article1 = new Article();
-        article1.setContent(getResourceContent(articleResource1));
-        article1.setShowcase(true);
+        List<Article> articles = new ArrayList<>();
 
-        Article article2 = new Article();
-        article2.setContent(getResourceContent(articleResource2));
-        article2.setShowcase(true);
+        for (Resource sample : getSamples()) {
+            Article a = new Article();
+            a.setContent(getResourceContent(sample));
+            a.setShowcase(true);
+            articles.add(a);
+        }
 
-        Article article3 = new Article();
-        article3.setContent(getResourceContent(articleResource3));
-        article3.setShowcase(true);
-
-        repository.saveAllAndFlush(Arrays.asList(article1, article2, article3));
+        repository.saveAllAndFlush(articles);
     }
 
 }

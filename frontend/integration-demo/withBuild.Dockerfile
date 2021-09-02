@@ -1,7 +1,7 @@
 #
 # Build stage image
 #
-FROM maven:3-openjdk-11-slim AS mvn-build
+FROM maven:3-openjdk-16-slim AS mvn-build
 COPY . .
 RUN mvn package
 

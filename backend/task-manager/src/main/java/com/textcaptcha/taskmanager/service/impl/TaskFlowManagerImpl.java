@@ -45,7 +45,7 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
             CaptchaFlowRepository captchaFlowRepository,
             CaptchaTaskResponseRepository taskResponseRepository,
             TaskInstanceKeeper taskInstanceKeeper,
-            TaskSelectionService taskSelectionService,
+            ConfidenceTaskSelectionService taskSelectionService,
             TaskSolutionProcessor taskSolutionProcessor
     ) {
         this.captchaFlowRepository = captchaFlowRepository;
@@ -95,10 +95,10 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
         boolean isOk = solutionProcessorResult.getCheckResult().isSuccessful();
         boolean shouldGiveNextTask = true;
 
-        if (!f.isCompleteSanity()) {
-            r.setSanity(true);
+        if (!f.isCompleteVerify()) {
+            r.setVerify(true);
             if (isOk) {
-                f.setCompleteSanity(true);
+                f.setCompleteVerify(true);
             }
         } else /*if (!f.isCompleteTrusted())*/ {
             f.setCompleteTrusted(true);
@@ -128,10 +128,10 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
         try {
             if (flow != null) {
                 try {
-                    task = taskSelectionService.getRandomTaskForArticleNotYetInFlow(taskType, articleHashes, flow);
+                    task = taskSelectionService.getTaskForArticleAndFlow(taskType, articleHashes, flow);
                 } catch (NoTasksAvailableException e) {
-                    if (flow.isCompleteSanity()) {
-                        // if sanity check was complete and there are no more tasks available, we consider flow
+                    if (flow.isCompleteVerify()) {
+                        // if verification is complete and there are no more tasks available, we consider flow
                         // successful.
                         return null;
                     } else {
@@ -140,7 +140,7 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
                 }
 
             } else {
-                task = taskSelectionService.getRandomTaskForArticle(taskType, articleHashes);
+                task = taskSelectionService.getTaskForArticle(taskType, articleHashes);
             }
         } catch (TaskSelectionException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);

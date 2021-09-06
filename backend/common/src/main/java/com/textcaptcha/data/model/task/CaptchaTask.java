@@ -36,6 +36,9 @@ public abstract class CaptchaTask implements IdentifiableEntity<Long> {
     @Convert(converter = CaptchaTaskContentConverter.class)
     protected CaptchaTaskContent content;
 
+    @Column
+    private Float confidence;
+
     @CreatedDate
     private Date createdAt;
 
@@ -80,6 +83,14 @@ public abstract class CaptchaTask implements IdentifiableEntity<Long> {
 
     public void setContent(CaptchaTaskContent content) {
         this.content = content;
+    }
+
+    public Float getConfidence() {
+        return confidence;
+    }
+
+    public void setConfidence(Float confidence) {
+        this.confidence = confidence;
     }
 
     public Date getCreatedAt() {

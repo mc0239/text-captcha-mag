@@ -61,6 +61,7 @@ public class NerTaskGeneratorService implements TaskGeneratorService<List<NerAnn
                     .collect(Collectors.toList());
 
             task.setContent(new NerCaptchaTaskContent(token.getAnnotation(), taskTokens));
+            task.setConfidence(token.getScore().floatValue());
             generatedTasks.add(task);
         }
 

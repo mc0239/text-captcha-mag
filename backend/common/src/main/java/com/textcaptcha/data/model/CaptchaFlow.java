@@ -22,8 +22,8 @@ public class CaptchaFlow implements IdentifiableEntity<Long> {
     @Column
     private UUID uuid;
 
-    @Column(name = "complete_sanity")
-    private Boolean completeSanity = false;
+    @Column(name = "complete_verify")
+    private Boolean completeVerify = false;
 
     @Column(name = "complete_trusted")
     private Boolean completeTrusted = false;
@@ -52,16 +52,16 @@ public class CaptchaFlow implements IdentifiableEntity<Long> {
         this.uuid = uuid;
     }
 
-    public boolean isCompleteSanity() {
-        return completeSanity != null ? completeSanity : false;
+    public boolean isCompleteVerify() {
+        return completeVerify != null ? completeVerify : false;
     }
 
-    public Boolean getCompleteSanity() {
-        return completeSanity;
+    public Boolean getCompleteVerify() {
+        return completeVerify;
     }
 
-    public void setCompleteSanity(Boolean completeSanity) {
-        this.completeSanity = completeSanity;
+    public void setCompleteVerify(Boolean completeVerify) {
+        this.completeVerify = completeVerify;
     }
 
     public boolean isCompleteTrusted() {

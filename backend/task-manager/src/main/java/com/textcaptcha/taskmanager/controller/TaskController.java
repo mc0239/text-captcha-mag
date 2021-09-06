@@ -14,6 +14,7 @@ import com.textcaptcha.taskmanager.pojo.SolutionProcessorResult;
 import com.textcaptcha.taskmanager.service.TaskInstanceKeeper;
 import com.textcaptcha.taskmanager.service.TaskSelectionService;
 import com.textcaptcha.taskmanager.service.TaskSolutionProcessor;
+import com.textcaptcha.taskmanager.service.impl.RandomTaskSelectionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class TaskController {
     @Autowired
     public TaskController(
             TaskInstanceKeeper taskInstanceKeeper,
-            TaskSelectionService taskSelectionService,
+            RandomTaskSelectionService taskSelectionService,
             TaskSolutionProcessor taskSolutionProcessor
     ) {
         this.taskInstanceKeeper = taskInstanceKeeper;
@@ -68,7 +69,7 @@ public class TaskController {
     private IssuedTaskInstance getTaskInstance(TaskRequestRequestBody body) {
         CaptchaTask task;
         try {
-            task = taskSelectionService.getRandomTaskForArticle(TaskType.valueOf(body.getTaskType()), body.getHashes());
+            task = taskSelectionService.getTaskForArticle(TaskType.valueOf(body.getTaskType()), body.getHashes());
         } catch (TaskSelectionException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

@@ -8,7 +8,7 @@ import com.textcaptcha.taskmanager.exception.TaskSelectionException;
 
 public interface TaskSelectionService {
 
-    CaptchaTask getRandomTaskForArticle(TaskType taskType, ArticleHashPairDto articleHashes) throws TaskSelectionException;
+    CaptchaTask getTaskForArticle(TaskType taskType, ArticleHashPairDto articleHashes) throws TaskSelectionException;
+    CaptchaTask getTaskForArticleAndFlow(TaskType taskType, ArticleHashPairDto articleHashes, CaptchaFlow flow) throws TaskSelectionException;
 
-    CaptchaTask getRandomTaskForArticleNotYetInFlow(TaskType taskType, ArticleHashPairDto articleHashes, CaptchaFlow flow) throws TaskSelectionException;
 }

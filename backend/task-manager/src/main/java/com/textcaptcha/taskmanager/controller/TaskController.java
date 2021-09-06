@@ -63,7 +63,7 @@ public class TaskController {
     public TaskSolutionResponseDto postSolution(@RequestBody TaskSolutionRequestBody body) {
         logger.debug("Received task response: " + body.toString());
         SolutionProcessorResult result = taskSolutionProcessor.processSolution(body.getId(), body.getContent());
-        return new TaskSolutionResponseDto(result.getCheckResult().getMessage());
+        return new TaskSolutionResponseDto(result.getCheckResult().toString());
     }
 
     private IssuedTaskInstance getTaskInstance(TaskRequestRequestBody body) {

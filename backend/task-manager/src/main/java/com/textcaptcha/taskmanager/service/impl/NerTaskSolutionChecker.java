@@ -58,15 +58,9 @@ public class NerTaskSolutionChecker implements TaskSolutionChecker<NerCaptchaTas
         double sensitivity = (double) truePositives / (falseNegatives + truePositives);
         double specificity = (double) trueNegatives / (trueNegatives + falsePositives);
 
-        double sensitivityThreshold = 0.75;
-        double specificityThreshold = 0.75;
-
         logger.trace(String.format("TP=%d, FN=%d, FP=%d, TN=%d, sens=%.2f, spec=%.2f", truePositives, falseNegatives, falsePositives, trueNegatives, sensitivity, specificity));
 
-        return new SolutionCheckerResult(
-                sensitivity >= sensitivityThreshold && specificity >= specificityThreshold,
-                String.format("sens=%.2f, spec=%.2f", sensitivity, specificity)
-        );
+        return new SolutionCheckerResult(sensitivity, specificity);
     }
 
 }

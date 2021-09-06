@@ -11,6 +11,7 @@ import com.textcaptcha.taskmanager.exception.NoTasksAvailableException;
 import com.textcaptcha.taskmanager.exception.TaskSelectionException;
 import com.textcaptcha.taskmanager.pojo.CaptchaTaskFlow;
 import com.textcaptcha.taskmanager.pojo.IssuedTaskInstance;
+import com.textcaptcha.taskmanager.pojo.SolutionCheckerResult;
 import com.textcaptcha.taskmanager.pojo.SolutionProcessorResult;
 import com.textcaptcha.taskmanager.service.TaskFlowManager;
 import com.textcaptcha.taskmanager.service.TaskInstanceKeeper;
@@ -88,21 +89,30 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
         }
 
         SolutionProcessorResult solutionProcessorResult = taskSolutionProcessor.processSolution(taskInstanceId, taskSolution);
+        SolutionCheckerResult solutionCheckerResult = solutionProcessorResult.getCheckResult();
 
         CaptchaTaskResponse r = solutionProcessorResult.getTaskResponse();
         r.setCaptchaFlow(f);
 
-        boolean isOk = solutionProcessorResult.getCheckResult().isSuccessful();
-        boolean shouldGiveNextTask = true;
+        double verifySensitivityThreshold = 0.75;
+        double verifySpecificityThreshold = 0.75;
 
+        double trustedSensitivityThreshold = 0.25;
+        double trustedSpecificityThreshold = 0.25;
+
+        boolean shouldGiveNextTask = true;
         if (!f.isCompleteVerify()) {
             r.setVerify(true);
-            if (isOk) {
+            if (solutionCheckerResult.isSuccessful(verifySensitivityThreshold, verifySpecificityThreshold)) {
                 f.setCompleteVerify(true);
             }
-        } else /*if (!f.isCompleteTrusted())*/ {
-            f.setCompleteTrusted(true);
-            shouldGiveNextTask = false;
+
+        } else {
+            if (solutionCheckerResult.isSuccessful(trustedSensitivityThreshold, trustedSpecificityThreshold)) {
+                f.setCompleteTrusted(true);
+                shouldGiveNextTask = false;
+            }
+
         }
 
         r = taskResponseRepository.save(r);

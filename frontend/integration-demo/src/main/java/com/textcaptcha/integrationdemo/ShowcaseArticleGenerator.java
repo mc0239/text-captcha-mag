@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,6 +27,21 @@ public class ShowcaseArticleGenerator {
     public ShowcaseArticleGenerator(ArticleRepository repository, ResourceLoader resourceLoader) {
         this.repository = repository;
         this.resourceLoader = resourceLoader;
+    }
+
+    public String getResourceTitle(Resource resource) {
+        try {
+            Optional<String> titleLine = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))
+                    .lines().filter(line -> line.startsWith("# Naslov:")).findFirst();
+            if (titleLine.isPresent()) {
+                return titleLine.get().split("# Naslov:")[1].trim();
+            } else {
+                return null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public String getResourceContent(Resource resource) {
@@ -53,6 +69,7 @@ public class ShowcaseArticleGenerator {
 
         for (Resource sample : getSamples()) {
             Article a = new Article();
+            a.setTitle(getResourceTitle(sample));
             a.setContent(getResourceContent(sample));
             a.setShowcase(true);
             articles.add(a);

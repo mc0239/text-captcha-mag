@@ -17,6 +17,9 @@ public class Article {
     private UUID id;
 
     @Column(columnDefinition = "text")
+    private String title;
+
+    @Column(columnDefinition = "text")
     private String content;
 
     @Column
@@ -28,6 +31,14 @@ public class Article {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {

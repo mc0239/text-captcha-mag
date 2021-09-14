@@ -123,6 +123,8 @@ public class CorefTaskGeneratorService implements TaskGeneratorService<List<Core
             //
 
             task.setContent(taskContent);
+            // TODO confidence should also take in account answers!
+            task.setConfidence(token.getScore().floatValue());
             generatedTasks.add(task);
 
             //

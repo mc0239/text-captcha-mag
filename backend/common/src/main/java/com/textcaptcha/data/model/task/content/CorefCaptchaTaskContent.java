@@ -40,6 +40,7 @@ public class CorefCaptchaTaskContent extends CaptchaTaskContent {
         private String word;
         private Integer mentionId;
         private Integer clusterId;
+        private Double score;
 
         public String getWord() {
             return word;
@@ -63,6 +64,14 @@ public class CorefCaptchaTaskContent extends CaptchaTaskContent {
 
         public void setClusterId(Integer clusterId) {
             this.clusterId = clusterId;
+        }
+
+        public Double getScore() {
+            return score;
+        }
+
+        public void setScore(Double score) {
+            this.score = score;
         }
 
     }

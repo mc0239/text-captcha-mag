@@ -7,6 +7,7 @@ public class CorefApiResponse {
 
     private Map<String, List<Integer>> predictions;
     private Map<Integer, Integer> clusters;
+    private Map<Integer, Double> scores;
 
     public Map<String, List<Integer>> getPredictions() {
         return predictions;
@@ -22,6 +23,14 @@ public class CorefApiResponse {
 
     public void setClusters(Map<Integer, Integer> clusters) {
         this.clusters = clusters;
+    }
+
+    public Map<Integer, Double> getScores() {
+        return scores;
+    }
+
+    public void setScores(Map<Integer, Double> scores) {
+        this.scores = scores;
     }
 
 }

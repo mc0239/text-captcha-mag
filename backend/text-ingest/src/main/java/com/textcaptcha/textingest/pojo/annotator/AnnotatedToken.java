@@ -4,6 +4,7 @@ public abstract class AnnotatedToken {
 
     protected Integer index;
     protected String word;
+    protected Double score;
 
     public Integer getIndex() {
         return index;
@@ -21,4 +22,11 @@ public abstract class AnnotatedToken {
         this.word = word;
     }
 
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
 }

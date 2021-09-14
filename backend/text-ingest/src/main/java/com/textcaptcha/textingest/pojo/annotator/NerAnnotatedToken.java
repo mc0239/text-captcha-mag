@@ -5,7 +5,6 @@ import com.textcaptcha.data.model.task.content.NerCaptchaTaskContent;
 public class NerAnnotatedToken extends AnnotatedToken {
 
     private String annotation;
-    private Double score;
 
     public String getAnnotation() {
         return annotation;
@@ -13,14 +12,6 @@ public class NerAnnotatedToken extends AnnotatedToken {
 
     public void setAnnotation(String annotation) {
         this.annotation = annotation;
-    }
-
-    public Double getScore() {
-        return score;
-    }
-
-    public void setScore(Double score) {
-        this.score = score;
     }
 
     public static NerCaptchaTaskContent.Token toContentToken(NerAnnotatedToken in) {

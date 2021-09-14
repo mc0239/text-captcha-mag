@@ -26,6 +26,7 @@ public class CorefAnnotatedToken extends AnnotatedToken {
     public static CorefCaptchaTaskContent.Token toContentToken(CorefAnnotatedToken in) {
         CorefCaptchaTaskContent.Token out = new CorefCaptchaTaskContent.Token();
         out.setWord(in.word);
+        out.setScore(in.score);
         out.setMentionId(in.getMentionId());
         out.setClusterId(in.getClusterId());
         return out;

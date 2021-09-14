@@ -58,6 +58,7 @@ public class CorefAnnotatorService implements AnnotatorService<ClasslaApiRespons
             CorefAnnotatedToken ct = new CorefAnnotatedToken();
             ct.setIndex(i);
             ct.setWord(t.getText());
+            ct.setScore(response.getScores().get(t.getMentionId()));
             ct.setMentionId(t.getMentionId());
             ct.setClusterId(response.getClusters().getOrDefault(t.getMentionId(), null));
             tokensWithClusters.add(ct);

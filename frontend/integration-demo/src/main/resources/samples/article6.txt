@@ -1,3 +1,6 @@
+# Naslov: Cristiano Ronaldo bo igral za angleški klub Manchester United
+# Vir: https://www.rtvslo.si/enostavno/sport/cristiano-ronaldo-bo-igral-za-angleski-klub-manchester-united/592355
+
 Cristiano Ronaldo bo igral za angleški klub Manchester United.
 
 Cristiano Ronaldo je zadnja 3 leta igral za italijanski klub Juventus.
@@ -49,6 +52,3 @@ Toliko na leto zasluži 2 tisoč slovenskih delavcev.
 Številni navijači se veselijo, da bo spet igral za njihov klub.
 
 Na družbenih omrežjih je vodstvo kluba napisalo: Dobrodošel doma.
-
-# Naslov: Cristiano Ronaldo bo igral za angleški klub Manchester United
-# Vir: https://www.rtvslo.si/enostavno/sport/cristiano-ronaldo-bo-igral-za-angleski-klub-manchester-united/592355

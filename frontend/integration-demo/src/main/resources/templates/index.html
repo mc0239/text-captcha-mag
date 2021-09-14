@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-    <title>Text CAPTCHA Integration Demo</title>
+    <title>Text CAPTCHA Primer Integracije</title>
     <link rel="stylesheet" href="{{ base_path }}/style.css" />
     <style>
         form > * {
@@ -17,13 +17,13 @@
     </style>
 </head>
 <body>
-<h1>Text CAPTCHA Integration Demo</h1>
+<h1>Text CAPTCHA Primer Integracije</h1>
 <form method="post" action="{{ base_path }}/submit">
-    <label for="content">Text to create CAPTCHA for (i.e. copy text from an article):</label>
+    <label for="content">Besedilo, za katerega naj se pripravijo naloge CAPTCHA (npr. besedilo nekega članka):</label>
     <textarea id="content" name="content"></textarea>
     <button type="submit">Submit</button>
 
-    Or try one of the following samples:
+    Že pripravljen nabor besedil:
     <ul>
     {{#showcases}}
     <li><a href="{{ base_path }}/a/{{ id }}">{{ title }}</a></li>

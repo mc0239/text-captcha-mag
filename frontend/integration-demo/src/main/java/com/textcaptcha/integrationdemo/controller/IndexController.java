@@ -80,12 +80,13 @@ public class IndexController {
         Optional<Article> article = articleRepository.findById(uuid);
 
         if (article.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Article does not exist.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Članek ne obstaja.");
         }
 
         model.put("base_path", contextPath);
         model.put("article", article.get());
         model.put("message", servletRequest.getSession().getAttribute("message"));
+        servletRequest.getSession().removeAttribute("message");
 
         Optional<Reaction> reaction = reactionRepository.findByArticleAndCreatedBy(article.get(), servletRequest.getSession().getId());
         model.put("reaction", reaction.isPresent());
@@ -98,7 +99,7 @@ public class IndexController {
         boolean captchaOk = captchaCheck(captchaId);
 
         if (!captchaOk) {
-            servletRequest.getSession().setAttribute("message", "CAPTCHA not solved. Please solve CAPTCHA first.");
+            servletRequest.getSession().setAttribute("message", "CAPTCHA ni rešena. Prosimo, najprej rešite CAPTCHA.");
             return new RedirectView("/a/" + articleUuid);
         }
 
@@ -111,10 +112,10 @@ public class IndexController {
             r.setArticle(a);
             r.setCreatedBy(servletRequest.getSession().getId());
             r = reactionRepository.save(r);
-            servletRequest.getSession().setAttribute("message", "You liked this.");
+            servletRequest.getSession().setAttribute("message", "Članek vam je všeč.");
         } else {
             reactionRepository.delete(existing.get());
-            servletRequest.getSession().setAttribute("message", "You unliked this.");
+            servletRequest.getSession().setAttribute("message", "Članek vam ni več všeč.");
         }
 
         return new RedirectView("/a/" + articleUuid);

@@ -36,18 +36,23 @@ public class ConfidenceTaskSelectionService extends BaseTaskSelectionService {
             return getTaskForArticle(taskType, articleHashes);
         }
 
+        float confidenceThreshold = switch (taskType) {
+            case COREF -> 0.7f;
+            case NER -> 0.9f;
+        };
+
         List<CaptchaTask> tasks = captchaTaskRepository.getTasksNotInFlowByNumberOfResponsesAsc(taskType, articleHashes.getUrlHash(), articleHashes.getTextHash(), flow.getId());
 
         if (!flow.isCompleteVerify()) {
             // If verification is not complete, we give a task with high confidence.
             List<CaptchaTask> possibleTasks = tasks.stream()
-                    .filter(t -> t.getConfidence() == null || t.getConfidence() >= 0.9)
+                    .filter(t -> t.getConfidence() == null || t.getConfidence() >= confidenceThreshold)
                     .collect(Collectors.toList());
             return pickTaskFromList(possibleTasks);
         } else {
             // Verification complete, we can give a task with low confidence.
             List<CaptchaTask> possibleTasks = tasks.stream()
-                    .filter(t -> t.getConfidence() == null || t.getConfidence() < 0.9)
+                    .filter(t -> t.getConfidence() == null || t.getConfidence() < confidenceThreshold)
                     .collect(Collectors.toList());
             return pickTaskFromList(possibleTasks);
         }

@@ -19,9 +19,9 @@
     <article>
       <h1>
         Anonimnež je odštel 28 milijonov dolarjev za polet v vesolje z Jeffom
-        Bezosom
+        Bezosom.
       </h1>
-      <h2>Parabolični polet do Karmanove črte</h2>
+      <h2>Parabolični polet do Karmanove črte.</h2>
       <p>
         Na javni dražbi je nekdo plačal 28 milijonov dolarjev za polet do
         vesolja in nazaj s podjetjem Blue Origin. Na poletu bosta tudi
@@ -75,7 +75,7 @@
         v okviru katere spodbujajo prihodnje generacije, naj se odločijo za
         kariero na področju znanosti, tehnologije, inženirstva in matematike.
       </p>
-      <h3>Tekma za vesoljske turiste</h3>
+      <h3>Tekma za vesoljske turiste.</h3>
 
       <p>
         Medtem poteka minitekma med dvema vesoljskima podjetnikoma. V podjetju
@@ -108,13 +108,21 @@
       >
     </p>
 
-    <div id="inject-point"></div>
+    <div id="captcha-container"></div>
 
     <script src="captcha.umd.js"></script>
     <script>
-      TextCaptcha(document.querySelector("#inject-point"), function () {
-        return document.querySelector("article").textContent;
-      });
+      TextCaptcha(
+        document.querySelector("#captcha-container"),
+        function () {
+          return document
+            .querySelector("article")
+            .textContent.replaceAll("\n", "");
+        },
+        function (flowId) {
+          console.log("CAPTCHA complete: ", flowId);
+        }
+      );
     </script>
   </body>
 </html>

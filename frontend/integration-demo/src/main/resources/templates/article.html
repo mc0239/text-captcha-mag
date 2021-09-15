@@ -35,9 +35,15 @@
 
 <script src="{{ base_path }}/captcha.js"></script>
 <script>
-    TextCaptcha(document.querySelector("#text-captcha"), function () {
-        return document.querySelector("article").textContent;
-    });
+    TextCaptcha(
+        document.querySelector("#text-captcha"),
+        function () {
+            return document.querySelector("article").textContent;
+        },
+        function (flowId) {
+            console.log("CAPTCHA complete: ", flowId);
+        }
+    );
 </script>
 </body>
 </html>

@@ -77,12 +77,18 @@ class App extends React.Component {
         ...content,
       });
       console.log(data);
-      this.setState({
-        currentState: data?.flowComplete
-          ? AppState.TASK_DONE
-          : AppState.TASK_SHOW,
-        flowState: data,
-      });
+      if (data?.flowComplete === true) {
+        this.setState({
+          currentState: AppState.TASK_DONE,
+          flowState: data,
+        });
+        this.props.flowComplete(data.flowId);
+      } else {
+        this.setState({
+          currentState: AppState.TASK_SHOW,
+          flowState: data,
+        });
+      }
     } catch (e) {
       console.error(e);
       this.setState({ currentState: AppState.TASK_ERROR });

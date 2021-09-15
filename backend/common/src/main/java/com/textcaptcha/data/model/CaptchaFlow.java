@@ -76,6 +76,10 @@ public class CaptchaFlow implements IdentifiableEntity<Long> {
         this.completeTrusted = completeTrusted;
     }
 
+    public boolean isComplete() {
+        return isCompleteVerify() && isCompleteTrusted();
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }

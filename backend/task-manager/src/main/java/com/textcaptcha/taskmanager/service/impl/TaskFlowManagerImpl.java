@@ -133,6 +133,11 @@ public class TaskFlowManagerImpl implements TaskFlowManager {
         }
     }
 
+    @Override
+    public CaptchaFlow getFlow(UUID flowId) {
+        return captchaFlowRepository.getByUuid(flowId);
+    }
+
     private IssuedTaskInstance getTaskInstance(TaskType taskType, ArticleHashPairDto articleHashes, CaptchaFlow flow) {
         CaptchaTask task;
         try {

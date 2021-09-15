@@ -100,7 +100,7 @@ public class IndexController {
 
         if (!captchaOk) {
             servletRequest.getSession().setAttribute("message", "CAPTCHA ni rešena. Prosimo, najprej rešite CAPTCHA.");
-            return new RedirectView("/a/" + articleUuid);
+            return new RedirectView(contextPath + "/a/" + articleUuid);
         }
 
         Article a = articleRepository.getById(articleUuid);
@@ -118,7 +118,7 @@ public class IndexController {
             servletRequest.getSession().setAttribute("message", "Članek vam ni več všeč.");
         }
 
-        return new RedirectView("/a/" + articleUuid);
+        return new RedirectView(contextPath + "/a/" + articleUuid);
     }
 
     private boolean captchaCheck(String captchaId) {

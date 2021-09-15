@@ -17,6 +17,13 @@
             margin-top: 4px;
             margin-bottom: 8px;
         }
+        form > * {
+            display: block;
+            margin: 6px;
+        }
+        form > button[type=submit] {
+            padding: 8px;
+        }
     </style>
 </head>
 <body>
@@ -26,6 +33,22 @@
 <article>
     {{ article.content }}
 </article>
+
+{{#message}}
+<p style="color: red">{{ message }}</p>
+{{/message}}
+
+<form method="post" action="{{ base_path }}/r/{{ article.id }}">
+    <input id="flow-id" type="hidden" name="captcha" value="" />
+    <button type="submit">
+        {{#reaction}}
+        Unlike
+        {{/reaction}}
+        {{^reaction}}
+        Like
+        {{/reaction}}
+    </button>
+</form>
 
 <div id="text-captcha"></div>
 
@@ -41,6 +64,7 @@
             return document.querySelector("article").textContent;
         },
         function (flowId) {
+            document.querySelector("#flow-id").value = flowId;
             console.log("CAPTCHA complete: ", flowId);
         }
     );

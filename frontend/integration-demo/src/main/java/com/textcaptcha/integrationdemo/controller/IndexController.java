@@ -2,9 +2,9 @@ package com.textcaptcha.integrationdemo.controller;
 
 import com.textcaptcha.integrationdemo.dto.CaptchaCheckDto;
 import com.textcaptcha.integrationdemo.model.Article;
-import com.textcaptcha.integrationdemo.model.Reaction;
+import com.textcaptcha.integrationdemo.model.Comment;
 import com.textcaptcha.integrationdemo.repository.ArticleRepository;
-import com.textcaptcha.integrationdemo.repository.ReactionRepository;
+import com.textcaptcha.integrationdemo.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,6 +22,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,7 +31,7 @@ import java.util.UUID;
 public class IndexController {
 
     private final ArticleRepository articleRepository;
-    private final ReactionRepository reactionRepository;
+    private final CommentRepository commentRepository;
 
     private final RestTemplate rest;
 
@@ -41,9 +42,9 @@ public class IndexController {
     private String contextPath;
 
     @Autowired
-    public IndexController(ArticleRepository articleRepository, ReactionRepository reactionRepository) {
+    public IndexController(ArticleRepository articleRepository, CommentRepository commentRepository) {
         this.articleRepository = articleRepository;
-        this.reactionRepository = reactionRepository;
+        this.commentRepository = commentRepository;
 
         rest = new RestTemplate();
         rest.getMessageConverters()
@@ -88,35 +89,40 @@ public class IndexController {
         model.put("message", servletRequest.getSession().getAttribute("message"));
         servletRequest.getSession().removeAttribute("message");
 
-        Optional<Reaction> reaction = reactionRepository.findByArticleAndCreatedBy(article.get(), servletRequest.getSession().getId());
-        model.put("reaction", reaction.isPresent());
+        model.put("comment", servletRequest.getSession().getAttribute("comment"));
+        servletRequest.getSession().removeAttribute("comment");
+        model.putIfAbsent("comment", "");
+
+        List<Comment> comments = commentRepository.findByArticleOrderByCreatedAtDesc(article.get());
+        model.put("comments", comments);
 
         return new ModelAndView("article", model);
     }
 
-    @PostMapping("/r/{uuid}")
-    public RedirectView react(@PathVariable("uuid") UUID articleUuid, @RequestParam("captcha") String captchaId, HttpServletRequest servletRequest) {
+    @PostMapping("/c/{uuid}")
+    public RedirectView react(@PathVariable("uuid") UUID articleUuid, @RequestParam("comment") String comment, @RequestParam("captcha") String captchaId, HttpServletRequest servletRequest) {
+        if (comment.isBlank()) {
+            servletRequest.getSession().setAttribute("message", "Praznega komentarja ne morete oddati.");
+            return new RedirectView(contextPath + "/a/" + articleUuid);
+        }
+
         boolean captchaOk = captchaCheck(captchaId);
 
         if (!captchaOk) {
             servletRequest.getSession().setAttribute("message", "CAPTCHA ni rešena. Prosimo, najprej rešite CAPTCHA.");
+            servletRequest.getSession().setAttribute("comment", comment);
             return new RedirectView(contextPath + "/a/" + articleUuid);
         }
 
         Article a = articleRepository.getById(articleUuid);
 
-        Optional<Reaction> existing = reactionRepository.findByArticleAndCreatedBy(a, servletRequest.getSession().getId());
+        Comment c = new Comment();
+        c.setArticle(a);
+        c.setContent(comment);
+        c.setCreatedBy(servletRequest.getSession().getId());
+        c = commentRepository.save(c);
 
-        if (existing.isEmpty()) {
-            Reaction r = new Reaction();
-            r.setArticle(a);
-            r.setCreatedBy(servletRequest.getSession().getId());
-            r = reactionRepository.save(r);
-            servletRequest.getSession().setAttribute("message", "Članek vam je všeč.");
-        } else {
-            reactionRepository.delete(existing.get());
-            servletRequest.getSession().setAttribute("message", "Članek vam ni več všeč.");
-        }
+        servletRequest.getSession().setAttribute("message", "Komentar uspešno oddan.");
 
         return new RedirectView(contextPath + "/a/" + articleUuid);
     }

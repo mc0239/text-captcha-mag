@@ -2,16 +2,14 @@ package com.textcaptcha.integrationdemo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 @SpringBootApplication
+@EnableJpaAuditing
 public class IntegrationDemoApplication {
 
     public static void main(String[] args) {

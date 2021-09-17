@@ -21,8 +21,16 @@
             display: block;
             margin: 6px;
         }
+        form > textarea {
+            width: 100%;
+            height: 100px;
+        }
         form > button[type=submit] {
             padding: 8px;
+        }
+        div.comments span {
+            display: block;
+            font-size: 0.75em;
         }
     </style>
 </head>
@@ -34,24 +42,24 @@
     {{ article.content }}
 </article>
 
-{{#message}}
-<p style="color: red">{{ message }}</p>
-{{/message}}
-
-<form method="post" action="{{ base_path }}/r/{{ article.id }}">
+<h3>Komentarji</h3>
+<form method="post" action="{{ base_path }}/c/{{ article.id }}">
+    <label for="comment">Komentar:</label>
+    <textarea id="comment" name="comment">{{ comment }}</textarea>
     <input id="flow-id" type="hidden" name="captcha" value="" />
-    <button type="submit">
-        {{#reaction}}
-        Ni mi več všeč
-        {{/reaction}}
-        {{^reaction}}
-        Všeč mi je
-        {{/reaction}}
-    </button>
-    <span style="font-size: 0.75em">Prosimo, da rešite CAPTCHA preden všečkate članek.</span>
+    <span style="font-size: 0.75em">Prosimo, rešite spodnjo CAPTCHA pred oddajo komentarja.</span>
+    <div id="text-captcha"></div>
+    {{#message}}
+    <p style="color: red">{{ message }}</p>
+    {{/message}}
+    <button type="submit">Oddaj komentar</button>
 </form>
 
-<div id="text-captcha"></div>
+<div class="comments">
+    {{#comments}}
+    <p><span>{{ createdAt }}</span>{{ content }}</p>
+    {{/comments}}
+</div>
 
 <a href="{{ base_path }}/">Nazaj na prvo stran.</a>
 

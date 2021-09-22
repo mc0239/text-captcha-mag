@@ -9,4 +9,4 @@ spring:
     password: root12
 
 captcha:
-  check-url: http://localhost:8020/flow/check
+  check-url: http://localhost:8020/link/check

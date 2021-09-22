@@ -11,4 +11,4 @@ spring:
     password: root12
 
 captcha:
-  check-url: https://nlp.cebular.net/captcha/t/flow/check
+  check-url: https://nlp.cebular.net/captcha/t/link/check

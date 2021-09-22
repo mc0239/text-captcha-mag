@@ -47,7 +47,7 @@
     <label for="comment">Komentar:</label>
     <textarea id="comment" name="comment">{{ comment }}</textarea>
     <input id="flow-id" type="hidden" name="captcha" value="" />
-    <span style="font-size: 0.75em">Prosimo, rešite spodnjo CAPTCHA pred oddajo komentarja.</span>
+    <span id="captcha-hint" style="font-size: 0.75em">Prosimo, rešite spodnjo CAPTCHA pred oddajo komentarja.</span>
     <div id="text-captcha"></div>
     {{#message}}
     <p style="color: red">{{ message }}</p>
@@ -74,6 +74,7 @@
         },
         function (flowId) {
             document.querySelector("#flow-id").value = flowId;
+            document.querySelector("#captcha-hint").textContent = "✓ CAPTCHA OK"
             console.log("CAPTCHA complete: ", flowId);
         }
     );

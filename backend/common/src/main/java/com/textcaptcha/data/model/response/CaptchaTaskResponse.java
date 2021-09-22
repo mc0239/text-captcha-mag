@@ -2,7 +2,7 @@ package com.textcaptcha.data.model.response;
 
 import com.textcaptcha.converter.CaptchaTaskResponseContentConverter;
 import com.textcaptcha.data.IdentifiableEntity;
-import com.textcaptcha.data.model.CaptchaFlow;
+import com.textcaptcha.data.model.CaptchaLink;
 import com.textcaptcha.data.model.response.content.CaptchaTaskResponseContent;
 import com.textcaptcha.data.model.task.CaptchaTask;
 import com.textcaptcha.data.model.task.TaskType;
@@ -33,8 +33,8 @@ public abstract class CaptchaTaskResponse implements IdentifiableEntity<Long> {
     protected CaptchaTask captchaTask;
 
     @ManyToOne
-    @JoinColumn(name = "captcha_flow_id", foreignKey = @ForeignKey(name = "fk_captcha_flow_id"))
-    protected CaptchaFlow captchaFlow;
+    @JoinColumn(name = "captcha_link_id", foreignKey = @ForeignKey(name = "fk_captcha_link_id"))
+    protected CaptchaLink captchaLink;
 
     @Column(name = "response_content", columnDefinition = "text")
     @Convert(converter = CaptchaTaskResponseContentConverter.class)
@@ -64,12 +64,12 @@ public abstract class CaptchaTaskResponse implements IdentifiableEntity<Long> {
         this.captchaTask = captchaTask;
     }
 
-    public CaptchaFlow getCaptchaFlow() {
-        return captchaFlow;
+    public CaptchaLink getCaptchaLink() {
+        return captchaLink;
     }
 
-    public void setCaptchaFlow(CaptchaFlow captchaFlow) {
-        this.captchaFlow = captchaFlow;
+    public void setCaptchaLink(CaptchaLink captchaLink) {
+        this.captchaLink = captchaLink;
     }
 
     public abstract CaptchaTaskResponseContent getContent();

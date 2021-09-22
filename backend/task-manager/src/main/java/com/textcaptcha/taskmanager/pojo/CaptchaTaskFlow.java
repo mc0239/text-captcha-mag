@@ -1,19 +1,19 @@
 package com.textcaptcha.taskmanager.pojo;
 
-import com.textcaptcha.data.model.CaptchaFlow;
+import com.textcaptcha.data.model.CaptchaLink;
 
 public class CaptchaTaskFlow {
 
-    private final CaptchaFlow captchaFlow;
+    private final CaptchaLink captchaLink;
     private final IssuedTaskInstance taskInstance;
 
-    public CaptchaTaskFlow(CaptchaFlow captchaFlow, IssuedTaskInstance taskInstance) {
-        this.captchaFlow = captchaFlow;
+    public CaptchaTaskFlow(CaptchaLink captchaLink, IssuedTaskInstance taskInstance) {
+        this.captchaLink = captchaLink;
         this.taskInstance = taskInstance;
     }
 
-    public CaptchaFlow getCaptchaFlow() {
-        return captchaFlow;
+    public CaptchaLink getCaptchaLink() {
+        return captchaLink;
     }
 
     public IssuedTaskInstance getTaskInstance() {

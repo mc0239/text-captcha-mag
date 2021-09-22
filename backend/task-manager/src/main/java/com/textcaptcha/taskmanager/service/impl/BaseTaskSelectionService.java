@@ -6,13 +6,14 @@ import com.textcaptcha.data.repository.CaptchaTaskRepository;
 import com.textcaptcha.dto.ArticleHashPairDto;
 import com.textcaptcha.taskmanager.exception.NoTasksAvailableException;
 import com.textcaptcha.taskmanager.exception.TaskSelectionException;
+import com.textcaptcha.taskmanager.pojo.selection.SelectionOptions;
 import com.textcaptcha.taskmanager.service.TaskSelectionService;
 import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Random;
 
-public abstract class BaseTaskSelectionService implements TaskSelectionService {
+public abstract class BaseTaskSelectionService<OPT extends SelectionOptions> implements TaskSelectionService<OPT> {
 
     protected final Logger logger;
     protected final CaptchaTaskRepository captchaTaskRepository;

@@ -10,13 +10,13 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "captcha_flow")
+@Table(name = "captcha_link")
 @EntityListeners(AuditingEntityListener.class)
-public class CaptchaFlow implements IdentifiableEntity<Long> {
+public class CaptchaLink implements IdentifiableEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "captcha_flow_seqgen")
-    @SequenceGenerator(name = "captcha_flow_seqgen", sequenceName = "captcha_flow_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "captcha_link_seqgen")
+    @SequenceGenerator(name = "captcha_link_seqgen", sequenceName = "captcha_link_seq", allocationSize = 1)
     private Long id;
 
     @Column

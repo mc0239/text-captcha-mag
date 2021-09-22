@@ -32,7 +32,7 @@ public class TaskController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final TaskInstanceKeeper taskInstanceKeeper;
-    private final TaskSelectionService taskSelectionService;
+    private final RandomTaskSelectionService taskSelectionService;
     private final TaskSolutionProcessor taskSolutionProcessor;
 
     @Autowired
@@ -69,7 +69,7 @@ public class TaskController {
     private IssuedTaskInstance getTaskInstance(TaskRequestRequestBody body) {
         CaptchaTask task;
         try {
-            task = taskSelectionService.getTaskForArticle(TaskType.valueOf(body.getTaskType()), body.getHashes());
+            task = taskSelectionService.getTaskForArticle(TaskType.valueOf(body.getTaskType()), body.getHashes(), null);
         } catch (TaskSelectionException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

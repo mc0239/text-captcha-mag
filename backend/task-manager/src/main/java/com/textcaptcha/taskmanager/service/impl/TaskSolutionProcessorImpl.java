@@ -66,7 +66,7 @@ public class TaskSolutionProcessorImpl implements TaskSolutionProcessor {
                 response = new NerCaptchaTaskResponse();
                 response.setCaptchaTask(task);
                 response.setContent(new NerCaptchaTaskResponseContent(taskSolution));
-                taskResponseRepository.save(response);
+                response = taskResponseRepository.save(response);
 
                 result = nerTaskSolutionChecker.checkSolution((NerCaptchaTask) task, taskSolution);
                 return new SolutionProcessorResult(response, result);
@@ -75,7 +75,7 @@ public class TaskSolutionProcessorImpl implements TaskSolutionProcessor {
                 response = new CorefCaptchaTaskResponse();
                 response.setCaptchaTask(task);
                 response.setContent(new CorefCaptchaTaskResponseContent(taskSolution));
-                taskResponseRepository.save(response);
+                response = taskResponseRepository.save(response);
 
                 result = corefTaskSolutionChecker.checkSolution((CorefCaptchaTask) task, taskSolution);
                 return new SolutionProcessorResult(response, result);

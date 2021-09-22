@@ -20,17 +20,17 @@ public interface CaptchaTaskRepository extends JpaRepository<CaptchaTask, Long> 
             "GROUP BY c ORDER BY COUNT(r) ASC")
     List<CaptchaTask> getTasksByNumberOfResponsesAsc(TaskType taskType, String articleUrlHash, String articleTextHash);
 
-    @Query("SELECT c FROM CaptchaTask c " +
-            "LEFT JOIN CaptchaTaskResponse r ON c.id = r.captchaTask.id " +
-            "WHERE c.taskType = (:taskType) " +
-            "AND c.articleUrlHash = (:articleUrlHash) " +
-            "AND c.articleTextHash = (:articleTextHash) " +
-            "AND c.id NOT IN (" +
-            "    SELECT DISTINCT ct.captchaTask.id FROM CaptchaTaskResponse ct " +
-            "    WHERE ct.captchaFlow.id = (:captchaTaskFlowId)" +
-            ") " +
-            "GROUP BY c ORDER BY COUNT(r) ASC")
-    List<CaptchaTask> getTasksNotInFlowByNumberOfResponsesAsc(TaskType taskType, String articleUrlHash, String articleTextHash, Long captchaTaskFlowId);
+//    @Query("SELECT c FROM CaptchaTask c " +
+//            "LEFT JOIN CaptchaTaskResponse r ON c.id = r.captchaTask.id " +
+//            "WHERE c.taskType = (:taskType) " +
+//            "AND c.articleUrlHash = (:articleUrlHash) " +
+//            "AND c.articleTextHash = (:articleTextHash) " +
+//            "AND c.id NOT IN (" +
+//            "    SELECT DISTINCT ct.captchaTask.id FROM CaptchaTaskResponse ct " +
+//            "    WHERE ct.captchaLink.id = (:captchaTaskFlowId)" +
+//            ") " +
+//            "GROUP BY c ORDER BY COUNT(r) ASC")
+//    List<CaptchaTask> getTasksNotInLinkByNumberOfResponsesAsc(TaskType taskType, String articleUrlHash, String articleTextHash, Long captchaTaskFlowId);
 
     @Query("SELECT COUNT(c) FROM CaptchaTask c WHERE c.taskType = (:taskType) AND c.articleUrlHash = (:articleUrlHash) AND c.articleTextHash = (:articleTextHash)")
     long countTasks(TaskType taskType, String articleUrlHash, String articleTextHash);

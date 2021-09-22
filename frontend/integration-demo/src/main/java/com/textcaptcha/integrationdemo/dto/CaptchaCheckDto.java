@@ -7,26 +7,27 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CaptchaCheckDto {
 
-    private UUID flowId;
-    private Boolean flowComplete;
+    private UUID linkId;
+    private Boolean complete;
 
-    public CaptchaCheckDto() {
+    public UUID getLinkId() {
+        return linkId;
     }
 
-    public UUID getFlowId() {
-        return flowId;
+    public void setLinkId(UUID linkId) {
+        this.linkId = linkId;
     }
 
-    public void setFlowId(UUID flowId) {
-        this.flowId = flowId;
+    public Boolean getComplete() {
+        return complete;
     }
 
-    public Boolean getFlowComplete() {
-        return flowComplete;
+    public void setComplete(Boolean complete) {
+        this.complete = complete;
     }
 
-    public void setFlowComplete(Boolean flowComplete) {
-        this.flowComplete = flowComplete;
+    public boolean isComplete() {
+        return getComplete() != null && getComplete();
     }
 
 }

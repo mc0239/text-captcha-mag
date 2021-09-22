@@ -134,7 +134,7 @@ public class IndexController {
             ResponseEntity<CaptchaCheckDto> restResponse = rest.getForEntity(url, CaptchaCheckDto.class);
             CaptchaCheckDto response = restResponse.getBody();
             if (response != null) {
-                return response.getFlowComplete();
+                return response.isComplete();
             }
         } catch (Exception ignored) { }
 

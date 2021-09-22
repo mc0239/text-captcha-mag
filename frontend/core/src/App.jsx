@@ -28,7 +28,9 @@ class App extends React.Component {
       currentState: AppState.INGEST_LOADING,
 
       ingestData: null,
-      flowState: null,
+      compState: null,
+
+      taskStates: null,
     };
   }
 
@@ -55,13 +57,14 @@ class App extends React.Component {
   makeTaskRequest = async (taskType) => {
     this.setState({ currentState: AppState.TASK_LOADING });
     try {
-      const data = await ApiClient.flow.begin({
+      const data = await ApiClient.comp.start({
         ...this.state.ingestData,
         taskType: taskType,
       });
       this.setState({
         currentState: AppState.TASK_SHOW,
-        flowState: data,
+        compState: data,
+        taskStates: data.tasks.map(() => []),
       });
     } catch (e) {
       console.error(e);
@@ -69,24 +72,23 @@ class App extends React.Component {
     }
   };
 
-  makeTaskResponse = async (content) => {
+  makeTaskResponse = async (taskSolutions) => {
     this.setState({ currentState: AppState.TASK_SUBMITTING });
     try {
-      const data = await ApiClient.flow["continue"]({
-        id: this.state.flowState.task.id,
-        ...content,
+      const data = await ApiClient.comp.solve({
+        taskSolutions: taskSolutions,
       });
       console.log(data);
-      if (data?.flowComplete === true) {
+      if (data?.complete === true) {
         this.setState({
           currentState: AppState.TASK_DONE,
-          flowState: data,
+          compState: data,
         });
-        this.props.flowComplete(data.flowId);
+        this.props.onComplete(data.linkId);
       } else {
         this.setState({
           currentState: AppState.TASK_SHOW,
-          flowState: data,
+          compState: data,
         });
       }
     } catch (e) {
@@ -117,21 +119,52 @@ class App extends React.Component {
       case AppState.INGEST_ERROR:
         return "Prišlo je do napake.";
 
-      case AppState.TASK_LOADING:
       case AppState.TASK_SHOW:
-      case AppState.TASK_SUBMITTING:
         return (
-          <CaptchaTask
-            task={this.state.flowState?.task}
-            isLoading={
-              this.state.currentState === AppState.TASK_LOADING ||
-              this.state.currentState === AppState.TASK_SUBMITTING
-            }
-            onSubmit={(content) => {
-              this.makeTaskResponse(content);
-            }}
-          />
+          <>
+            {this.state.compState?.tasks.map((task, index) => {
+              return (
+                <CaptchaTask
+                  key={index}
+                  task={task}
+                  onChange={(taskState) => {
+                    this.setState((prevState) => {
+                      return {
+                        taskStates: {
+                          ...prevState.taskStates,
+                          [index]: taskState,
+                        },
+                      };
+                    });
+                  }}
+                />
+              );
+            })}
+            <div style={{ textAlign: "right" }}>
+              <button
+                onClick={() => {
+                  this.makeTaskResponse([
+                    {
+                      taskType: this.state.compState?.tasks[0].taskType,
+                      id: this.state.compState?.tasks[0].id,
+                      content: this.state.taskStates[0],
+                    },
+                    {
+                      taskType: this.state.compState?.tasks[1].taskType,
+                      id: this.state.compState?.tasks[1].id,
+                      content: this.state.taskStates[1],
+                    },
+                  ]);
+                }}
+              >
+                Pošlji
+              </button>
+            </div>
+          </>
         );
+      case AppState.TASK_SUBMITTING:
+      case AppState.TASK_LOADING:
+        return "Nalaganje...";
 
       case AppState.TASK_DONE:
         return (
@@ -168,7 +201,7 @@ class App extends React.Component {
     return (
       <div className={style["tc-main"]}>
         <div className={style["tc-content"]}>{this.renderContent()}</div>
-        <div className={style["tc-footer"]}>TextCAPTCHA 0.1</div>
+        <div className={style["tc-footer"]}>TextCAPTCHA 0.2</div>
       </div>
     );
   }

@@ -24,17 +24,13 @@ class CaptchaTask extends React.Component {
   };
 
   render() {
-    const { task, isLoading, onSubmit } = this.props;
-
-    if (isLoading) {
-      return "Nalaganje naloge...";
-    }
+    const { task, onChange } = this.props;
 
     switch (task.taskType) {
       case "NER":
-        return <NerCaptchaTask task={task} onSubmit={onSubmit} />;
+        return <NerCaptchaTask task={task} onChange={onChange} />;
       case "COREF":
-        return <CorefCaptchaTask task={task} onSubmit={onSubmit} />;
+        return <CorefCaptchaTask task={task} onChange={onChange} />;
       default:
         // TODO
         return "Prišlo je do napake :(";

@@ -8,6 +8,8 @@ const taskRequestUrl = managerApiUrl + "/task/request";
 const taskResponseUrl = managerApiUrl + "/task/response";
 const flowBeginUrl = managerApiUrl + "/flow/begin";
 const flowContinueUrl = managerApiUrl + "/flow/continue";
+const compStartUrl = managerApiUrl + "/comp/start";
+const compSolveUrl = managerApiUrl + "/comp/solve";
 
 async function myFetch(url, fetchOptions) {
   console.log("Making a request to ", url);
@@ -85,6 +87,30 @@ async function flowContinue(taskSolutionObject) {
   return await myFetch(flowContinueUrl, fetchOptions);
 }
 
+async function compStart(articleIdentifyingObject) {
+  const fetchOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(articleIdentifyingObject),
+  };
+
+  return await myFetch(compStartUrl, fetchOptions);
+}
+
+async function compSolve(taskSolutionsObject) {
+  const fetchOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(taskSolutionsObject),
+  };
+
+  return await myFetch(compSolveUrl, fetchOptions);
+}
+
 const ApiClient = {
   ingest: ingest,
   task: {
@@ -94,6 +120,10 @@ const ApiClient = {
   flow: {
     begin: flowBegin,
     continue: flowContinue,
+  },
+  comp: {
+    start: compStart,
+    solve: compSolve,
   },
 };
 

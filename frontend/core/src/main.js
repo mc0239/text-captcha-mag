@@ -6,7 +6,7 @@ import App from "./App";
 export default function init(
   containerElement,
   getTextFunction,
-  flowCompleteFunction
+  onCompleteFunction
 ) {
   console.log("Welcome to TextCaptcha.");
 
@@ -15,18 +15,15 @@ export default function init(
     return;
   }
 
-  if (!isFunction(flowCompleteFunction)) {
-    console.error(
-      "flowCompleteFunction is not a function: ",
-      flowCompleteFunction
-    );
+  if (!isFunction(onCompleteFunction)) {
+    console.error("onCompleteFunction is not a function: ", onCompleteFunction);
     return;
   }
 
   ReactDOM.render(
     React.createElement(App, {
       getText: getTextFunction,
-      flowComplete: flowCompleteFunction,
+      onComplete: onCompleteFunction,
     }),
     containerElement
   );

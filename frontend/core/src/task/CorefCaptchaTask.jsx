@@ -16,15 +16,22 @@ class CorefCaptchaTask extends React.Component {
       const si = state.selectedIndexes;
       si[index] = !si[index];
 
-      return {
+      const newState = {
         ...state,
         selectedIndexes: si,
       };
+
+      this.props.onChange(
+        Object.keys(newState.selectedIndexes).filter(
+          (i) => this.state.selectedIndexes[i] === true
+        )
+      );
+      return newState;
     });
   };
 
   render() {
-    const { task, onSubmit } = this.props;
+    const { task } = this.props;
 
     if (!task) {
       // TODO
@@ -94,21 +101,6 @@ class CorefCaptchaTask extends React.Component {
         </div>
         <div style={{ textAlign: "left", fontSize: "0.95rem" }}>
           <ul>{suggestedMentions}</ul>
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <button
-            onClick={() => {
-              const result = Object.keys(this.state.selectedIndexes).filter(
-                (i) => this.state.selectedIndexes[i] === true
-              );
-              onSubmit({
-                taskType: "COREF",
-                content: result,
-              });
-            }}
-          >
-            Pošlji
-          </button>
         </div>
       </div>
     );

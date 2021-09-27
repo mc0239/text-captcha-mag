@@ -17,14 +17,26 @@ class Start extends React.Component {
     return <div style={{ marginBottom: "2px" }}>{content}</div>;
   };
 
-  render() {
-    const { buttonText, onStart } = this.props;
+  renderButtons = () => {
+    const { buttonText, onStart, shouldRenderButtons } = this.props;
+
+    if (shouldRenderButtons === false) {
+      return null;
+    }
 
     return (
       <>
-        {this.renderContent()}
         <button onClick={() => onStart("NER")}>{buttonText} (NER)</button>
         <button onClick={() => onStart("COREF")}>{buttonText} (CoRef)</button>
+      </>
+    );
+  };
+
+  render() {
+    return (
+      <>
+        {this.renderContent()}
+        {this.renderButtons()}
       </>
     );
   }

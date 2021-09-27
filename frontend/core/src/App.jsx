@@ -169,11 +169,8 @@ class App extends React.Component {
       case AppState.TASK_DONE:
         return (
           <Start
-            buttonText="Reši novo nalogo"
-            onStart={(taskType) => {
-              this.makeTaskRequest(taskType);
-            }}
-            content={"Naloga uspešno zaključena."}
+            shouldRenderButtons={false}
+            content={"✅ CAPTCHA uspešno zaključena."}
           />
         );
 

@@ -1,6 +1,6 @@
 // <!!! Specify URL of the captcha service
-const ingestApiUrl = "http://localhost:8010";
-const managerApiUrl = "http://localhost:8020";
+const ingestApiUrl = "https://nlp.cebular.net/captcha/i"; // "http://localhost:8010";
+const managerApiUrl = "https://nlp.cebular.net/captcha/t"; // "http://localhost:8020";
 // !!!>
 
 const ingestUrl = ingestApiUrl + "/ingest";

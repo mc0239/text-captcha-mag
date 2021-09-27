@@ -1,9 +1,19 @@
 window.addEventListener("load", function (event) {
   console.log("Loaded TextCaptcha for rtvslo.si.");
 
+  document.querySelector("a.btn-show-comments").addEventListener('click', () => {
+    // Because comment form does not appear immediately after clicking on show comments link,
+    // we quickly patch this by giving it a timeout (I'm sure there's a better way to solve this).
+    setTimeout(() => {
+      initializeCaptcha();
+    }, 1000);
+  });
+});
+
+function initializeCaptcha() {
   // add captcha inject point to the DOM:
   const captchaInjectPosition = document.querySelector(
-    "div#article-comments-anchor"
+    ".comment-form > .form-group"
   );
 
   const injectElement = document.createElement("div");
@@ -11,9 +21,12 @@ window.addEventListener("load", function (event) {
 
   captchaInjectPosition.appendChild(injectElement);
 
-  TextCaptcha(captchaInjectPosition, extractText);
+  TextCaptcha(injectElement, extractText, onCaptchaComplete);
+}
 
-});
+function onCaptchaComplete(captchaId) {
+  console.log("CAPTCHA complete: ", captchaId)
+}
 
 function extractText() {
   const articleTitle = document.querySelector("h1").textContent;

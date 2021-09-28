@@ -67,8 +67,16 @@ class NerCaptchaTask extends React.Component {
             " " +
             nerTaskStyle["word"]
           }
+          tabIndex="0"
+          role="checkbox"
+          ariaChecked={Boolean(isSelected)}
           onClick={() => {
             this.selectWord(index);
+          }}
+          onKeyPress={(e) => {
+            if (e.code === "Space") {
+              this.selectWord(index);
+            }
           }}
         >
           {word}{" "}

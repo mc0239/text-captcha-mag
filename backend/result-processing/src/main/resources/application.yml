@@ -1,0 +1,9 @@
+server:
+  port: 8030
+  error:
+    include-message: always
+
+logging:
+  level:
+    com.textcaptcha: trace
+    org.hibernate: warn

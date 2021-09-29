@@ -1,0 +1,11 @@
+server:
+  servlet:
+    context-path: /captcha/t
+spring:
+  datasource:
+    url: jdbc:postgresql://tc-tasks-db:5432/postgres?currentSchema=captcha2
+    driver-class-name: org.postgresql.Driver
+    username: "captcha3000"
+    password: "=gxn9*fMi9xR<Sbp,3Zw"
+  jpa:
+    database: postgresql

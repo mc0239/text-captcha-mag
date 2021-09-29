@@ -87,6 +87,14 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: "docker"
 
+  result-processing:
+    image: text-captcha-result-processing
+    container_name: tc-result-processing
+#    ports:
+#      - "8030:8030"
+    environment:
+      SPRING_PROFILES_ACTIVE: "docker"
+
   integration-demo:
     image: text-captcha-integration-demo
     container_name: tc-integration-demo

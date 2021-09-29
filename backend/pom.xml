@@ -12,6 +12,7 @@
         <module>common</module>
         <module>task-manager</module>
         <module>text-ingest</module>
+        <module>result-processing</module>
     </modules>
 
     <properties>

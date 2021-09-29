@@ -61,7 +61,8 @@ public class NerTaskGeneratorService implements TaskGeneratorService<List<NerAnn
                     .collect(Collectors.toList());
 
             task.setContent(new NerCaptchaTaskContent(token.getAnnotation(), taskTokens));
-            task.setConfidence(token.getScore().floatValue());
+            // TODO: average score of all tokens for this named entity, not just 1st token
+            task.setModelConfidence(token.getScore().floatValue());
             generatedTasks.add(task);
         }
 

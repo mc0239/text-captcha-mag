@@ -27,13 +27,13 @@ public class ConfidenceTaskSelectionService extends BaseTaskSelectionService<Con
 
         if (options.shouldBeAboveThreshold()) {
             List<CaptchaTask> possibleTasks = tasks.stream()
-                    .filter(t -> t.getConfidence() == null || t.getConfidence() >= options.getConfidenceThreshold())
+                    .filter(t -> t.getModelConfidence() == null || t.getModelConfidence() >= options.getConfidenceThreshold())
                     .filter(t -> t.getId() != null && !options.getIgnoredTaskIds().contains(t.getId()))
                     .collect(Collectors.toList());
             return pickTaskFromList(possibleTasks);
         } else {
             List<CaptchaTask> possibleTasks = tasks.stream()
-                    .filter(t -> t.getConfidence() == null || t.getConfidence() < options.getConfidenceThreshold())
+                    .filter(t -> t.getModelConfidence() == null || t.getModelConfidence() < options.getConfidenceThreshold())
                     .filter(t -> t.getId() != null && !options.getIgnoredTaskIds().contains(t.getId()))
                     .collect(Collectors.toList());
             return pickTaskFromList(possibleTasks);

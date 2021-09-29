@@ -15,7 +15,7 @@
     <version>0.1.0</version>
 
     <name>text-ingest</name>
-    <description>Demo project for Spring Boot</description>
+    <description>TextCAPTCHA service for text ingestion and task generation</description>
 
     <properties>
         <java.version>15</java.version>

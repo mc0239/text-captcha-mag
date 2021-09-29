@@ -15,7 +15,7 @@
     <version>0.1.0</version>
 
     <name>task-manager</name>
-    <description>Demo project for Spring Boot</description>
+    <description>TextCAPTCHA service for task management and solution checking</description>
 
     <properties>
         <java.version>15</java.version>

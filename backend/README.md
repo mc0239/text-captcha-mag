@@ -4,8 +4,9 @@ Backend services of the CAPTCHA system.
 
 | SERVICE_NAME | SERVICE_DIR | SERVICE_JAR | SERVICE_TAG | PORT |
 |---|---|---|---|---|
-| TaskManager | task-manager | TextCaptchaTaskManager | text-captcha-task-manager | 8020 |
 | TextIngest | text-ingest | TextCaptchaTextIngest | text-captcha-text-ingest | 8010 |
+| TaskManager | task-manager | TextCaptchaTaskManager | text-captcha-task-manager | 8020 |
+| ResultProcessing | result-processing | TextCaptchaResultProcessing | text-captcha-result-processing | 8030 |
 
 Services are bootstrapped with [Spring Boot](https://spring.io/).
 
@@ -30,7 +31,7 @@ Note that Docker build runs with `docker` Spring profile (and uses `application-
 
 ### Build & run in Docker
 
-Requires only Docker installed on host. Useful if host has no Java and/or Maven installed. 
+Requires only Docker installed on host. Useful if host has no Java and/or Maven installed.
 
 Note however that downloading dependencies during build may take a while since there is no local Maven cache.
 
@@ -39,6 +40,6 @@ Note however that downloading dependencies during build may take a while since t
 
 ## Usage
 
-When service successfully starts, it exposes a Swagger UI on `{{SERVICE_URL}}/{{CONTEXT_PATH}}/swagger-ui.html` 
+When service successfully starts, it exposes a Swagger UI on `{{SERVICE_URL}}/{{CONTEXT_PATH}}/swagger-ui.html`
 
 Check out yaml configuration files (i.e. `application-*.yml`) for a port and potential `context-path` settings.

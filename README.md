@@ -16,6 +16,7 @@ Docker compose file expects an existence of the following images:
 - `text-captcha-classla`: see `process/classla` directory,
 - `text-captcha-text-ingest`: see `backend` directory,
 - `text-captcha-task-manager`: see `backend` directory,
+- `text-captcha-result-processing`: see `backend` directory,
 - `text-captcha-integration-demo`: see `frontend/integration-demo` directory.
 
 Other images, specified in Docker compose file, should be automatically pulled

@@ -23,11 +23,18 @@ To produce a single javascript file and immediately copy it over to
 <script src="path/to/captcha.umd.js"></script>
 
 <!-- call TextCaptcha() function, passing in the DOM element where CAPTCHA
-     should inject, and a function that returns a text for CAPTCHA to use.
+     should inject, a function that returns a text for CAPTCHA to use and a
+     function that executes after CAPTCHA has been successfuly completed.
 -->
 <script>
-  TextCaptcha(document.querySelector("#text-captcha"), function () {
-    return document.querySelector("article").textContent;
-  });
+  TextCaptcha(
+    document.querySelector("#text-captcha"),
+    function () {
+      return document.querySelector("article").textContent;
+    },
+    function (captchaId) {
+      console.log("CAPTCHA complete:", captchaId);
+    }
+  );
 </script>
 ```

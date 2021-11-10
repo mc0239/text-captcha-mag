@@ -56,6 +56,16 @@ http://127.0.0.1, http://192.168.99.101 {
 		uri strip_prefix /classla
 		reverse_proxy tc-classla-process-text:5010
 	}
+	
+	@process_text_coref {
+		path /coref
+		path /coref/*
+	}
+	
+	route @process_text_coref {
+		uri strip_prefix /coref
+		reverse_proxy tc-coref-process-text:5020
+	}
 
 	respond "OK" 200
 }

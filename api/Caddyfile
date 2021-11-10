@@ -1,15 +1,11 @@
 {
 	admin off
-	local_certs
-	auto_https disable_redirects
-	default_sni 192.168.99.101
+	# local_certs
+	# auto_https disable_redirects
+	# default_sni 192.168.99.101
 }
 
-localhost {
-	respond "Serving localhost."
-}
-
-192.168.99.101, http://192.168.99.101 {
+http://127.0.0.1, http://192.168.99.101 {
 	# Set a default CORS if upstream doesn't define it.
 	header ?Access-Control-Allow-Origin *
 
@@ -61,5 +57,5 @@ localhost {
 		reverse_proxy tc-classla-process-text:5010
 	}
 
-	respond 200
+	respond "OK" 200
 }

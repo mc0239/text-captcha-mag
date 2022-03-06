@@ -1,5 +1,7 @@
 # text-captcha-mag
 
+❗ Moved to https://github.com/mcebular/text-captcha-mag ❗
+
 ## Requirements
 
 - `docker` & `docker-compose` for the backend.
